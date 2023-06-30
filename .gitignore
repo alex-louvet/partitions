@@ -1,0 +1,6 @@
+*.png
+results/
+ss_examples/
+transfer/
+__pycache__
+*.csv

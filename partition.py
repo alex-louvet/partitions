@@ -227,27 +227,39 @@ def compute_intersection_matrix_row(e,S):
         res[s.id] = match.intersects(e,s)
     return res
 
-def third_algo(X,S,t,threads):
+def parallel_intersection_matrix(X,S,threads):
     from joblib import Parallel, delayed
-    import matching_algo as match
+    import numpy as np
     from tqdm import tqdm
+    import matching_algo as match
+    edges = match.generate_pairs(X)
+    return np.matrix(Parallel(n_jobs=threads)(delayed(compute_intersection_matrix_row)(edges[i],S) for i in tqdm(range(len(edges)))),dtype=bool)
+
+def third_algo(X,S,t,M):
+    import matching_algo as match
     import time
     import numpy as np
-    print('Algo3')
+    import math
+    from tqdm import tqdm
+    import random
     res = []
     n = len(X)
     edges_alive = match.generate_pairs(X)
-    M = np.matrix(Parallel(n_jobs=threads)(delayed(compute_intersection_matrix_row)(edges_alive[i],S) for i in tqdm(range(len(edges_alive)))),dtype=bool)
+    partition_weight_list = []
+    for s in S:
+        s.algo3weight = 1
     for k in range(t):
         print('')
-        print('partition',k+1)
+        print('Partition',k+1)
         partition = []
         setsWeight = np.array([s.algo3weight for s in S])
         for i,e in enumerate(edges_alive):
             e.algo3weight = np.sum(np.dot(M[e.id], setsWeight))
         crossing = []
         not_crossing = S
+        partition_weight = 0
         for i in tqdm(range(n//t - 1)):
+        # for i in range(n//t - 1):
             #select edge of minimum weight
             if partition == []:
                 select_from = [(e,2) for e in edges_alive]
@@ -260,9 +272,13 @@ def third_algo(X,S,t,threads):
                         elif match.compare(e.points[1],p):
                             select_from.append((e,0))
             min = select_from[0]
-            for i,e in enumerate(select_from):
+            for e in select_from:
                 if e[0].algo3weight < min[0].algo3weight:
                     min = e
+                elif e[0].algo3weight == min[0].algo3weight and random.random() > 0.5:
+                    min = e
+            partition_weight += min[0].algo3weight
+            partition_weight_list.append(partition_weight*math.sqrt(n-k*(n//t))/np.sum(setsWeight))
             if partition == []:
                 partition.append(min[0].points[0])
                 partition.append(min[0].points[1])
@@ -309,27 +325,37 @@ def third_algo(X,S,t,threads):
         res.append(partition)
 
     print('')
-    return res
+    return res, partition_weight_list
 
-def draw_partition(partition, name):
+def draw_partition(partition, name, stats, partition_weight, legend):
     import scipy
     import matplotlib.pyplot as plt
     import math as m
+    plt1 = plt.subplot(221)
     n = sum([len(part) for part in partition])
+    t = len(partition)
     for k in range(m.ceil(m.sqrt(n))+1):
-        plt.plot([k/m.ceil(m.sqrt(n)),k/m.ceil(m.sqrt(n))],[0,1], color='lightgrey')
+        plt1.plot([k/m.ceil(m.sqrt(n)),k/m.ceil(m.sqrt(n))],[0,1], color='lightgrey')
     for k in range(m.ceil(m.sqrt(n))+1):
-        plt.plot([0,1],[k/m.ceil(m.sqrt(n)),k/m.ceil(m.sqrt(n))], color='lightgrey')
+        plt1.plot([0,1],[k/m.ceil(m.sqrt(n)),k/m.ceil(m.sqrt(n))], color='lightgrey')
     
     if len(partition[0][0]) != 2:
         raise ValueError('Wrong dimension to plot: required 2, got ', len(partition[0][0]))
     for i,p in enumerate(partition):
         ch = scipy.spatial.ConvexHull(p)
-        plt.plot([x[0] for x in p], [x[1] for x in p], 'o', label='partition' + str(i+1))
+        plt1.scatter([x[0] for x in p], [x[1] for x in p], marker='.', label='partition' + str(i+1),zorder=100)
         for simplex in ch.simplices:
-            plt.plot([p[simplex[0]][0],p[simplex[1]][0]], [p[simplex[0]][1], p[simplex[1]][1]], 'k-')
-    # plt.legend(loc='upper center', bbox_to_anchor=(0.5,1.15), ncols=4, fancybox=True, shadow=True)
-    plt.savefig(name)
+            plt1.plot([p[simplex[0]][0],p[simplex[1]][0]], [p[simplex[0]][1], p[simplex[1]][1]], 'k-',zorder=101)
+        # plt.show()
+    plt.title(legend)
+    plt2 = plt.subplot(222)
+    plt2.bar([i for i in range(len(stats))],stats,color='red', label='algo 1')
+    plt3 = plt.subplot(212)
+    plt3.plot([i for i in range(len(partition_weight))], partition_weight, color='red')
+    plt3.plot([i for i in range(len(partition_weight))], [m.sqrt(i) for i in range(n//t-1)]*t, color='green', linestyle=':')
+    plt3.plot([i for i in range(len(partition_weight))], [2*m.sqrt(i) for i in range(n//t-1)]*t, color='blue', linestyle=':')
+    plt.savefig(name,dpi=300)
+    plt.clf()
 
 def list_grid_intersects(e,n):
     import math as m
@@ -371,25 +397,29 @@ def intersects_grid(e,k,n):
             maxy = e.points[0][1]
         return miny*m.ceil(m.sqrt(n)) <= k-m.ceil(m.sqrt(n)) and k <= maxy*m.ceil(m.sqrt(n))
 
-
-def third_algo_grid(X,S,t,threads):
-    from joblib import Parallel, delayed
+def third_algo_random(X,S,t,M):
     import matching_algo as match
-    from tqdm import tqdm
+    import time
     import numpy as np
-    print('Algo3')
+    import random
+    import math
     res = []
     n = len(X)
+    m = len(S)
     edges_alive = match.generate_pairs(X)
+    partition_weight_list = []
+    for s in S:
+        s.algo3weight = 1
     for k in range(t):
-        print('')
-        print('partition',k+1)
         partition = []
+        partition_weight = 0
+        setsWeight = np.array([s.algo3weight for s in S])
+        m = np.sum(setsWeight)
         for i,e in enumerate(edges_alive):
-            e.algo3weight = len(list_grid_intersects(e,n))
+            e.algo3weight = np.sum(np.dot(M[e.id], setsWeight))
         crossing = []
         not_crossing = S
-        for i in tqdm(range(n//t - 1)):
+        for i in range(n//t - 1):
             #select edge of minimum weight
             if partition == []:
                 select_from = [(e,2) for e in edges_alive]
@@ -401,10 +431,19 @@ def third_algo_grid(X,S,t,threads):
                             select_from.append((e,1))
                         elif match.compare(e.points[1],p):
                             select_from.append((e,0))
-            min = select_from[0]
-            for i,e in enumerate(select_from):
-                if e[0].algo3weight < min[0].algo3weight:
-                    min = e
+            candidate = []
+            minbackup = select_from[0]
+            for e in select_from:
+                if e[0].algo3weight + partition_weight < m/math.sqrt(n-k*(n//t))*math.sqrt(i+1):
+                    candidate.append(e)
+                if e[0].algo3weight < minbackup[0].algo3weight:
+                    minbackup = e
+            if len(candidate) == 0:
+                min = minbackup
+            else:
+                min = random.choice(candidate)
+            partition_weight += min[0].algo3weight
+            partition_weight_list.append(partition_weight*math.sqrt(n-k*(n//t))/m)
             if partition == []:
                 partition.append(min[0].points[0])
                 partition.append(min[0].points[1])
@@ -450,5 +489,426 @@ def third_algo_grid(X,S,t,threads):
 
         res.append(partition)
 
-    print('')
-    return res
+    return res, partition_weight_list
+
+def third_algo_random_weights(X,S,t,M):
+    import matching_algo as match
+    import time
+    import numpy as np
+    import random
+    import math
+    res = []
+    n = len(X)
+    m = len(S)
+    edges_alive = match.generate_pairs(X)
+    partition_weight_list = []
+    for s in S:
+        s.algo3weight = 1
+    for k in range(t):
+        partition = []
+        partition_weight = 0
+        setsWeight = np.array([s.algo3weight for s in S])
+        m = np.sum(setsWeight)
+        for i,e in enumerate(edges_alive):
+            e.algo3weight = np.sum(np.dot(M[e.id], setsWeight))
+        crossing = []
+        not_crossing = S
+        for i in range(n//t - 1):
+            #select edge of minimum weight
+            if partition == []:
+                select_from = [(e,2) for e in edges_alive]
+            else:
+                select_from = []
+                for e in edges_alive:
+                    for p in partition:
+                        if match.compare(e.points[0],p):
+                            select_from.append((e,1))
+                        elif match.compare(e.points[1],p):
+                            select_from.append((e,0))
+            candidate = []
+            minbackup = select_from[0]
+            for e in select_from:
+                if e[0].algo3weight + partition_weight < m/math.sqrt(n-k*(n//t))*math.sqrt(i+1):
+                    candidate.append(e)
+                if e[0].algo3weight < minbackup[0].algo3weight:
+                    minbackup = e
+            sum = np.sum([math.exp(-1*e[0].algo3weight) for e in candidate])
+            if len(candidate) == 0:
+                min = minbackup
+            else:
+                select = random.random()*sum
+                partial = 0
+                index = 0
+                while partial < select and index < len(candidate) - 1:
+                    partial += math.exp(-1*candidate[index][0].algo3weight)
+                    index += 1
+                min = candidate[index]
+            partition_weight += min[0].algo3weight
+            partition_weight_list.append(partition_weight*math.sqrt(n-k*(n//t))/m)
+            if partition == []:
+                partition.append(min[0].points[0])
+                partition.append(min[0].points[1])
+            else:
+                partition.append(min[0].points[min[1]])
+
+            # remove edges connecting 2 points in the partition
+            temp = []
+            for i,e in enumerate(edges_alive):
+                if match.compare(partition[-1],e.points[0]):
+                    for x in partition:
+                        if match.compare(x,e.points[1]):
+                            temp.append(i)
+
+                if match.compare(partition[-1],e.points[1]):
+                    for x in partition:
+                        if match.compare(x,e.points[0]):
+                            temp.append(i)
+            for x in temp[::-1]:
+                del edges_alive[x]
+
+            # Update weight of edges with crossing hs
+            still_not_crossing = []
+            for s in not_crossing:
+                if M[min[0].id,s.id]:
+                    crossing.append(s)
+                    for e in edges_alive:
+                        if M[e.id,s.id]:
+                            e.algo3weight -= s.algo3weight
+                    s.algo3inc()
+                else:
+                    still_not_crossing.append(s)
+            not_crossing = still_not_crossing
+
+        #remove edges connected to points in the partition
+        temp = []
+        for i,e in enumerate(edges_alive):
+            for x in partition:
+                if match.compare(x,e.points[1]) or match.compare(x,e.points[0]):
+                    temp.append(i)
+        for x in temp[::-1]:
+            del edges_alive[x]
+
+        res.append(partition)
+
+    return res, partition_weight_list
+
+
+def third_algo_bfs(X,S,t,M):
+    import matching_algo as match
+    import time
+    import numpy as np
+    import random
+    import math
+    res = []
+    n = len(X)
+    m = len(S)
+    edges_alive = match.generate_pairs(X)
+    partition_weight_list = []
+    for s in S:
+        s.algo3weight = 1
+    for k in range(t):
+        partition = []
+        partition_weight = 0
+        setsWeight = np.array([s.algo3weight for s in S])
+        part_order = {}
+        m = np.sum(setsWeight)
+        for i,e in enumerate(edges_alive):
+            e.algo3weight = np.sum(np.dot(M[e.id], setsWeight))
+        crossing = []
+        not_crossing = S
+        for i in range(n//t - 1):
+            #select edge of minimum weight
+            if partition == []:
+                select_from = [(e,2) for e in edges_alive]
+            else:
+                select_from = []
+                for e in edges_alive:
+                    for p in partition:
+                        if match.compare(e.points[0],p):
+                            select_from.append((e,1))
+                        elif match.compare(e.points[1],p):
+                            select_from.append((e,0))
+            candidate = []
+            minbackup = select_from[0]
+            for e in select_from:
+                if e[0].algo3weight + partition_weight < m/math.sqrt(n-k*(n//t))*math.sqrt(i+1):
+                    candidate.append(e)
+                if e[0].algo3weight < minbackup[0].algo3weight:
+                    minbackup = e
+            if len(candidate) == 0:
+                min = minbackup
+            elif partition != []:
+                mini_order = minbackup
+                for x in candidate:
+                    if part_order[x[0].points[1 - x[1]]] < part_order[mini_order[0].points[1 - mini_order[1]]]:
+                        mini_order = x
+                min = mini_order
+            else:
+                min = minbackup
+            partition_weight += min[0].algo3weight
+            partition_weight_list.append(partition_weight*math.sqrt(n-k*(n//t))/m)
+            if partition == []:
+                partition.append(min[0].points[0])
+                partition.append(min[0].points[1])
+                part_order[min[0].points[0]] = 0
+                part_order[min[0].points[1]] = 0
+            else:
+                partition.append(min[0].points[min[1]])
+                part_order[min[0].points[min[1]]] = part_order[min[0].points[1 - min[1]]] + 1
+
+            # remove edges connecting 2 points in the partition
+            temp = []
+            for i,e in enumerate(edges_alive):
+                if match.compare(partition[-1],e.points[0]):
+                    for x in partition:
+                        if match.compare(x,e.points[1]):
+                            temp.append(i)
+
+                if match.compare(partition[-1],e.points[1]):
+                    for x in partition:
+                        if match.compare(x,e.points[0]):
+                            temp.append(i)
+            for x in temp[::-1]:
+                del edges_alive[x]
+
+            # Update weight of edges with crossing hs
+            still_not_crossing = []
+            for s in not_crossing:
+                if M[min[0].id,s.id]:
+                    crossing.append(s)
+                    for e in edges_alive:
+                        if M[e.id,s.id]:
+                            e.algo3weight -= s.algo3weight
+                    s.algo3inc()
+                else:
+                    still_not_crossing.append(s)
+            not_crossing = still_not_crossing
+
+        #remove edges connected to points in the partition
+        temp = []
+        for i,e in enumerate(edges_alive):
+            for x in partition:
+                if match.compare(x,e.points[1]) or match.compare(x,e.points[0]):
+                    temp.append(i)
+        for x in temp[::-1]:
+            del edges_alive[x]
+
+        res.append(partition)
+
+    return res, partition_weight_list
+
+def third_algo_bfs_min(X,S,t,M):
+    import matching_algo as match
+    import time
+    import numpy as np
+    import random
+    import math
+    res = []
+    n = len(X)
+    m = len(S)
+    edges_alive = match.generate_pairs(X)
+    partition_weight_list = []
+    for s in S:
+        s.algo3weight = 1
+    for k in range(t):
+        partition = []
+        partition_weight = 0
+        setsWeight = np.array([s.algo3weight for s in S])
+        part_order = {}
+        m = np.sum(setsWeight)
+        for i,e in enumerate(edges_alive):
+            e.algo3weight = np.sum(np.dot(M[e.id], setsWeight))
+        crossing = []
+        not_crossing = S
+        for i in range(n//t - 1):
+            #select edge of minimum weight
+            if partition == []:
+                select_from = [(e,2) for e in edges_alive]
+            else:
+                select_from = []
+                for e in edges_alive:
+                    for p in partition:
+                        if match.compare(e.points[0],p):
+                            select_from.append((e,1))
+                        elif match.compare(e.points[1],p):
+                            select_from.append((e,0))
+            candidate = []
+            minbackup = select_from[0]
+            for e in select_from:
+                if e[0].algo3weight + partition_weight < m/math.sqrt(n-k*(n//t))*math.sqrt(i+1):
+                    candidate.append(e)
+                if e[0].algo3weight < minbackup[0].algo3weight:
+                    minbackup = e
+            if len(candidate) == 0:
+                min = minbackup
+            elif partition != []:
+                mini_order = minbackup
+                for x in candidate:
+                    if part_order[x[0].points[1 - x[1]]] < part_order[mini_order[0].points[1 - mini_order[1]]]:
+                        mini_order = x
+                    elif part_order[x[0].points[1 - x[1]]] == part_order[mini_order[0].points[1 - mini_order[1]]] and x[0].algo3weight < mini_order[0].algo3weight:
+                        mini_order = x
+                    elif part_order[x[0].points[1 - x[1]]] == part_order[mini_order[0].points[1 - mini_order[1]]] and x[0].algo3weight == mini_order[0].algo3weight and random.random()>0.5:
+                        mini_order = x
+                min = mini_order
+            else:
+                min = minbackup
+            partition_weight += min[0].algo3weight
+            partition_weight_list.append(partition_weight*math.sqrt(n-k*(n//t))/m)
+            if partition == []:
+                partition.append(min[0].points[0])
+                partition.append(min[0].points[1])
+                part_order[min[0].points[0]] = 0
+                part_order[min[0].points[1]] = 0
+            else:
+                partition.append(min[0].points[min[1]])
+                part_order[min[0].points[min[1]]] = part_order[min[0].points[1 - min[1]]] + 1
+
+            # remove edges connecting 2 points in the partition
+            temp = []
+            for i,e in enumerate(edges_alive):
+                if match.compare(partition[-1],e.points[0]):
+                    for x in partition:
+                        if match.compare(x,e.points[1]):
+                            temp.append(i)
+
+                if match.compare(partition[-1],e.points[1]):
+                    for x in partition:
+                        if match.compare(x,e.points[0]):
+                            temp.append(i)
+            for x in temp[::-1]:
+                del edges_alive[x]
+
+            # Update weight of edges with crossing hs
+            still_not_crossing = []
+            for s in not_crossing:
+                if M[min[0].id,s.id]:
+                    crossing.append(s)
+                    for e in edges_alive:
+                        if M[e.id,s.id]:
+                            e.algo3weight -= s.algo3weight
+                    s.algo3inc()
+                else:
+                    still_not_crossing.append(s)
+            not_crossing = still_not_crossing
+
+        #remove edges connected to points in the partition
+        temp = []
+        for i,e in enumerate(edges_alive):
+            for x in partition:
+                if match.compare(x,e.points[1]) or match.compare(x,e.points[0]):
+                    temp.append(i)
+        for x in temp[::-1]:
+            del edges_alive[x]
+
+        res.append(partition)
+
+    return res, partition_weight_list
+
+def third_algo_min_bfs(X,S,t,M):
+    import matching_algo as match
+    import time
+    import numpy as np
+    import random
+    import math
+    res = []
+    n = len(X)
+    m = len(S)
+    edges_alive = match.generate_pairs(X)
+    partition_weight_list = []
+    for s in S:
+        s.algo3weight = 1
+    for k in range(t):
+        partition = []
+        partition_weight = 0
+        setsWeight = np.array([s.algo3weight for s in S])
+        part_order = {}
+        m = np.sum(setsWeight)
+        for i,e in enumerate(edges_alive):
+            e.algo3weight = np.sum(np.dot(M[e.id], setsWeight))
+        crossing = []
+        not_crossing = S
+        for i in range(n//t - 1):
+            #select edge of minimum weight
+            if partition == []:
+                select_from = [(e,2) for e in edges_alive]
+            else:
+                select_from = []
+                for e in edges_alive:
+                    for p in partition:
+                        if match.compare(e.points[0],p):
+                            select_from.append((e,1))
+                        elif match.compare(e.points[1],p):
+                            select_from.append((e,0))
+            candidate = []
+            minbackup = select_from[0]
+            for e in select_from:
+                if e[0].algo3weight + partition_weight < m/math.sqrt(n-k*(n//t))*math.sqrt(i+1):
+                    candidate.append(e)
+                if e[0].algo3weight < minbackup[0].algo3weight:
+                    minbackup = e
+            if len(candidate) == 0:
+                min = minbackup
+            elif partition != []:
+                mini_order = candidate[0]
+                for x in candidate:
+                    if x[0].algo3weight < mini_order[0].algo3weight:
+                        mini_order = x
+                    elif x[0].algo3weight == mini_order[0].algo3weight and part_order[x[0].points[1 - x[1]]] < part_order[mini_order[0].points[1 - mini_order[1]]]:
+                        mini_order = x
+                    elif x[0].algo3weight == mini_order[0].algo3weight and part_order[x[0].points[1 - x[1]]] == part_order[mini_order[0].points[1 - mini_order[1]]] and random.random() > 0.5:
+                        mini_order = x
+                min = mini_order
+            else:
+                min = minbackup
+            partition_weight += min[0].algo3weight
+            partition_weight_list.append(partition_weight*math.sqrt(n-k*(n//t))/m)
+            if partition == []:
+                partition.append(min[0].points[0])
+                partition.append(min[0].points[1])
+                part_order[min[0].points[0]] = 0
+                part_order[min[0].points[1]] = 0
+            else:
+                partition.append(min[0].points[min[1]])
+                part_order[min[0].points[min[1]]] = part_order[min[0].points[1 - min[1]]] + 1
+
+            # remove edges connecting 2 points in the partition
+            temp = []
+            for i,e in enumerate(edges_alive):
+                if match.compare(partition[-1],e.points[0]):
+                    for x in partition:
+                        if match.compare(x,e.points[1]):
+                            temp.append(i)
+
+                if match.compare(partition[-1],e.points[1]):
+                    for x in partition:
+                        if match.compare(x,e.points[0]):
+                            temp.append(i)
+            for x in temp[::-1]:
+                del edges_alive[x]
+
+            # Update weight of edges with crossing hs
+            still_not_crossing = []
+            for s in not_crossing:
+                if M[min[0].id,s.id]:
+                    crossing.append(s)
+                    for e in edges_alive:
+                        if M[e.id,s.id]:
+                            e.algo3weight -= s.algo3weight
+                    s.algo3inc()
+                else:
+                    still_not_crossing.append(s)
+            not_crossing = still_not_crossing
+
+        #remove edges connected to points in the partition
+        temp = []
+        for i,e in enumerate(edges_alive):
+            for x in partition:
+                if match.compare(x,e.points[1]) or match.compare(x,e.points[0]):
+                    temp.append(i)
+        for x in temp[::-1]:
+            del edges_alive[x]
+
+        res.append(partition)
+
+    return res, partition_weight_list

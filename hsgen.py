@@ -10,6 +10,16 @@ def generate_points(n,d):
         res.append(tuple(temp))
     return res
 
+def generate_points_on_circle(n):
+    import random as r
+    import math as m
+    res = []
+    for _ in range(n):
+        theta = r.random()*2*m.pi
+        res.append((0.5+(0.5+r.random()*-1*0.05)*m.cos(theta),0.5+(0.5+r.random()*-1*0.05)*m.sin(theta)))
+    return res
+
+
 #compute a halfspace of passing through the points of L
 def compute_halfspace(points):
     import numpy as np

@@ -7,6 +7,7 @@ import shutil
 import argparse
 import partition
 import classes
+from joblib import delayed,Parallel
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-f", "--file", type=str)
@@ -62,6 +63,7 @@ else:
     # Set system generation
     var = t.time()
     print('Generating points:')
+    # X = hsgen.generate_points_on_circle(N)
     X = hsgen.generate_points(N,D)
     print('time:', t.time()-var)
     print('')
@@ -80,60 +82,42 @@ else:
 radius_e = math.log(N*(N+1)/2)
 radius_s = math.log(m*N/4)
 
-# Matching demo
-# matching = match.build_matching(X,S,10**(1/D),math.log(m),1-(1/D), radius_e, radius_s, warmup,threads)
-#
-# intersect_table = match.check_intersect(matching, S, save, name, warmup, threads)
-# print(intersect_table)
+def run_algo(X,S,M,version):
+    match version:
+        case '2':
+            return partition.third_algo_random(X,S,partitions,M)
+        case '3':
+            return partition.third_algo_random_weights(X,S,partitions,M)
+        case '4':
+            return partition.third_algo_bfs(X,S,partitions,M)
+        case '5':
+            return partition.third_algo_bfs_min(X,S,partitions,M)
+        case '6':
+            return partition.third_algo_min_bfs(X,S,partitions,M)
+        case '1':
+            return partition.third_algo(X,S,partitions,M)
 
-# Partition demo
-# var1=t.time()
-# part1 = partition.first_algo(X,S,4,radius_e,radius_s,warmup,threads)
-# var1 = t.time() - var1
-# var2 = t.time()
-# part2 = partition.second_algo(X,S,4,radius_e,radius_s,warmup,threads)
-# var2 = t.time()-var2
-# var3 = t.time()
-part3 = partition.third_algo(X,S,32,threads)
-# var3 = t.time() - var3
-# var4 = t.time()
-# part4 = partition.fourth_algo(X,S,16,1/16,threads)
-# var4 = t.time() - var4
+M = partition.parallel_intersection_matrix(X,S,threads) 
+min,uniform,weighted,bfs,bfs_min,min_bfs = Parallel(n_jobs=threads)(delayed(run_algo)(X,S,M,version) for version in ['1', '2', '3','4','5','6'])
 
-# if save:
-#     with open(name +'_partitions.pkl','wb') as f:
-#         pickle.dump((part1,part2,part3),f)
-#     shutil.move(name + '_partitions.pkl','results/')
+def histogram(table):
+    res = []
+    for x in table:
+        if len(res) < x + 1:
+            res += [0] * (x + 1 - len(res))
+        res[x] += 1
+    return res
 
+stats1 = histogram(partition.check_intersect_against_grid(min[0], save, name, warmup, threads, 'min'))
+stats2 = histogram(partition.check_intersect_against_grid(uniform[0], save, name, warmup, threads, 'uniform'))
+stats3 = histogram(partition.check_intersect_against_grid(weighted[0], save, name, warmup, threads, 'weighted'))
+stats4 = histogram(partition.check_intersect_against_grid(bfs[0], save, name, warmup, threads, 'bfs'))
+stats5 = histogram(partition.check_intersect_against_grid(bfs_min[0], save, name, warmup, threads, 'bfs_min'))
+stats6 = histogram(partition.check_intersect_against_grid(min_bfs[0], save, name, warmup, threads, 'min_bfs'))
 
-
-# intersect_table1 = partition.check_intersect(part1, S, save, name, warmup, threads, '1')
-# intersect_table2 = partition.check_intersect(part2, S, save, name, warmup, threads, '2')
-intersect_table3 = partition.check_intersect_against_grid(part3, save, name, warmup, threads, '3_grid')
-intersect_table3 = partition.check_intersect(part3,S, save, name, warmup, threads, '3_train')
-# intersect_table4 = partition.check_intersect(part4, S, save, name, warmup, threads, '4')
-
-# partition.draw_partition(part1)
-# partition.draw_partition(part2)
-partition.draw_partition(part3, name+'.png')
-# partition.draw_partition(part4)
-
-
-# D = {}
-# var = t.time()
-# E = match.generate_pairs(X)
-# print(t.time()-var)
-# var = t.time()
-# temp = Parallel(n_jobs=threads)(delayed(partition.compute_intersection_matrix_row)(e,S) for e in E)
-# print(t.time()-var)
-# var = t.time()
-# for i,e in enumerate(E):
-#     D[e.points] = temp[i]
-# print(t.time()-var)
-# var = t.time()
-# new = D[E[0].points][S[0].points]
-# print(t.time()-var)
-# var = t.time()
-# new = match.intersects(E[0],S[0])
-# print(t.time()-var)
-# print([s.id for s in S])
+partition.draw_partition(min[0], name+'_min.png',stats1,min[1] , 'Min algo')
+partition.draw_partition(uniform[0], name+'_uniform.png',stats2, uniform[1] ,'Uniform w/ rate')
+partition.draw_partition(weighted[0], name+'_weighted.png',stats3, weighted[1] ,'Weights w/ rate')
+partition.draw_partition(bfs[0], name+'_bfs.png',stats4, bfs[1] ,'Arbitrary BFS')
+partition.draw_partition(bfs_min[0], name+'_bfsmin.png',stats5, bfs_min[1] ,'BFS + min')
+partition.draw_partition(min_bfs[0], name+'_minbfs.png',stats6, min_bfs[1] ,'Min + BFS')

@@ -4,7 +4,10 @@ def generate_pairs(X):
     res = []
     for i in range(len(X)-1):
         for j in range(i+1,len(X)):
-            res.append(classes.Edge.frompointlist((X[i],X[j])))
+            if i == 0 and j == 1:
+                res.append(classes.Edge.frompointlist((X[i],X[j]),reset=True))
+            else:
+                res.append(classes.Edge.frompointlist((X[i],X[j])))
     return res
 
 #Returns whether and edge separates a set (i.e. one element in, one out)
