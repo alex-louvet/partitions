@@ -31,7 +31,7 @@ partitions = args.partitions
 
 if file:
     with open(file,'rb') as f:
-        X,S = pickle.load(f)
+        X,S,M = pickle.load(f)
     tempS = []
     for s in S:
         tempS.append(classes.Set.frompointlist(s.points))
@@ -98,6 +98,9 @@ def run_algo(X,S,M,version):
             return partition.third_algo(X,S,partitions,M)
 
 M = partition.parallel_intersection_matrix(X,S,threads) 
+with open('bigmatrix.pkl','wb') as f:
+    pickle.dump((X,S,M),f)
+
 min,uniform,weighted,bfs,bfs_min,min_bfs = Parallel(n_jobs=threads)(delayed(run_algo)(X,S,M,version) for version in ['1', '2', '3','4','5','6'])
 
 def histogram(table):
