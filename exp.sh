@@ -1,8 +1,9 @@
 #!/bin/bash
-./a.out 1 $1 &
-./a.out 2 $1 &
-./a.out 3 $1 &
-./a.out 4 $1 &
-./a.out 5 $1 &
-./a.out 6 $1 &
-wait
+DLIST=(2 10 100)
+for ((p = 1024; p < 17000; p*=16)); do
+    for ((t = 16; t < 65; t*=2)); do
+        for d in "${DLIST[@]}"; do
+            ./a.out 1 $p $t 1 $d
+        done
+    done
+done
