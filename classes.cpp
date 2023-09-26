@@ -271,3 +271,34 @@ SetSystem GridGraph(int n, int d){
     
     return SetSystem(pts,sets);
 }
+
+class Result: public SetSystem {
+    public:
+        vector<float> weights;
+        vector<int> intersections;
+        Result(int n,int d,int m){
+            for (int i = 0; i < n; i++){
+                points.push_back(Point(d));
+            }
+            for (int i = 0; i < n; i++){
+                sets.push_back(Set(n));
+            }
+        }
+
+        Result(vector<Point> p,vector<Set> s){
+            points = p;
+            sets = s;
+        }
+
+        Result(){
+            vector<Point> p;
+            vector<Set> s;
+            points = p;
+            sets = s;
+        }
+
+        Result(SetSystem ss){
+            points = ss.points;
+            sets = ss.sets;
+        }
+};
