@@ -110,6 +110,27 @@ int main(int argc, char** argv){
             }
         }
 
+        if (stoi(argv[1]) == 4){
+            res = partition_sampling_violation(test,t,1.0/2);
+            if (argc >= 7 && stoi(argv[6]) == 1){
+                writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_sampling1.csv");
+            }
+        }
+
+        if (stoi(argv[1]) == 5){
+            res = partition_sampling_fixed_violation(test,t,m/2);
+            if (argc >= 7 && stoi(argv[6]) == 1){
+                writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_sampling2.csv");
+            }
+        }
+
+        if (stoi(argv[1]) == 6){
+            res = partition_sampling_fixed_violation2(test,t,m);
+            if (argc >= 7 && stoi(argv[6]) == 1){
+                writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_sampling2.csv");
+            }
+        }
+
     } else {
         res = partition_min(test,t);
         if (argc >= 7 && stoi(argv[6]) == 1){
