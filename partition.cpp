@@ -1068,7 +1068,9 @@ Result partition_sampling_fixed_violation2(SetSystem ss, int t, int sample_size)
             vector<int> sampled(first,last);
             setsWeight=0;
             for (int& samp : sampled) {
-                setsWeight += ss.sets.at(samp).weight;
+                if (intersect_partition.at(samp)){
+                    setsWeight += ss.sets.at(samp).weight;
+                }
             }
             for (int j = 0; j < n; j++){
                 if (available.at(j)){
