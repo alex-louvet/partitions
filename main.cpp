@@ -125,7 +125,7 @@ int main(int argc, char** argv){
         }
 
         if (stoi(argv[1]) == 6){
-            res = partition_sampling_fixed_violation2(test,t,m);
+            res = partition_sampling_fixed_violation2(test,t,pow(static_cast<float>(m),2/3));
             if (argc >= 7 && stoi(argv[6]) == 1){
                 writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_sampling2.csv");
             }
