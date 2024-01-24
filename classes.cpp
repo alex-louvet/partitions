@@ -1,11 +1,8 @@
 #include <cstddef>
 #include <cstdlib>
-#include <iostream>
-#include <numeric>
 #include <vector>
 #include <cmath>
 #include <math.h>
-#include <functional>
 
 #include "Eigen/Dense"
 
@@ -14,6 +11,8 @@ using namespace std;
 class Point {
     public:
         vector<float> coordinates;
+        vector<int> belongs_to;
+        vector<int> not_in;
 
         Point(int dimension){
             for (int i = 0; i < dimension; i++){
@@ -54,6 +53,8 @@ class Set {
     public:
         vector<bool> points;
         int weight;
+        vector<int> points_indices;
+        vector<int> complement_indices;
 
 
         Set(vector<bool> indices){
@@ -75,6 +76,16 @@ class Set {
         }
         void resetWeight(){
             weight = 0;
+        }
+        void buildAdjacency(){
+            points_indices.clear();
+            for (int i = 0; i < points.size(); i++){
+                if (points.at(i)){
+                    points_indices.push_back(i);
+                } else {
+                    complement_indices.push_back(i);
+                }
+            }
         }
 };
 
@@ -102,6 +113,21 @@ class SetSystem {
             vector<Set> s;
             points = p;
             sets = s;
+        }
+        void buildAdjacency(){
+            for (Point& p : points){
+                p.belongs_to.clear();
+            }
+            for (int j = 0; j < sets.size(); j++){
+                sets.at(j).buildAdjacency();
+                for (int i = 0 ; i < sets.at(j).points.size(); i++){
+                    if (sets.at(j).points.at(i)){
+                        points.at(i).belongs_to.push_back(j);
+                    } else{
+                        points.at(i).not_in.push_back(j);
+                    }
+                }
+            }
         }
 };
 

@@ -1,11 +1,7 @@
 #include <bits/types/clock_t.h>
 #include <cstdlib>
-#include <iostream>
-#include <ostream>
-#include <type_traits>
 #include <vector>
 #include <cmath>
-#include <ctime>
 #include <random>
 
 #include "classes.cpp"
@@ -82,8 +78,12 @@ SetSystem partition_min(SetSystem ss, int t){
         partition.points.at(start) = 1;
         available.at(start) = false;
         for (Set& s : ss.sets) {
-            for (int k = 0; k < n; k++){
-                if (available.at(k) && intersects(Edge(start,k), s)){
+            if (s.points.at(start)){
+                for (int& k : s.complement_indices){
+                    weight.at(k) += 1 << s.weight;
+                }
+            } else {
+                for (int& k : s.points_indices){
                     weight.at(k) += 1 << s.weight;
                 }
             }
@@ -117,7 +117,7 @@ SetSystem partition_min(SetSystem ss, int t){
             for (int j = 0; j < ss.sets.size(); j++) {
                 if (!intersect_partition.at(j) && intersects(Edge(start,min),ss.sets.at(j))){
                     intersect_partition.at(j) = 1;
-                    for (int pt = 0; pt < n; pt++) {
+                    for (int& pt : ss.sets.at(j).points_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),ss.sets.at(j))){
                             weight.at(pt) -= (1 << ss.sets.at(j).weight);
                         }
@@ -189,8 +189,12 @@ SetSystem partition_min_rate(SetSystem ss, int t){
         available.at(start) = false;
         partition.points.at(start) = 1;
         for (Set& s : ss.sets) {
-            for (int k = 0; k < n; k++){
-                if (available.at(k) && intersects(Edge(start,k), s)){
+            if (s.points.at(start)){
+                for (int& k : s.complement_indices){
+                    weight.at(k) += 1 << s.weight;
+                }
+            } else {
+                for (int& k : s.points_indices){
                     weight.at(k) += 1 << s.weight;
                 }
             }
@@ -230,7 +234,7 @@ SetSystem partition_min_rate(SetSystem ss, int t){
             for (int j = 0; j < ss.sets.size(); j++) {
                 if (!intersect_partition.at(j) && intersects(Edge(start,min),ss.sets.at(j))){
                     intersect_partition.at(j) = 1;
-                    for (int pt = 0; pt < n; pt++) {
+                    for (int& pt : ss.sets.at(j).points_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),ss.sets.at(j))){
                             weight.at(pt) -= (1 << ss.sets.at(j).weight);
                         }
@@ -301,8 +305,12 @@ SetSystem partition_rate(SetSystem ss, int t){
         available.at(start) = false;
         partition.points.at(start) = 1;
         for (Set& s : ss.sets) {
-            for (int k = 0; k < n; k++){
-                if (available.at(k) && intersects(Edge(start,k), s)){
+            if (s.points.at(start)){
+                for (int& k : s.complement_indices){
+                    weight.at(k) += 1 << s.weight;
+                }
+            } else {
+                for (int& k : s.points_indices){
                     weight.at(k) += 1 << s.weight;
                 }
             }
@@ -316,6 +324,7 @@ SetSystem partition_rate(SetSystem ss, int t){
             while (j < n) {
                 if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k),1.0/d)){
                     candidates.push_back(j);
+                    break;
                 } else {
                     // Replace previous minimum if the weight is strictly smaller in all valid cases (no restriction if the partition has no edge yet, connectiveness otherwise)
                     if (available.at(j) && (min == -1 || weight.at(j) < weight.at(min))){
@@ -346,7 +355,7 @@ SetSystem partition_rate(SetSystem ss, int t){
             for (int j = 0; j < ss.sets.size(); j++) {
                 if (!intersect_partition.at(j) && intersects(Edge(start,min),ss.sets.at(j))){
                     intersect_partition.at(j) = 1;
-                    for (int pt = 0; pt < n; pt++) {
+                    for (int& pt : ss.sets.at(j).points_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),ss.sets.at(j))){
                             weight.at(pt) -= (1 << ss.sets.at(j).weight);
                         }
@@ -371,7 +380,7 @@ SetSystem partition_rate(SetSystem ss, int t){
     return res;
 }
 
-Result partition_min_violation(SetSystem ss, int t){
+Result partition_min_stats(SetSystem ss, int t){
     
     const int n = ss.points.size();
     const int d = ss.points.at(0).coordinates.size();
@@ -421,8 +430,12 @@ Result partition_min_violation(SetSystem ss, int t){
         partition.points.at(start) = 1;
         available.at(start) = false;
         for (Set& s : ss.sets) {
-            for (int k = 0; k < n; k++){
-                if (available.at(k) && intersects(Edge(start,k), s)){
+            if (s.points.at(start)){
+                for (int& k : s.complement_indices){
+                    weight.at(k) += 1 << s.weight;
+                }
+            } else {
+                for (int& k : s.points_indices){
                     weight.at(k) += 1 << s.weight;
                 }
             }
@@ -454,7 +467,7 @@ Result partition_min_violation(SetSystem ss, int t){
             for (int j = 0; j < ss.sets.size(); j++) {
                 if (!intersect_partition.at(j) && intersects(Edge(start,min),ss.sets.at(j))){
                     intersect_partition.at(j) = 1;
-                    for (int pt = 0; pt < n; pt++) {
+                    for (int& pt : ss.sets.at(j).points_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),ss.sets.at(j))){
                             weight.at(pt) -= (1 << ss.sets.at(j).weight);
                         }
@@ -483,7 +496,7 @@ Result partition_min_violation(SetSystem ss, int t){
     return res;
 }
 
-Result partition_min_rate_violation(SetSystem ss, int t){
+Result partition_min_rate_stats(SetSystem ss, int t){
     
     const int n = ss.points.size();
     const int d = ss.points.at(0).coordinates.size();
@@ -530,8 +543,12 @@ Result partition_min_rate_violation(SetSystem ss, int t){
         available.at(start) = false;
         partition.points.at(start) = 1;
         for (Set& s : ss.sets) {
-            for (int k = 0; k < n; k++){
-                if (available.at(k) && intersects(Edge(start,k), s)){
+            if (s.points.at(start)){
+                for (int& k : s.complement_indices){
+                    weight.at(k) += 1 << s.weight;
+                }
+            } else {
+                for (int& k : s.points_indices){
                     weight.at(k) += 1 << s.weight;
                 }
             }
@@ -570,7 +587,7 @@ Result partition_min_rate_violation(SetSystem ss, int t){
             for (int j = 0; j < ss.sets.size(); j++) {
                 if (!intersect_partition.at(j) && intersects(Edge(start,min),ss.sets.at(j))){
                     intersect_partition.at(j) = 1;
-                    for (int pt = 0; pt < n; pt++) {
+                    for (int& pt : ss.sets.at(j).points_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),ss.sets.at(j))){
                             weight.at(pt) -= (1 << ss.sets.at(j).weight);
                         }
@@ -598,7 +615,7 @@ Result partition_min_rate_violation(SetSystem ss, int t){
     return res;
 }
 
-Result partition_rate_violation(SetSystem ss, int t){
+Result partition_rate_stats(SetSystem ss, int t){
     
     const int n = ss.points.size();
     const int d = ss.points.at(0).coordinates.size();
@@ -645,8 +662,12 @@ Result partition_rate_violation(SetSystem ss, int t){
         available.at(start) = false;
         partition.points.at(start) = 1;
         for (Set& s : ss.sets) {
-            for (int k = 0; k < n; k++){
-                if (available.at(k) && intersects(Edge(start,k), s)){
+            if (s.points.at(start)){
+                for (int& k : s.complement_indices){
+                    weight.at(k) += 1 << s.weight;
+                }
+            } else {
+                for (int& k : s.points_indices){
                     weight.at(k) += 1 << s.weight;
                 }
             }
@@ -660,6 +681,7 @@ Result partition_rate_violation(SetSystem ss, int t){
             while (j < n) {
                 if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k),1.0/d)){
                     candidates.push_back(j);
+                    break;
                 } else {
                     // Replace previous minimum if the weight is strictly smaller in all valid cases (no restriction if the partition has no edge yet, connectiveness otherwise)
                     if (available.at(j) && (min == -1 || weight.at(j) < weight.at(min))){
@@ -689,7 +711,7 @@ Result partition_rate_violation(SetSystem ss, int t){
             for (int j = 0; j < ss.sets.size(); j++) {
                 if (!intersect_partition.at(j) && intersects(Edge(start,min),ss.sets.at(j))){
                     intersect_partition.at(j) = 1;
-                    for (int pt = 0; pt < n; pt++) {
+                    for (int& pt : ss.sets.at(j).points_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),ss.sets.at(j))){
                             weight.at(pt) -= (1 << ss.sets.at(j).weight);
                         }
@@ -720,7 +742,7 @@ Result partition_rate_violation(SetSystem ss, int t){
 }
 
 
-Result partition_sampling_violation(SetSystem ss, int t, float p){
+Result partition_sampling_stats(SetSystem ss, int t, float p){
     
     const int n = ss.points.size();
     const int d = ss.points.at(0).coordinates.size();
@@ -854,7 +876,7 @@ Result partition_sampling_violation(SetSystem ss, int t, float p){
     return res; 
 }
 
-Result partition_sampling_fixed_violation(SetSystem ss, int t, int sample_size){
+Result partition_sampling_fixed_stats(SetSystem ss, int t, int sample_size){
     
     const int n = ss.points.size();
     const int d = ss.points.at(0).coordinates.size();
@@ -997,7 +1019,7 @@ Result partition_sampling_fixed_violation(SetSystem ss, int t, int sample_size){
     return res;
 }
 
-Result partition_sampling_fixed_violation2(SetSystem ss, int t, int sample_size){
+Result partition_sampling_fixed_stats2(SetSystem ss, int t, int sample_size){
     
     const int n = ss.points.size();
     const int d = ss.points.at(0).coordinates.size();
