@@ -38,7 +38,7 @@ vector<int> simple_tokenizer(string s)
 } 
 
 /* a.out argv 
- 1 -> algorithm (1: min, 2: min + rate, 3: uniform rate)
+ 1 -> algorithm (1: min, 2: min + rate, 3: uniform rate, 4: sampling with probab, 5: sampling w/fixed number of sets sampled every rounds and partition weight added over time, 6:  sampling w/fixed number of sets sampled every rounds and partition weight recomputed with sample)
  2 -> n (number of points)
  3 -> t (number of partitions)
  4 -> type of set system (1: grid, 2: random hs, 3: grid graph)
@@ -127,14 +127,14 @@ int main(int argc, char** argv){
                 }
 
                 if (algoList.at(2*k) == 4){
-                    res = partition_sampling_stats(test,t,1.0/2);
+                    res = partition_sampling_stats(test,t,1.0/pow(static_cast<float>(m),2/3));
                     if (argc >= 7 && stoi(argv[6]) == 1){
                         writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_sampling1.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 5){
-                    res = partition_sampling_fixed_stats(test,t,m/2);
+                    res = partition_sampling_fixed_stats(test,t,pow(static_cast<float>(m),2/3));
                     if (argc >= 7 && stoi(argv[6]) == 1){
                         writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_sampling2.csv");
                     }
