@@ -5,6 +5,7 @@
 #include <cmath>
 #include <random>
 #include <iostream>
+#include <deque>
 
 #include "classes.cpp"
 
@@ -35,12 +36,16 @@ int posNum(vector<unsigned long> weight){
 
 int where_to_insert(vector<Set> sets, vector<int> L, Set s){
     int bottom = 0;
-    int top = L.size()-1;
-    while (bottom < top and (bottom + top)/2 != bottom){
+    int top = L.size();
+    while (bottom < top and (bottom+top)/2 != bottom){
         if (sets.at(L.at((bottom+top)/2)).weight < s.weight){
             bottom = (bottom + top)/2;
         } else {
-            top = (bottom + top)/2;
+            if (sets.at(L.at((bottom+top)/2)).weight == s.weight){
+                return (bottom+top)/2;
+            } else{
+                top = (bottom + top)/2;
+            }
         }
     }
     return bottom;
@@ -1180,7 +1185,6 @@ Result partition_sampling_fixed_stats2(SetSystem ss, int t, int sample_size){
 }
 
 Result no_weight_update(SetSystem ss, int t){
-    
     const int n = ss.points.size();
     const int d = ss.points.at(0).coordinates.size();
     const int m = ss.sets.size();
@@ -1237,8 +1241,8 @@ Result no_weight_update(SetSystem ss, int t){
             }
         }
 
-        vector<int> update_weight;
-        vector<int>::iterator it;
+        deque<int> update_weight;
+        update_weight.clear();
 
         for (int k = 1 ; k < n / t; k++){
             int min = -1;
@@ -1260,7 +1264,6 @@ Result no_weight_update(SetSystem ss, int t){
                 }
                 j++;
             }
-
             //Add selected edge to the partition
             partition.points.at(min) = 1;
 
@@ -1273,24 +1276,27 @@ Result no_weight_update(SetSystem ss, int t){
             for (int j = 0; j < ss.sets.size(); j++) {
                 if (!intersect_partition.at(j) && intersects(Edge(start,min),ss.sets.at(j))){
                     intersect_partition.at(j) = 1;
-                    it = update_weight.begin();
-                    update_weight.insert(it+where_to_insert(ss.sets,update_weight,ss.sets.at(j)),j);
+                    if (update_weight.size() > 0 && ss.sets.at(j).weight >= ss.sets.at(update_weight.at(update_weight.size()-1)).weight){
+                        update_weight.push_front(j);
+                    } else {
+                        update_weight.push_back(j);
+                    }
                     // Double set weight for next iteration
                     ss.sets.at(j).increase();
                 }
             }
             bool test = false;
             while (!test and update_weight.size() > 0){
-                int j = update_weight.at(update_weight.size()-1);
-                for (int& pt : ss.sets.at(j).points_indices) {
-                    if (available.at(pt) && intersects(Edge(start,pt),ss.sets.at(j))){
-                        weight.at(pt) -= (1 << ss.sets.at(j).weight);
-                        if (weight.at(pt) < (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k+1),1.0/d)){
+                int set = update_weight.at(0);
+                for (int& pt : ss.sets.at(set).points_indices) {
+                    if (available.at(pt) && intersects(Edge(start,pt),ss.sets.at(set))){
+                        weight.at(pt) -= (1 << ss.sets.at(set).weight);
+                        if (0.5*(partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k+1),1.0/d)){
                             test = true;
                         }
                     }
                 }
-                update_weight.pop_back();
+                update_weight.pop_front();
             }
         }
 
