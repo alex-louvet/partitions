@@ -1,5 +1,6 @@
 #include <cstddef>
 #include <cstdlib>
+#include <tuple>
 #include <vector>
 #include <cmath>
 #include <math.h>
@@ -24,6 +25,12 @@ class Point {
             coordinates = coords;
         }
 };
+
+struct
+    {
+        bool operator()(tuple<int,int> a, tuple<int,int> b) const { return get<1>(a) < get<1>(b); }
+    }
+    indexWeightOrder;
 
 class Edge {
     public:
@@ -88,6 +95,12 @@ class Set {
             }
         }
 };
+
+struct
+    {
+        bool operator()(Set a, Set b) const { return a.weight < b.weight; }
+    }
+    setWeightOrder;
 
 class SetSystem {
     public:

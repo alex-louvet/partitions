@@ -157,9 +157,37 @@ int main(int argc, char** argv){
                 }
 
                 if (algoList.at(2*k) == 7){
-                    res = no_weight_update(test,t);
+                    res = no_weight_update_deque_insert_end(test,t);
                     if (argc >= 7 && stoi(argv[6]) == 1){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_update.csv");
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_update_deque_end.csv");
+                    }
+                }
+
+                if (algoList.at(2*k) == 8){
+                    res = no_weight_update_deque_insert_middle(test,t);
+                    if (argc >= 7 && stoi(argv[6]) == 1){
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_update_deque_middle.csv");
+                    }
+                }
+
+                if (algoList.at(2*k) == 9){
+                    res = no_weight_update_insert_sorted(test,t);
+                    if (argc >= 7 && stoi(argv[6]) == 1){
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_update_sorted.csv");
+                    }
+                }
+
+                if (algoList.at(2*k) == 10){
+                    res = no_weight_update_point_sort_set_sort(test,t);
+                    if (argc >= 7 && stoi(argv[6]) == 1){
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_update_sorted_pt.csv");
+                    }
+                }
+
+                if (algoList.at(2*k) == 11){
+                    res = no_weight_update_point_sort_set_deque(test,t);
+                    if (argc >= 7 && stoi(argv[6]) == 1){
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_update_deque_middle_pt.csv");
                     }
                 }
 
