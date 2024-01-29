@@ -175,6 +175,12 @@ SetSystem Grid(int n, int d){
         }
     }
 
+		random_device rd;
+		mt19937 g(rd());
+		for (int i = 0; i < 10*s.size(); i++){
+			shuffle(s.begin(), s.end(), g);
+		}
+
     return SetSystem(p,s);
 }
 

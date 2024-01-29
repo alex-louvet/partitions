@@ -191,6 +191,13 @@ int main(int argc, char** argv){
                     }
                 }
 
+                if (algoList.at(2*k) == 12){
+                    res = no_weight_update_insert_sorted2(test,t);
+                    if (argc >= 7 && stoi(argv[6]) == 1){
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_update_sorted.csv");
+                    }
+                }
+
             } else {
                 res = partition_min(test,t);
                 if (argc >= 7 && stoi(argv[6]) == 1){
@@ -234,43 +241,24 @@ int main(int argc, char** argv){
 /*int main(){
     vector<Set> sets;
     vector<int> L;
-    vector<int>::iterator it;
-    for (int i = 0; i < 10; i++){
+    for (int i = 0; i < 1; i++){
         Set s(0);
-        s.weight = i;
+        s.weight = 0*i;
         sets.push_back(s);
-        L.push_back(i);
     }
     Set s(0);
-    s.weight = 1;
-    cout << "L ";
-    for (int& i : L){
-        cout << i << " ";
-    }
-    cout << endl;
+    s.weight = 2;
     cout << "S ";
-    for (int& i : L){
-        cout << sets.at(i).weight << " ";
+    for (Set& s : sets){
+        cout << s.weight << " ";
     }
     cout << endl;
-    cout << s.weight << endl;
-    cout << where_to_insert(sets,L,s) << endl;
-    it = L.begin();
-    L.insert(it+where_to_insert(sets,L,s),100);
-    cout << "L ";
-    for (int& i : L){
-        cout << i << " ";
-    }
-    cout << endl;
+    cout << "Weight s " << s.weight << endl;
+    cout << "Res " << insertAt(sets,s) << endl;
+    sets.insert(next(sets.begin(),insertAt(sets,s)),s);
     cout << "S ";
-    for (int& i : L){
-        if (i != 100){
-            cout << sets.at(i).weight << " ";
-        }
-        else {
-            cout << s.weight << " ";
-        }
+    for (Set& s : sets){
+        cout << s.weight << " ";
     }
     return 0;
-}
-*/
+}*/
