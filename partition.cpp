@@ -64,7 +64,7 @@ Result partition_min_stats(SetSystem ss, int t){
     const int m = ss.sets.size();
 
     //Store partition weight at each iteration
-    vector<float> weights;
+    vector<unsigned long> weights;
 
     //Store the number of partitions intersected
     vector<int> intersections(m,0);
@@ -177,7 +177,9 @@ Result partition_min_stats(SetSystem ss, int t){
         }
     }
     res.intersections = intersections;
-    res.weights = weights;
+    for (unsigned long& w : weights){
+        res.weights.push_back(static_cast<float>(w));
+    }
     return res;
 }
 
@@ -187,7 +189,7 @@ Result partition_min_rate_stats(SetSystem ss, int t){
     const int d = ss.points.at(0).coordinates.size();
     const int m = ss.sets.size();
 
-    vector<float> weights;
+    vector<unsigned long> weights;
     vector<int> intersections(m,0);
 
     //Initialize weight vector
@@ -304,7 +306,9 @@ Result partition_min_rate_stats(SetSystem ss, int t){
         }
     }
     res.intersections = intersections;
-    res.weights = weights;
+    for (unsigned long& w : weights){
+        res.weights.push_back(static_cast<float>(w));
+    }    
     return res;
 }
 
@@ -314,7 +318,7 @@ Result partition_rate_stats(SetSystem ss, int t){
     const int d = ss.points.at(0).coordinates.size();
     const int m = ss.sets.size();
 
-    vector<float> weights;
+    vector<unsigned long> weights;
     vector<int> intersections(m,0);
 
     //Initialize weight vector
@@ -439,7 +443,9 @@ Result partition_rate_stats(SetSystem ss, int t){
     }
 
     res.intersections = intersections;
-    res.weights=weights;
+    for (unsigned long& w : weights){
+        res.weights.push_back(static_cast<float>(w));
+    }
     return res;
 }
 
@@ -450,7 +456,7 @@ Result partition_sampling_stats(SetSystem ss, int t, float p){
     const int d = ss.points.at(0).coordinates.size();
     const int m = ss.sets.size();
 
-    vector<float> weights;
+    vector<unsigned long> weights;
     vector<int> intersections(m,0);
 
     //Initialize weight vector
@@ -574,7 +580,9 @@ Result partition_sampling_stats(SetSystem ss, int t, float p){
     }
 
     res.intersections = intersections;
-    res.weights=weights;
+        for (unsigned long& w : weights){
+        res.weights.push_back(static_cast<float>(w));
+    }
     return res; 
 }
 
@@ -584,7 +592,7 @@ Result partition_sampling_fixed_stats(SetSystem ss, int t, int sample_size){
     const int d = ss.points.at(0).coordinates.size();
     const int m = ss.sets.size();
 
-    vector<float> weights;
+    vector<unsigned long> weights;
     vector<int> intersections(m,0);
 
     //Initialize weight vector
@@ -717,7 +725,9 @@ Result partition_sampling_fixed_stats(SetSystem ss, int t, int sample_size){
     }
 
     res.intersections = intersections;
-    res.weights=weights;
+    for (unsigned long& w : weights){
+        res.weights.push_back(static_cast<float>(w));
+    }
     return res;
 }
 
@@ -727,7 +737,7 @@ Result partition_sampling_fixed_stats2(SetSystem ss, int t, int sample_size){
     const int d = ss.points.at(0).coordinates.size();
     const int m = ss.sets.size();
 
-    vector<float> weights;
+    vector<unsigned long> weights;
     vector<int> intersections(m,0);
 
     //Initialize weight vector
@@ -862,7 +872,9 @@ Result partition_sampling_fixed_stats2(SetSystem ss, int t, int sample_size){
     }
 
     res.intersections = intersections;
-    res.weights=weights;
+    for (unsigned long& w : weights){
+        res.weights.push_back(static_cast<float>(w));
+    }
     return res;
 }
 
@@ -871,7 +883,7 @@ Result no_weight_update_deque_insert_end(SetSystem ss, int t){
     const int d = ss.points.at(0).coordinates.size();
     const int m = ss.sets.size();
 
-    vector<float> weights;
+    vector<unsigned long> weights;
     vector<int> intersections(m,0);
 
     //Initialize weight vector
@@ -973,7 +985,7 @@ Result no_weight_update_deque_insert_end(SetSystem ss, int t){
                 if (ss.sets.at(set).points.at(start)){
                     for (int& pt : ss.sets.at(set).complement_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),ss.sets.at(set))){
-                            weight.at(pt) -= (1 << ss.sets.at(set).weight);
+                            weight.at(pt) -= (1 << (ss.sets.at(set).weight - 1));
                             if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k+1),1.0/d)){
                                 test = true;
                             }
@@ -982,7 +994,7 @@ Result no_weight_update_deque_insert_end(SetSystem ss, int t){
                 } else {
                     for (int& pt : ss.sets.at(set).points_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),ss.sets.at(set))){
-                            weight.at(pt) -= (1 << ss.sets.at(set).weight);
+                            weight.at(pt) -= (1 << (ss.sets.at(set).weight - 1));
                             if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k+1),1.0/d)){
                                 test = true;
                             }
@@ -1008,7 +1020,9 @@ Result no_weight_update_deque_insert_end(SetSystem ss, int t){
     }
 
     res.intersections = intersections;
-    res.weights=weights;
+    for (unsigned long& w : weights){
+        res.weights.push_back(static_cast<float>(w));
+    }
     return res;
 }
 
@@ -1017,7 +1031,7 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t){
     const int d = ss.points.at(0).coordinates.size();
     const int m = ss.sets.size();
 
-    vector<float> weights;
+    vector<unsigned long> weights;
     vector<int> intersections(m,0);
 
     //Initialize weight vector
@@ -1092,6 +1106,7 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t){
                 }
                 j++;
             }
+
             //Add selected edge to the partition
             partition.points.at(min) = 1;
 
@@ -1119,7 +1134,7 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t){
                 if (ss.sets.at(set).points.at(start)){
                     for (int& pt : ss.sets.at(set).complement_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),ss.sets.at(set))){
-                            weight.at(pt) -= (1 << ss.sets.at(set).weight);
+                            weight.at(pt) -= (1 << (ss.sets.at(set).weight - 1));
                             if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k+1),1.0/d)){
                                 test = true;
                             }
@@ -1128,7 +1143,7 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t){
                 } else {
                     for (int& pt : ss.sets.at(set).points_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),ss.sets.at(set))){
-                            weight.at(pt) -= (1 << ss.sets.at(set).weight);
+                            weight.at(pt) -= (1 << (ss.sets.at(set).weight - 1));
                             if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k+1),1.0/d)){
                                 test = true;
                             }
@@ -1154,7 +1169,9 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t){
     }
 
     res.intersections = intersections;
-    res.weights=weights;
+    for (unsigned long& w : weights){
+        res.weights.push_back(static_cast<float>(w));
+    }
     return res;
 }
 
@@ -1163,7 +1180,7 @@ Result no_weight_update_insert_sorted(SetSystem ss, int t){
     const int d = ss.points.at(0).coordinates.size();
     const int m = ss.sets.size();
 
-    vector<float> weights;
+    vector<unsigned long> weights;
     vector<int> intersections(m,0);
 
     //Initialize weight vector
@@ -1263,7 +1280,7 @@ Result no_weight_update_insert_sorted(SetSystem ss, int t){
                 if (set.points.at(start)){
                     for (int& pt : set.complement_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),set)){
-                            weight.at(pt) -= (1 << set.weight);
+                            weight.at(pt) -= (1 << (set.weight - 1));
                             if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k+1),1.0/d)){
                                 test = true;
                             }
@@ -1272,7 +1289,7 @@ Result no_weight_update_insert_sorted(SetSystem ss, int t){
                 } else {
                     for (int& pt : set.points_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),set)){
-                            weight.at(pt) -= (1 << set.weight);
+                            weight.at(pt) -= (1 << (set.weight - 1));
                             if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k+1),1.0/d)){
                                 test = true;
                             }
@@ -1298,7 +1315,9 @@ Result no_weight_update_insert_sorted(SetSystem ss, int t){
     }
 
     res.intersections = intersections;
-    res.weights=weights;
+    for (unsigned long& w : weights){
+        res.weights.push_back(static_cast<float>(w));
+    }
     return res;
 }
 
@@ -1416,7 +1435,7 @@ Result no_weight_update_point_sort_set_sort(SetSystem ss, int t){
                 Set set = update_weight.at(update_weight.size()-1);
                 for (tuple<int,int> pt : point_order) {
                     if (intersects(Edge(start,get<0>(pt)),set)){
-                        int newWeight = get<1>(pt) - (1 << set.weight);
+                        int newWeight = get<1>(pt) - (1 << (set.weight - 1));
                         weight.at(get<0>(pt)) = newWeight;
                         pt = make_tuple(get<0>(pt), newWeight);
                         if ((partitionWeight + newWeight)*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k+1),1.0/d)){
@@ -1452,7 +1471,7 @@ Result no_weight_update_point_sort_set_deque(SetSystem ss, int t){
     const int d = ss.points.at(0).coordinates.size();
     const int m = ss.sets.size();
 
-    vector<float> weights;
+    vector<unsigned long> weights;
     vector<int> intersections(m,0);
 
     //Initialize weight vector
@@ -1564,7 +1583,7 @@ Result no_weight_update_point_sort_set_deque(SetSystem ss, int t){
                 Set set = ss.sets.at(update_weight.at(update_weight.size()-1));
                 for (tuple<int,int> pt : point_order) {
                     if (intersects(Edge(start,get<0>(pt)),set)){
-                        int newWeight = get<1>(pt) - (1 << set.weight);
+                        int newWeight = get<1>(pt) - (1 << (set.weight - 1));
                         weight.at(get<0>(pt)) = newWeight;
                         pt = make_tuple(get<0>(pt), newWeight);
                         if ((partitionWeight + newWeight)*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k+1),1.0/d)){
@@ -1591,7 +1610,9 @@ Result no_weight_update_point_sort_set_deque(SetSystem ss, int t){
     }
 
     res.intersections = intersections;
-    res.weights=weights;
+    for (unsigned long& w : weights){
+        res.weights.push_back(static_cast<float>(w));
+    }
     return res;
 }
 
@@ -1600,7 +1621,7 @@ Result no_weight_update_insert_sorted2(SetSystem ss, int t){
     const int d = ss.points.at(0).coordinates.size();
     const int m = ss.sets.size();
 
-    vector<float> weights;
+    vector<unsigned long> weights;
     vector<int> intersections(m,0);
 
     //Initialize weight vector
@@ -1700,7 +1721,7 @@ Result no_weight_update_insert_sorted2(SetSystem ss, int t){
                 if (set.points.at(start)){
                     for (int& pt : set.complement_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),set)){
-                            weight.at(pt) -= (1 << set.weight);
+                            weight.at(pt) -= (1 << (set.weight - 1));
                             if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k+1),1.0/d)){
                                 test = true;
                             }
@@ -1709,7 +1730,7 @@ Result no_weight_update_insert_sorted2(SetSystem ss, int t){
                 } else {
                     for (int& pt : set.points_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),set)){
-                            weight.at(pt) -= (1 << set.weight);
+                            weight.at(pt) -= (1 << (set.weight - 1));
                             if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k+1),1.0/d)){
                                 test = true;
                             }
@@ -1735,6 +1756,8 @@ Result no_weight_update_insert_sorted2(SetSystem ss, int t){
     }
 
     res.intersections = intersections;
-    res.weights=weights;
+    for (unsigned long& w : weights){
+        res.weights.push_back(static_cast<float>(w));
+    }
     return res;
 }
