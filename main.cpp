@@ -199,7 +199,7 @@ int main(int argc, char** argv){
                 }
 
             } else {
-                res = partition_min(test,t);
+                res = partition_min_stats(test,t);
                 if (argc >= 7 && stoi(argv[6]) == 1){
                     writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_algo_min.csv");
                 }

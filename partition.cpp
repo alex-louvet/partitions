@@ -244,7 +244,7 @@ Result partition_min_rate_stats(SetSystem ss, int t){
             bool test = false;
             int j = 0;
             while (!test && j < n) {
-                if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k),1/d)){
+                if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k),1/d)){
                     min = j;
                     test = true;
                 } else {
@@ -372,7 +372,7 @@ Result partition_rate_stats(SetSystem ss, int t){
             vector<int> candidates;
             candidates.clear();
             while (j < n) {
-                if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k),1.0/d)){
+                if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k),1.0/d)){
                     candidates.push_back(j);
                     break;
                 } else {
@@ -661,7 +661,7 @@ Result partition_sampling_fixed_stats(SetSystem ss, int t, int sample_size){
                         }
                     }
 
-                    if (m/static_cast<float>(sample_size)*(partitionWeight + weight.at(j))/static_cast<float>(setsWeight) <= 0*pow(static_cast<float>(k),1.0/d)/pow(static_cast<float>(n-n/static_cast<float>(t)*i),1.0/d)){
+                    if (m/static_cast<float>(sample_size)*(partitionWeight + weight.at(j))/static_cast<float>(setsWeight) <= 1*pow(static_cast<float>(k),1.0/d)/pow(static_cast<float>(n-n/static_cast<float>(t)*i),1.0/d)){
                         min = j;
                         break;
                     } else {
@@ -930,7 +930,7 @@ Result no_weight_update_deque_insert_end(SetSystem ss, int t){
             int min = -1;
             int j = 0;
             while (j < n) {
-                if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k),1.0/d)){
+                if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k),1.0/d)){
                     min=j;
                     break;
                 } else {
@@ -974,7 +974,7 @@ Result no_weight_update_deque_insert_end(SetSystem ss, int t){
                     for (int& pt : ss.sets.at(set).complement_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),ss.sets.at(set))){
                             weight.at(pt) -= (1 << ss.sets.at(set).weight);
-                            if (0.5*(partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k+1),1.0/d)){
+                            if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k+1),1.0/d)){
                                 test = true;
                             }
                         }
@@ -983,7 +983,7 @@ Result no_weight_update_deque_insert_end(SetSystem ss, int t){
                     for (int& pt : ss.sets.at(set).points_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),ss.sets.at(set))){
                             weight.at(pt) -= (1 << ss.sets.at(set).weight);
-                            if (0.5*(partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k+1),1.0/d)){
+                            if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k+1),1.0/d)){
                                 test = true;
                             }
                         }
@@ -1076,7 +1076,7 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t){
             int min = -1;
             int j = 0;
             while (j < n) {
-                if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k),1.0/d)){
+                if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k),1.0/d)){
                     min=j;
                     break;
                 } else {
@@ -1120,7 +1120,7 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t){
                     for (int& pt : ss.sets.at(set).complement_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),ss.sets.at(set))){
                             weight.at(pt) -= (1 << ss.sets.at(set).weight);
-                            if (0.5*(partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k+1),1.0/d)){
+                            if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k+1),1.0/d)){
                                 test = true;
                             }
                         }
@@ -1129,7 +1129,7 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t){
                     for (int& pt : ss.sets.at(set).points_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),ss.sets.at(set))){
                             weight.at(pt) -= (1 << ss.sets.at(set).weight);
-                            if (0.5*(partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k+1),1.0/d)){
+                            if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k+1),1.0/d)){
                                 test = true;
                             }
                         }
@@ -1222,7 +1222,7 @@ Result no_weight_update_insert_sorted(SetSystem ss, int t){
             int min = -1;
             int j = 0;
             while (j < n) {
-                if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k),1.0/d)){
+                if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k),1.0/d)){
                     min=j;
                     break;
                 } else {
@@ -1264,7 +1264,7 @@ Result no_weight_update_insert_sorted(SetSystem ss, int t){
                     for (int& pt : set.complement_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),set)){
                             weight.at(pt) -= (1 << set.weight);
-                            if (0.5*(partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k+1),1.0/d)){
+                            if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k+1),1.0/d)){
                                 test = true;
                             }
                         }
@@ -1273,7 +1273,7 @@ Result no_weight_update_insert_sorted(SetSystem ss, int t){
                     for (int& pt : set.points_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),set)){
                             weight.at(pt) -= (1 << set.weight);
-                            if (0.5*(partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k+1),1.0/d)){
+                            if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k+1),1.0/d)){
                                 test = true;
                             }
                         }
@@ -1374,7 +1374,7 @@ Result no_weight_update_point_sort_set_sort(SetSystem ss, int t){
             int minm = -1;
             int j = 0;
             while (j < point_order.size()) {
-                if (available.at(get<0>(point_order.at(j))) && (partitionWeight + get<1>(point_order.at(j)))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k),1.0/d)){
+                if (available.at(get<0>(point_order.at(j))) && (partitionWeight + get<1>(point_order.at(j)))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k),1.0/d)){
                     minm=j;
                     break;
                 } else {
@@ -1419,7 +1419,7 @@ Result no_weight_update_point_sort_set_sort(SetSystem ss, int t){
                         int newWeight = get<1>(pt) - (1 << set.weight);
                         weight.at(get<0>(pt)) = newWeight;
                         pt = make_tuple(get<0>(pt), newWeight);
-                        if (0.5*(partitionWeight + newWeight)*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k+1),1.0/d)){
+                        if ((partitionWeight + newWeight)*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k+1),1.0/d)){
                             test = true;
                         }
                     }
@@ -1519,7 +1519,7 @@ Result no_weight_update_point_sort_set_deque(SetSystem ss, int t){
             int minm = -1;
             int j = 0;
             while (j < point_order.size()) {
-                if (available.at(get<0>(point_order.at(j))) && (partitionWeight + get<1>(point_order.at(j)))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k),1.0/d)){
+                if (available.at(get<0>(point_order.at(j))) && (partitionWeight + get<1>(point_order.at(j)))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k),1.0/d)){
                     minm=j;
                     break;
                 } else {
@@ -1567,7 +1567,7 @@ Result no_weight_update_point_sort_set_deque(SetSystem ss, int t){
                         int newWeight = get<1>(pt) - (1 << set.weight);
                         weight.at(get<0>(pt)) = newWeight;
                         pt = make_tuple(get<0>(pt), newWeight);
-                        if (0.5*(partitionWeight + newWeight)*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k+1),1.0/d)){
+                        if ((partitionWeight + newWeight)*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k+1),1.0/d)){
                             test = true;
                         }
                     }
@@ -1659,7 +1659,7 @@ Result no_weight_update_insert_sorted2(SetSystem ss, int t){
             int min = -1;
             int j = 0;
             while (j < n) {
-                if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k),1.0/d)){
+                if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k),1.0/d)){
                     min=j;
                     break;
                 } else {
@@ -1701,7 +1701,7 @@ Result no_weight_update_insert_sorted2(SetSystem ss, int t){
                     for (int& pt : set.complement_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),set)){
                             weight.at(pt) -= (1 << set.weight);
-                            if (0.5*(partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k+1),1.0/d)){
+                            if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k+1),1.0/d)){
                                 test = true;
                             }
                         }
@@ -1710,7 +1710,7 @@ Result no_weight_update_insert_sorted2(SetSystem ss, int t){
                     for (int& pt : set.points_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),set)){
                             weight.at(pt) -= (1 << set.weight);
-                            if (0.5*(partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k+1),1.0/d)){
+                            if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k+1),1.0/d)){
                                 test = true;
                             }
                         }
