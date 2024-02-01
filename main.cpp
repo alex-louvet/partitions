@@ -192,9 +192,9 @@ int main(int argc, char** argv){
                 }
 
                 if (algoList.at(2*k) == 12){
-                    res = no_weight_update_insert_sorted2(test,t);
+                    res = no_weight_update_point_sort_invert(test,t);
                     if (argc >= 7 && stoi(argv[6]) == 1){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_update_sorted.csv");
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_update_pt_invert.csv");
                     }
                 }
 
