@@ -5,3 +5,4 @@ transfer/
 __pycache__
 *.csv
 a.out
+.vscode

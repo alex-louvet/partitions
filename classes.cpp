@@ -4,6 +4,7 @@
 #include <vector>
 #include <cmath>
 #include <math.h>
+#include <random>
 
 #include "Eigen/Dense"
 
@@ -174,6 +175,12 @@ SetSystem Grid(int n, int d){
             s.push_back(Set(temp));
         }
     }
+
+		random_device rd;
+		mt19937 g(rd());
+		for (int i = 0; i < 10*s.size(); i++){
+			shuffle(s.begin(), s.end(), g);
+		}
 
     return SetSystem(p,s);
 }
