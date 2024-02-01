@@ -28,7 +28,7 @@ class Point {
 
 struct
     {
-        bool operator()(tuple<int,int> a, tuple<int,int> b) const { return get<1>(a) < get<1>(b); }
+        bool operator()(tuple<int,int> a, tuple<int,int> b) const { return get<1>(a) > get<1>(b); }
     }
     indexWeightOrder;
 
