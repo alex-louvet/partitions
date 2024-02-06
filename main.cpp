@@ -198,6 +198,13 @@ int main(int argc, char** argv){
                     }
                 }
 
+                if (algoList.at(2*k) == 13){
+                    res = partition_no_set(test,t);
+                    if (argc >= 7 && stoi(argv[6]) == 1){
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_set.csv");
+                    }
+                }
+
             } else {
                 res = partition_min_stats(test,t);
                 if (argc >= 7 && stoi(argv[6]) == 1){
@@ -207,20 +214,25 @@ int main(int argc, char** argv){
             printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
             double time = (double)(clock() - tStart)/CLOCKS_PER_SEC;
 
-            int maxcrossing = res.intersections.at(0);
-            int mincrossing = res.intersections.at(0);
+            int maxcrossing = 0;
+            int mincrossing = 0;
             float avgcrossing = 0.;
+            
+            if (res.intersections.size() > 0){
+                maxcrossing = res.intersections.at(0);
+                mincrossing = res.intersections.at(0);
 
-            for (int j = 0; j < res.intersections.size(); j++){
-                if (res.intersections.at(j) > maxcrossing){
-                    maxcrossing = res.intersections.at(j);
+                for (int j = 0; j < res.intersections.size(); j++){
+                    if (res.intersections.at(j) > maxcrossing){
+                        maxcrossing = res.intersections.at(j);
+                    }
+                    if (res.intersections.at(j) < mincrossing){
+                        mincrossing = res.intersections.at(j);
+                    }
+                    avgcrossing += static_cast<float>(res.intersections.at(j));
                 }
-                if (res.intersections.at(j) < mincrossing){
-                    mincrossing = res.intersections.at(j);
-                }
-                avgcrossing += static_cast<float>(res.intersections.at(j));
+                avgcrossing /= static_cast<float>(res.intersections.size());
             }
-            avgcrossing /= static_cast<float>(res.intersections.size());
 
             int rate_stats = 0;
             for (int j = 0; j < res.weights.size(); j++){

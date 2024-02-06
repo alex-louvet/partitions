@@ -2,6 +2,7 @@
 //#include <bits/fs_fwd.h>
 //#include <bits/types/clock_t.h>
 #include <cstdlib>
+#include <math.h>
 #include <tuple>
 #include <vector>
 #include <cmath>
@@ -10,6 +11,8 @@
 #include <deque>
 #include <list>
 
+#include "Eigen/Core"
+#include "Eigen/src/Core/util/Constants.h"
 #include "classes.cpp"
 
 using namespace std;
@@ -376,7 +379,7 @@ Result partition_rate_stats(SetSystem ss, int t){
             vector<int> candidates;
             candidates.clear();
             while (j < n) {
-                if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k),1.0/d)){
+                if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k),1.0/d)){
                     candidates.push_back(j);
                     break;
                 } else {
@@ -942,7 +945,7 @@ Result no_weight_update_deque_insert_end(SetSystem ss, int t){
             int min = -1;
             int j = 0;
             while (j < n) {
-                if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k),1.0/d)){
+                if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k),1.0/d)){
                     min=j;
                     break;
                 } else {
@@ -986,7 +989,7 @@ Result no_weight_update_deque_insert_end(SetSystem ss, int t){
                     for (int& pt : ss.sets.at(set).complement_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),ss.sets.at(set))){
                             weight.at(pt) -= (1 << (ss.sets.at(set).weight - 1));
-                            if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k+1),1.0/d)){
+                            if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k+1),1.0/d)){
                                 test = true;
                             }
                         }
@@ -995,7 +998,7 @@ Result no_weight_update_deque_insert_end(SetSystem ss, int t){
                     for (int& pt : ss.sets.at(set).points_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),ss.sets.at(set))){
                             weight.at(pt) -= (1 << (ss.sets.at(set).weight - 1));
-                            if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k+1),1.0/d)){
+                            if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k+1),1.0/d)){
                                 test = true;
                             }
                         }
@@ -1090,7 +1093,7 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t){
             int min = -1;
             int j = 0;
             while (j < n) {
-                if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k),1.0/d)){
+                if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k),1.0/d)){
                     min=j;
                     break;
                 } else {
@@ -1135,7 +1138,7 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t){
                     for (int& pt : ss.sets.at(set).complement_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),ss.sets.at(set))){
                             weight.at(pt) -= (1 << (ss.sets.at(set).weight - 1));
-                            if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k+1),1.0/d)){
+                            if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k+1),1.0/d)){
                                 test = true;
                             }
                         }
@@ -1144,7 +1147,7 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t){
                     for (int& pt : ss.sets.at(set).points_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),ss.sets.at(set))){
                             weight.at(pt) -= (1 << (ss.sets.at(set).weight - 1));
-                            if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 1*pow(static_cast<float>(k+1),1.0/d)){
+                            if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k+1),1.0/d)){
                                 test = true;
                             }
                         }
@@ -1759,5 +1762,77 @@ Result no_weight_update_insert_sorted2(SetSystem ss, int t){
     for (unsigned long& w : weights){
         res.weights.push_back(static_cast<float>(w));
     }
+    return res;
+}
+
+Result partition_no_set(SetSystem ss, int t){
+    
+    const int n = ss.points.size();
+    const int d = ss.points.at(0).coordinates.size();
+    const int m = ss.sets.size();
+
+    //Initialize weight vector
+    vector<bool> available(n,true);
+
+    vector<Set> s;
+    Result res = Result(ss.points, s);
+
+    for (int i = 0 ; i < t; i++){
+        //cout << "\nPartition " << i+1 << "\n";
+
+        Set partition = Set(n);
+
+        vector<int> admissible_start;
+        for (int k = 0; k < n; k++){
+            if (available.at(k)){
+                admissible_start.push_back(k);
+            }
+        }
+        int start = admissible_start.at(rand()%admissible_start.size());
+        partition.points.at(start) = 1;
+        available.at(start) = false;
+
+        vector<float> distances(n,0);
+        for (int i = 0; i < n; i++){
+            float temp = 0;
+            for (int k = 0; k < d; k++){
+                temp += abs(ss.points.at(i).coordinates.at(k) - ss.points.at(start).coordinates.at(k));
+                //temp += sqrt(pow(ss.points.at(i).coordinates.at(k) - ss.points.at(start).coordinates.at(k), 2.0));
+            }
+            distances.at(i) = temp;
+        }
+
+        for (int k = 1 ; k < n / t; k++){
+            int min = -1;
+            for (auto j = 0; j < n; j++) {
+                // Replace previous minimum if the weight is strictly smaller in all valid cases (no restriction if the partition has no edge yet, connectiveness otherwise)
+                if (available.at(j) && (min == -1 || distances.at(j) < distances.at(min))){
+                    min = j;
+                } else {
+                    // If the algorithm finds a valid edge with the same weight it swaps it with probability 1/2 to avoid obteining the same result for every algo because of order
+                    if (available.at(j) && (min == -1 || (distances.at(j) == distances.at(min) && rand() > 0.5*RAND_MAX))){
+                        min = j;
+                    }
+                }
+            }
+
+            //Add selected edge to the partition
+            partition.points.at(min) = 1;
+
+            //Update partition weight
+            available.at(min) = false;
+        }
+
+        // Store results
+        res.sets.push_back(partition);
+    }
+
+    //fill the last partition with the remaining points
+    for (int i = 0; i < n ; i++){
+        if (available.at(i)){
+            res.sets.at(res.sets.size()-1).points.at(i) = 1;
+        }
+    }
+
     return res;
 }
