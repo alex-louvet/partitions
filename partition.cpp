@@ -13,10 +13,9 @@
 
 #include "Eigen/Core"
 #include "Eigen/src/Core/util/Constants.h"
-#include "classes.cpp"
+#include "distances.cpp"
 
 using namespace std;
-
 
 bool intersects(Edge e, Set s){
     return s.points.at(e.points[0]) != s.points.at(e.points[1]);
@@ -1765,7 +1764,7 @@ Result no_weight_update_insert_sorted2(SetSystem ss, int t){
     return res;
 }
 
-Result partition_no_set(SetSystem ss, int t){
+Result partition_no_set(SetSystem ss, int t, vector<float> (*lf)(vector<Point>, vector<bool>, int, vector<Set>)){
     
     const int n = ss.points.size();
     const int d = ss.points.at(0).coordinates.size();
@@ -1792,37 +1791,24 @@ Result partition_no_set(SetSystem ss, int t){
         partition.points.at(start) = 1;
         available.at(start) = false;
 
-        vector<float> distances(n,0);
-        for (int i = 0; i < n; i++){
-            float temp = 0;
-            for (int k = 0; k < d; k++){
-                temp += abs(ss.points.at(i).coordinates.at(k) - ss.points.at(start).coordinates.at(k));
-                //temp += sqrt(pow(ss.points.at(i).coordinates.at(k) - ss.points.at(start).coordinates.at(k), 2.0));
+        vector<float> distances = lf(ss.points, available, start, ss.sets);
+        vector<tuple<int,float>> tosort;
+        for (int i = 0; i < n ; i++){
+            if (available.at(i)){
+                tosort.push_back(make_tuple(i,distances.at(i)));
             }
-            distances.at(i) = temp;
         }
 
-        for (int k = 1 ; k < n / t; k++){
-            int min = -1;
-            for (auto j = 0; j < n; j++) {
-                // Replace previous minimum if the weight is strictly smaller in all valid cases (no restriction if the partition has no edge yet, connectiveness otherwise)
-                if (available.at(j) && (min == -1 || distances.at(j) < distances.at(min))){
-                    min = j;
-                } else {
-                    // If the algorithm finds a valid edge with the same weight it swaps it with probability 1/2 to avoid obteining the same result for every algo because of order
-                    if (available.at(j) && (min == -1 || (distances.at(j) == distances.at(min) && rand() > 0.5*RAND_MAX))){
-                        min = j;
-                    }
-                }
-            }
+        sort(tosort.begin(),tosort.end(),floatWeightOrder);
 
+        for (int i = 0; i < n/t-1; i++){
             //Add selected edge to the partition
-            partition.points.at(min) = 1;
+            partition.points.at(get<0>(tosort.at(i))) = 1;
 
             //Update partition weight
-            available.at(min) = false;
+            available.at(get<0>(tosort.at(i))) = false;
+        
         }
-
         // Store results
         res.sets.push_back(partition);
     }

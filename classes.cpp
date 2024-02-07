@@ -33,6 +33,12 @@ struct
     }
     indexWeightOrder;
 
+struct
+{
+    bool operator()(tuple<int,float> a, tuple<int,float> b) const { return get<1>(a) < get<1>(b); }
+}
+floatWeightOrder;
+
 class Edge {
     public:
         int points[2];
@@ -316,6 +322,112 @@ SetSystem GridGraph(int n, int d){
     }
     
     return SetSystem(pts,sets);
+}
+
+SetSystem LinearGrid(int n, int d){
+    vector<Point> p;
+    vector<Set> s;
+
+    for (int i = 0; i < n; i++){
+        p.push_back(Point(d));
+    }
+
+    vector<bool> temp;
+    for (int dim = 0; dim < d; dim++){
+        for (int i = 0; i < pow(n,1.0/d); i++){
+            temp.clear();
+            for (const Point& pt : p) {
+                if (pt.coordinates[dim] > i/(pow(n,1.0/d))){
+                    temp.push_back(1);
+                } else {
+                    temp.push_back(0);
+                }
+            }
+            for (int j = 0; j < i; j++){
+                s.push_back(Set(temp));
+            }
+        }
+    }
+
+		random_device rd;
+		mt19937 g(rd());
+		for (int i = 0; i < 10*s.size(); i++){
+			shuffle(s.begin(), s.end(), g);
+		}
+
+    return SetSystem(p,s);
+}
+
+SetSystem ExponentialGrid(int n, int d){
+    vector<Point> p;
+    vector<Set> s;
+
+    for (int i = 0; i < n; i++){
+        p.push_back(Point(d));
+    }
+
+    vector<bool> temp;
+    for (int dim = 0; dim < d; dim++){
+        for (int i = 0; i < pow(n,1.0/d); i++){
+            temp.clear();
+            for (const Point& pt : p) {
+                if (pt.coordinates[dim] > i/(pow(n,1.0/d))){
+                    temp.push_back(1);
+                } else {
+                    temp.push_back(0);
+                }
+            }
+            for (int j = 0; j < pow(2,i); j++){
+                s.push_back(Set(temp));
+            }
+        }
+    }
+
+		random_device rd;
+		mt19937 g(rd());
+		for (int i = 0; i < 10*s.size(); i++){
+			shuffle(s.begin(), s.end(), g);
+		}
+
+    return SetSystem(p,s);
+}
+
+SetSystem DirectionalGrid(int n, int d){
+    vector<Point> p;
+    vector<Set> s;
+
+    for (int i = 0; i < n; i++){
+        p.push_back(Point(d));
+    }
+
+    vector<bool> temp;
+    for (int dim = 0; dim < d; dim++){
+        for (int i = 0; i < pow(n,1.0/d); i++){
+            temp.clear();
+            for (const Point& pt : p) {
+                if (pt.coordinates[dim] > i/(pow(n,1.0/d))){
+                    temp.push_back(1);
+                } else {
+                    temp.push_back(0);
+                }
+            }
+            if (dim == 0){
+                for (int j = 0; j < pow(n,1.0/d); j++){
+                    s.push_back(Set(temp));
+                }
+            } else {
+                s.push_back(Set(temp));
+            }
+        }
+    }
+
+		random_device rd;
+		mt19937 g(rd());
+		for (int i = 0; i < 10*s.size(); i++){
+			shuffle(s.begin(), s.end(), g);
+		}
+
+    return SetSystem(p,s);
 }
 
 class Result: public SetSystem {
