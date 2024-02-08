@@ -4,6 +4,7 @@
 #include <fstream>
 #include <pthread.h>
 #include <string>
+#include <vector>
 
 #include "partition.cpp"
 
@@ -79,7 +80,6 @@ int main(int argc, char** argv){
             else{
                 test = Grid(n,2);
             }
-            
         }
         if (stoi(argv[4]) == 2){
             ss_type = "random_hs";
@@ -91,7 +91,6 @@ int main(int argc, char** argv){
             else{
                 test = RandomHyperplanes(n,2, n*log(n));
             }
-            m = n*log(n);    
         }
         
         if (stoi(argv[4]) == 3){
@@ -104,9 +103,44 @@ int main(int argc, char** argv){
                 test = GridGraph(sqrt(n),1);
             }        
         }
+
+        if (stoi(argv[4]) == 4){
+            ss_type = "linear_grid";
+            if (argc >= 6){
+                d = stoi(argv[5]);
+                test = LinearGrid(n,stoi(argv[5]));
+            }
+            else{
+                test = LinearGrid(n,2);
+            }
+        }
+
+        if (stoi(argv[4]) == 5){
+            ss_type = "exponential_grid";
+            if (argc >= 6){
+                d = stoi(argv[5]);
+                test = ExponentialGrid(n,stoi(argv[5]));
+            }
+            else{
+                test = ExponentialGrid(n,2);
+            }
+        }
+
+        if (stoi(argv[4]) == 6){
+            ss_type = "directional_grid";
+            if (argc >= 6){
+                d = stoi(argv[5]);
+                test = DirectionalGrid(n,stoi(argv[5]));
+            }
+            else{
+                test = DirectionalGrid(n,2);
+            }
+        }
+        
     } else{
         test = Grid(n,d);
     }
+    m = test.sets.size();
     test.buildAdjacency();
     for (int k = 0; k < algoList.size()/2;k++){
         for (int ite = 0; ite < algoList.at(2*k+1); ite ++){
@@ -198,6 +232,13 @@ int main(int argc, char** argv){
                     }
                 }
 
+                if (algoList.at(2*k) == 13){
+                    res = partition_no_set(test,t,dw);
+                    if (argc >= 7 && stoi(argv[6]) == 1){
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_set.csv");
+                    }
+                }
+
             } else {
                 res = partition_min_stats(test,t);
                 if (argc >= 7 && stoi(argv[6]) == 1){
@@ -207,20 +248,48 @@ int main(int argc, char** argv){
             printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
             double time = (double)(clock() - tStart)/CLOCKS_PER_SEC;
 
-            int maxcrossing = res.intersections.at(0);
-            int mincrossing = res.intersections.at(0);
-            float avgcrossing = 0.;
-
-            for (int j = 0; j < res.intersections.size(); j++){
-                if (res.intersections.at(j) > maxcrossing){
-                    maxcrossing = res.intersections.at(j);
+            if (res.intersections.size() == 0){
+                for (int j = 0; j < m; j++){
+                    res.intersections.push_back(0);
                 }
-                if (res.intersections.at(j) < mincrossing){
-                    mincrossing = res.intersections.at(j);
+                for (int j = 0; j < m; j ++){
+                    for (int i = 0; i < t; i++){
+                        int start = -1;
+                        for (int k = 0; k < n; k++){
+                            if (res.sets.at(i).points.at(k)){
+                                if (start == -1){
+                                    start = k;
+                                } else {
+                                    if (intersects(Edge(start,k),test.sets.at(j))){
+                                        res.intersections.at(j) += 1;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-                avgcrossing += static_cast<float>(res.intersections.at(j));
             }
-            avgcrossing /= static_cast<float>(res.intersections.size());
+
+            int maxcrossing = 0;
+            int mincrossing = 0;
+            float avgcrossing = 0.;
+            
+            if (res.intersections.size() > 0){
+                maxcrossing = res.intersections.at(0);
+                mincrossing = res.intersections.at(0);
+
+                for (int j = 0; j < res.intersections.size(); j++){
+                    if (res.intersections.at(j) > maxcrossing){
+                        maxcrossing = res.intersections.at(j);
+                    }
+                    if (res.intersections.at(j) < mincrossing){
+                        mincrossing = res.intersections.at(j);
+                    }
+                    avgcrossing += static_cast<float>(res.intersections.at(j));
+                }
+                avgcrossing /= static_cast<float>(res.intersections.size());
+            }
 
             int rate_stats = 0;
             for (int j = 0; j < res.weights.size(); j++){
