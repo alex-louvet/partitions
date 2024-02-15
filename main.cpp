@@ -233,7 +233,7 @@ int main(int argc, char** argv){
                 }
 
                 if (algoList.at(2*k) == 13){
-                    res = partition_no_set(test,t,dw);
+                    res = partition_no_set(test,t,sw);
                     if (argc >= 7 && stoi(argv[6]) == 1){
                         writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_set.csv");
                     }

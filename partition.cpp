@@ -10,6 +10,7 @@
 #include <iostream>
 #include <deque>
 #include <list>
+#include <fstream>
 
 #include "Eigen/Core"
 #include "Eigen/src/Core/util/Constants.h"
@@ -1777,6 +1778,19 @@ Result partition_no_set(SetSystem ss, int t, vector<float> (*lf)(vector<Point>, 
         available.at(start) = false;
 
         vector<float> distances = lf(ss.points, available, start, ss.sets);
+
+        ofstream myfile;
+        myfile.open ("example.txt",std::ios_base::app);
+        for (int k = 0; k < n; k++){
+            if (distances.at(k) > 0){
+                myfile << ss.points.at(k).coordinates.at(0) << "," << ss.points.at(k).coordinates.at(1) << "," << distances.at(k) << ";";
+            }
+        }
+        myfile << "\n";
+        myfile << ss.points.at(start).coordinates.at(0) << "," << ss.points.at(start).coordinates.at(1) << endl;
+        myfile.close();
+
+
         vector<tuple<int,float>> tosort;
         for (int i = 0; i < n ; i++){
             if (available.at(i)){
