@@ -283,6 +283,7 @@ int main(int argc, char** argv){
                 for (int j = 0; j < m; j++){
                     res.intersections.push_back(0);
                 }
+                #pragma omp parallel for
                 for (int j = 0; j < m; j ++){
                     for (int i = 0; i < t; i++){
                         int start = -1;
