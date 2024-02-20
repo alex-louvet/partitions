@@ -1821,3 +1821,106 @@ Result partition_no_set(SetSystem ss, int t, vector<float> (*lf)(vector<Point>, 
 
     return res;
 }
+
+Result partition_distance_set_weight(SetSystem ss, int t, vector<float> (*lf)(vector<Point>, vector<bool>, int, vector<Set>)){
+    
+    const int n = ss.points.size();
+    const int d = ss.points.at(0).coordinates.size();
+    const int m = ss.sets.size();
+
+    //Initialize weight vector
+    vector<bool> available(n,true);
+
+    vector<Set> s;
+    Result res = Result(ss.points, s);
+
+    for (int i = 0 ; i < t; i++){
+        //cout << "\nPartition " << i+1 << "\n";
+
+        Set partition = Set(n);
+
+        vector<int> admissible_start;
+        for (int k = 0; k < n; k++){
+            if (available.at(k)){
+                admissible_start.push_back(k);
+            }
+        }
+        int start = admissible_start.at(rand()%admissible_start.size());
+        partition.points.at(start) = 1;
+        available.at(start) = false;
+
+        vector<float> distances = lf(ss.points, available, start, ss.sets);
+
+        ofstream myfile;
+        myfile.open ("example.txt",std::ios_base::app);
+        for (int k = 0; k < n; k++){
+            if (distances.at(k) > 0){
+                myfile << ss.points.at(k).coordinates.at(0) << "," << ss.points.at(k).coordinates.at(1) << "," << distances.at(k) << ";";
+            }
+        }
+        myfile << "\n";
+        myfile << ss.points.at(start).coordinates.at(0) << "," << ss.points.at(start).coordinates.at(1) << endl;
+        myfile.close();
+
+
+        vector<tuple<int,float>> tosort;
+        for (int i = 0; i < n ; i++){
+            if (available.at(i)){
+                tosort.push_back(make_tuple(i,distances.at(i)));
+            }
+        }
+
+        sort(tosort.begin(),tosort.end(),floatWeightOrder);
+
+        for (int i = 0; i < n/t-1; i++){
+            //Add selected edge to the partition
+            partition.points.at(get<0>(tosort.at(i))) = 1;
+
+            //Update partition weight
+            available.at(get<0>(tosort.at(i))) = false;
+        
+        }
+        // Store results
+        res.sets.push_back(partition);
+        bool test = false;
+        for (Set& s : ss.sets){
+            test = false;
+            if (s.points.at(start)){
+                for (int& pt : s.complement_indices){
+                    if (test){
+                        break;
+                    }
+                    for (int i = 0; i < n/t-1; i++){
+                        if (pt == get<0>(tosort.at(i))){
+                            s.increase();
+                            test = true;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                for (int& pt : s.points_indices){
+                    if (test){
+                        break;
+                    }
+                    for (int i = 0; i < n/t-1; i++){
+                        if (pt == get<0>(tosort.at(i))){
+                            s.increase();
+                            test = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    //fill the last partition with the remaining points
+    for (int i = 0; i < n ; i++){
+        if (available.at(i)){
+            res.sets.at(res.sets.size()-1).points.at(i) = 1;
+        }
+    }
+
+    return res;
+}

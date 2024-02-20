@@ -235,7 +235,28 @@ int main(int argc, char** argv){
                 if (algoList.at(2*k) == 13){
                     res = partition_no_set(test,t,sw);
                     if (argc >= 7 && stoi(argv[6]) == 1){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_set.csv");
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_set_sw.csv");
+                    }
+                }
+
+                if (algoList.at(2*k) == 14){
+                    res = partition_no_set(test,t,dw);
+                    if (argc >= 7 && stoi(argv[6]) == 1){
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_set_dw.csv");
+                    }
+                }
+                
+                if (algoList.at(2*k) == 15){
+                    res = partition_distance_set_weight(test,t,sw_weighted);
+                    if (argc >= 7 && stoi(argv[6]) == 1){
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_set_weight_batch.csv");
+                    }
+                }
+
+                if (algoList.at(2*k) == 16){
+                    res = partition_distance_set_weight(test,t,sw_weighted_w_sample);
+                    if (argc >= 7 && stoi(argv[6]) == 1){
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_set_weight_sample_batch.csv");
                     }
                 }
 
