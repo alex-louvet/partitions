@@ -5,6 +5,7 @@
 #include <pthread.h>
 #include <string>
 #include <vector>
+#include <chrono>
 
 #include "partition.cpp"
 
@@ -145,7 +146,7 @@ int main(int argc, char** argv){
     for (int k = 0; k < algoList.size()/2;k++){
         for (int ite = 0; ite < algoList.at(2*k+1); ite ++){
             cout << "algo "  << algoList.at(2*k) << ", n = "<< n << ", d = " << d << ", t = " << t << " " << ss_type << endl;
-            clock_t tStart = clock();
+            auto start_time = chrono::high_resolution_clock::now();
             Result res;
             if (argc >= 2){
                 if (algoList.at(2*k) == 1){
@@ -260,14 +261,23 @@ int main(int argc, char** argv){
                     }
                 }
 
+                if (algoList.at(2*k) == 17){
+                    res = partition_distance_set_weight_par(test,t,sw_weighted_w_sample);
+                    if (argc >= 7 && stoi(argv[6]) == 1){
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_set_weight_sample_batch.csv");
+                    }
+                }
+
             } else {
                 res = partition_min_stats(test,t);
                 if (argc >= 7 && stoi(argv[6]) == 1){
                     writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_algo_min.csv");
                 }
             }
-            printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
-            double time = (double)(clock() - tStart)/CLOCKS_PER_SEC;
+            auto end_time = chrono::high_resolution_clock::now();
+            std::chrono::duration<double> duration = end_time - start_time;
+            printf("Time taken: %.2fs\n", duration.count());
+            auto time = duration.count();
 
             if (res.intersections.size() == 0){
                 for (int j = 0; j < m; j++){
