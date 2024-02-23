@@ -134,17 +134,19 @@ class SetSystem {
             points = p;
             sets = s;
         }
-        void buildAdjacency(){
+        void buildAdjacency(bool pts){
             for (Point& p : points){
                 p.belongs_to.clear();
             }
             for (int j = 0; j < sets.size(); j++){
                 sets.at(j).buildAdjacency();
-                for (int i = 0 ; i < sets.at(j).points.size(); i++){
-                    if (sets.at(j).points.at(i)){
-                        points.at(i).belongs_to.push_back(j);
-                    } else{
-                        points.at(i).not_in.push_back(j);
+                if (pts){
+                    for (int i = 0 ; i < sets.at(j).points.size(); i++){
+                        if (sets.at(j).points.at(i)){
+                            points.at(i).belongs_to.push_back(j);
+                        } else{
+                            points.at(i).not_in.push_back(j);
+                        }
                     }
                 }
             }

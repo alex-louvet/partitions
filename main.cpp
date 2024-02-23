@@ -142,7 +142,7 @@ int main(int argc, char** argv){
         test = Grid(n,d);
     }
     m = test.sets.size();
-    test.buildAdjacency();
+    test.buildAdjacency(false);
     for (int k = 0; k < algoList.size()/2;k++){
         for (int ite = 0; ite < algoList.at(2*k+1); ite ++){
             cout << "algo "  << algoList.at(2*k) << ", n = "<< n << ", d = " << d << ", t = " << t << " " << ss_type << endl;
