@@ -30,7 +30,7 @@ int pick_according_to_weights(vector<float> weights){
         partial_sum += weights.at(i);
         i++;
     }
-    return i;
+    return i <= weights.size() ? i : weights.size();
 }
 
 int pick_according_to_weights_exponentially(vector<float> weights, float coeff){
@@ -48,7 +48,7 @@ int pick_according_to_weights_exponentially(vector<float> weights, float coeff){
         partial_sum += (weights.at(i) == 0 ? 0 : pow(coeff,weights.at(i)));
         i++;
     }
-    return i;
+    return i <= weights.size() ? i : weights.size();
 }
 
 
