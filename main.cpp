@@ -56,7 +56,11 @@ vector<int> simple_tokenizer(string s)
  6 -> save (1 to save)*/
 
 int main(int argc, char** argv){
-    srand(time(NULL));
+    if (argc >= 8){
+        srand(stoi(argv[7]));
+    } else {
+        srand(time(NULL));
+    }
     int n = 1024;
     int d = 2;
     int m = d*sqrt(n);
