@@ -138,6 +138,7 @@ class SetSystem {
             for (Point& p : points){
                 p.belongs_to.clear();
             }
+            #pragma omp parallel for
             for (int j = 0; j < sets.size(); j++){
                 sets.at(j).buildAdjacency();
                 if (pts){
@@ -208,6 +209,7 @@ SetSystem RandomHyperplanes(int n, int d, int m){
     for (int i = 0; i < n; i++){
         p.push_back(Point(d));
     }
+    #pragma omp parallel for
     for (int z = 0; z < m ; z++){
         sample.clear();
         while (sample.size() < d){
