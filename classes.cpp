@@ -93,6 +93,7 @@ class Set {
         }
         void buildAdjacency(){
             points_indices.clear();
+            complement_indices.clear();
             for (int i = 0; i < points.size(); i++){
                 if (points.at(i)){
                     points_indices.push_back(i);

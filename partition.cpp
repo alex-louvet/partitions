@@ -1942,7 +1942,6 @@ Result partition_distance_set_weight_par(SetSystem ss, int t, vector<float> (*lf
         //cout << "\nPartition " << i+1 << "\n";
 
         Set partition = Set(n);
-
         vector<int> admissible_start;
         for (int k = 0; k < n; k++){
             if (available.at(k)){
@@ -1952,20 +1951,7 @@ Result partition_distance_set_weight_par(SetSystem ss, int t, vector<float> (*lf
         int start = admissible_start.at(rand()%admissible_start.size());
         partition.points.at(start) = 1;
         available.at(start) = false;
-
         vector<float> distances = lf(ss.points, available, start, ss.sets);
-
-        ofstream myfile;
-        myfile.open ("example.txt",std::ios_base::app);
-        for (int k = 0; k < n; k++){
-            if (distances.at(k) > 0){
-                myfile << ss.points.at(k).coordinates.at(0) << "," << ss.points.at(k).coordinates.at(1) << "," << distances.at(k) << ";";
-            }
-        }
-        myfile << "\n";
-        myfile << ss.points.at(start).coordinates.at(0) << "," << ss.points.at(start).coordinates.at(1) << endl;
-        myfile.close();
-
 
         vector<tuple<int,float>> tosort;
         for (int i = 0; i < n ; i++){
@@ -1973,7 +1959,6 @@ Result partition_distance_set_weight_par(SetSystem ss, int t, vector<float> (*lf
                 tosort.push_back(make_tuple(i,distances.at(i)));
             }
         }
-
         sort(tosort.begin(),tosort.end(),floatWeightOrder);
 
         for (int i = 0; i < n/t-1; i++){
