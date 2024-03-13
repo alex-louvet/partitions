@@ -153,6 +153,12 @@ class SetSystem {
                 }
             }
         }
+        
+        void resetWeight(){
+            for (Set& s : sets){
+                s.resetWeight();
+            }
+        }
 };
 
 Set RandomSet(int size){
