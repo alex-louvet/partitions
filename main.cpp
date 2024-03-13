@@ -272,6 +272,20 @@ int main(int argc, char** argv){
                     }
                 }
 
+                if (algoList.at(2*k) == 18){
+                    res = partition_distance_set_weight_par(test,t,long_sw_weighted_w_sample);
+                    if (argc >= 7 && stoi(argv[6]) == 1){
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_set_weight_sample_batch.csv");
+                    }
+                }
+
+                if (algoList.at(2*k) == 19){
+                    res = partition_distance_set_weight_par(test,t,very_long_sw_weighted_w_sample);
+                    if (argc >= 7 && stoi(argv[6]) == 1){
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_set_weight_sample_batch.csv");
+                    }
+                }
+
             } else {
                 res = partition_min_stats(test,t);
                 if (argc >= 7 && stoi(argv[6]) == 1){

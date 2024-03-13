@@ -214,3 +214,71 @@ vector<float> sw_weighted_w_sample(vector<Point> pts, vector<bool> available, in
     
     return distances;
 }
+
+vector<float> long_sw_weighted_w_sample(vector<Point> pts, vector<bool> available, int start, vector<Set> sets){
+    int n = pts.size();
+    int d = pts.at(0).coordinates.size();
+    int m = sets.size();
+    vector<float> distances(n,1);
+    for (int i = 0; i < n; i++){
+        if (!available.at(i)){
+            distances.at(i) = 0;
+        }
+    }
+    vector<float> set_weight;
+    for (int j = 0; j < m; j++){
+        set_weight.push_back(sets.at(j).weight);
+    }
+    for (int t = 0; t < 10*log(n*m); t++){
+        int s = pick_according_to_weights_exponentially(set_weight, 2);
+        if (sets.at(s).points.at(start)){
+            for (int& i : sets.at(s).complement_indices){
+                if (available.at(i)){
+                    distances.at(i) += 1 << sets.at(s).weight;
+                }
+            }
+        } else {
+            for (int& i : sets.at(s).points_indices){
+                if (available.at(i)){
+                    distances.at(i) += 1 << sets.at(s).weight;
+                }
+            }
+        }
+    }
+    
+    return distances;
+}
+
+vector<float> very_long_sw_weighted_w_sample(vector<Point> pts, vector<bool> available, int start, vector<Set> sets){
+    int n = pts.size();
+    int d = pts.at(0).coordinates.size();
+    int m = sets.size();
+    vector<float> distances(n,1);
+    for (int i = 0; i < n; i++){
+        if (!available.at(i)){
+            distances.at(i) = 0;
+        }
+    }
+    vector<float> set_weight;
+    for (int j = 0; j < m; j++){
+        set_weight.push_back(sets.at(j).weight);
+    }
+    for (int t = 0; t < 100*log(n*m); t++){
+        int s = pick_according_to_weights_exponentially(set_weight, 2);
+        if (sets.at(s).points.at(start)){
+            for (int& i : sets.at(s).complement_indices){
+                if (available.at(i)){
+                    distances.at(i) += 1 << sets.at(s).weight;
+                }
+            }
+        } else {
+            for (int& i : sets.at(s).points_indices){
+                if (available.at(i)){
+                    distances.at(i) += 1 << sets.at(s).weight;
+                }
+            }
+        }
+    }
+    
+    return distances;
+}
