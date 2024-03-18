@@ -216,7 +216,6 @@ SetSystem RandomHyperplanes(int n, int d, int m){
     for (int i = 0; i < n; i++){
         p.push_back(Point(d));
     }
-    #pragma omp parallel for
     for (int z = 0; z < m ; z++){
         sample.clear();
         while (sample.size() < d){
