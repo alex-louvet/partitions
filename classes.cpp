@@ -254,41 +254,6 @@ SetSystem RandomHyperplanes(int n, int d, int m){
     return SetSystem(p,s);
 }
 
-SetSystem GridGraphD1(int n){
-    vector<Point> pts;
-    for (int i = 0; i < n ; i++){
-        for (int j = 0; j < n ; j++){
-            pts.push_back(Point(vector<float> {static_cast<float>(i)/n,static_cast<float>(j)/n}));
-        }
-
-    }
-
-    const int pts_len = pts.size();  
-
-    vector<Set> sets;
-    for (int i = 0; i < n; i++){
-        for (int j = 0; j < n; j++){
-            Set temp = Set(vector<bool>(pts_len,0));
-            temp.points.at(i*n+j) = 1;
-            if ((i*n+j)%n != 0){
-                temp.points.at(i*n+j-1) = 1;
-            }
-            if ((i*n+j)%n != n-1){
-                temp.points.at(i*n+j+1) = 1;
-            }
-            if (i != 0){
-                temp.points.at(i*n+j - n) = 1;
-            }
-            if (i != n-1){
-                temp.points.at(i*n+j + n) = 1;
-            }
-            sets.push_back(temp);
-        }
-    }
-    
-    return SetSystem(pts,sets);
-}
-
 SetSystem GridGraph(int n, int d){
     vector<Point> pts;
     for (int i = 0; i < n ; i++){
