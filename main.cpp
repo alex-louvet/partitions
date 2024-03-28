@@ -1,3 +1,4 @@
+#include <cmath>
 #include <cstdlib>
 #include <ios>
 #include <iostream>
@@ -54,7 +55,9 @@ int main(int argc, char** argv){
     bool save = false;
     int c;
     vector<int> algoList;
-    while ((c = getopt (argc, argv, "a:n:t:d:f:r:s")) != -1){
+    bool hask = false;
+    int warmup = floor(log(m*n));
+    while ((c = getopt (argc, argv, "a:n:t:d:f:r:k:s")) != -1){
         switch (c)
         {
         case 'a':
@@ -78,8 +81,12 @@ int main(int argc, char** argv){
         case 'r':
             srand(stoi(optarg));
             break;
+        case 'k':
+            warmup = stoi(optarg);
+            hask = true;
+            break;
         case '?':
-            if (optopt == 'a' || optopt == 'n' || optopt == 't' || optopt == 'd' || optopt == 'f' || optopt == 'r')
+            if (optopt == 'a' || optopt == 'n' || optopt == 't' || optopt == 'd' || optopt == 'f' || optopt == 'r' || optopt == 'k')
             fprintf (stderr, "Option -%c requires an argument.\n", optopt);
             else if (isprint (optopt))
             fprintf (stderr, "Unknown option `-%c'.\n", optopt);
@@ -91,6 +98,9 @@ int main(int argc, char** argv){
         default:
             abort ();
         }
+    }
+    if (!hask){
+        warmup = floor(log(m*n));
     }
     if (ss_type == "grid"){
         test = Grid(n,d);
@@ -150,49 +160,42 @@ int main(int argc, char** argv){
                 }
 
                 if (algoList.at(2*k) == 5){
-                    res = partition_distance_set_weight_par(test,t,sw);
+                    res = partition_distance_set_weight_par(test,t,l1,0);
                     if (save){
                         writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_set_sw.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 6){
-                    res = partition_distance_set_weight_par(test,t,dw);
+                    res = partition_distance_set_weight_par(test,t,l2,warmup);
+                    if (save){
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_set_sw.csv");
+                    }
+                }
+
+                if (algoList.at(2*k) == 7){
+                    res = partition_distance_set_weight_par(test,t,sw,warmup);
+                    if (save){
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_set_sw.csv");
+                    }
+                }
+
+                if (algoList.at(2*k) == 8){
+                    res = partition_distance_set_weight_par(test,t,dw,warmup);
                     if (save){
                         writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_set_dw.csv");
                     }
                 }
                 
-                if (algoList.at(2*k) == 7){
-                    res = partition_distance_set_weight_par(test,t,sw_weighted);
+                if (algoList.at(2*k) == 9){
+                    res = partition_distance_set_weight_par(test,t,sw_weighted,warmup);
                     if (save){
                         writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_set_weight_batch.csv");
                     }
                 }
 
-                if (algoList.at(2*k) == 8){
-                    res = partition_distance_set_weight_par(test,t,sw_weighted_w_sample);
-                    if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_set_weight_sample_batch.csv");
-                    }
-                }
-
-                if (algoList.at(2*k) == 9){
-                    res = partition_distance_set_weight_par(test,t,sw_weighted_w_sample);
-                    if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_set_weight_sample_batch.csv");
-                    }
-                }
-
                 if (algoList.at(2*k) == 10){
-                    res = partition_distance_set_weight_par(test,t,long_sw_weighted_w_sample);
-                    if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_set_weight_sample_batch.csv");
-                    }
-                }
-
-                if (algoList.at(2*k) == 11){
-                    res = partition_distance_set_weight_par(test,t,very_long_sw_weighted_w_sample);
+                    res = partition_distance_set_weight_par(test,t,sw_weighted_w_sample, warmup);
                     if (save){
                         writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_set_weight_sample_batch.csv");
                     }

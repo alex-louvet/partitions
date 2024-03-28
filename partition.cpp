@@ -593,7 +593,7 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t){
     return res;
 }
 
-Result partition_distance_set_weight_par(SetSystem ss, int t, vector<float> (*lf)(vector<Point>, vector<bool>, int, vector<Set>)){
+Result partition_distance_set_weight_par(SetSystem ss, int t, vector<float> (*lf)(vector<Point>, vector<bool>, int, vector<Set> , int k), int k){
     
     const int n = ss.points.size();
     const int d = ss.points.at(0).coordinates.size();
@@ -618,7 +618,7 @@ Result partition_distance_set_weight_par(SetSystem ss, int t, vector<float> (*lf
         int start = admissible_start.at(rand()%admissible_start.size());
         partition.points.at(start) = 1;
         available.at(start) = false;
-        vector<float> distances = lf(ss.points, available, start, ss.sets);
+        vector<float> distances = lf(ss.points, available, start, ss.sets, k);
 
         vector<tuple<int,float>> tosort;
         for (int i = 0; i < n ; i++){
