@@ -2,6 +2,12 @@
 
 Script to try out the different variation of the algorithm on different set system
 
+Compile with
+
+```bash
+g++ -fopenmp main.cpp
+```
+
 ## Arguments
 
 - `-a string` : This is a space separated list of algorithm identifiers to run on the same set system as well as the number of times the given algorithm should be run.
