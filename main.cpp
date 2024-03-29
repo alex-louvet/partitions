@@ -162,42 +162,42 @@ int main(int argc, char** argv){
                 if (algoList.at(2*k) == 5){
                     res = partition_distance_set_weight_par(test,t,l1,0);
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_set_sw.csv");
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_l1.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 6){
                     res = partition_distance_set_weight_par(test,t,l2,warmup);
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_set_sw.csv");
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_l2.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 7){
                     res = partition_distance_set_weight_par(test,t,sw,warmup);
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_set_sw.csv");
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_sw.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 8){
                     res = partition_distance_set_weight_par(test,t,dw,warmup);
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_set_dw.csv");
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_dw.csv");
                     }
                 }
                 
                 if (algoList.at(2*k) == 9){
                     res = partition_distance_set_weight_par(test,t,sw_weighted,warmup);
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_set_weight_batch.csv");
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_sw_weighted.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 10){
                     res = partition_distance_set_weight_par(test,t,sw_weighted_w_sample, warmup);
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_set_weight_sample_batch.csv");
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_sw_sample.csv");
                     }
                 }
 
