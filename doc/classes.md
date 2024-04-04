@@ -88,4 +88,4 @@ This is the file referring to set system generation, it contains all the object 
 
 `SetSystem ProjectivePlane(int n)` generates a projective plane of order n where n is a prime. That is a ground set of size $n^2+n+1$ and sets with the properties of [projective planes](https://en.wikipedia.org/wiki/Projective_plane). The code to generate them is adapted from [Salmelu's work](https://github.com/Salmelu/ProjectivePlane).
 
-`ERGGraph(int n, int d, float p)` generates a set system from an [Erdos–Rényi–Gilbert graph](https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%93R%C3%A9nyi_model) $G$ with probability p for an edge to exist and where for each element $x$ of $X$, there exists a set $F = \{y \in X \vert D_G(x,y) \le d\}$ where $D_G$ is the distance in $G$.
+`SetSystem ERGGraph(int n, int d, float p)` generates a set system from an [Erdos–Rényi–Gilbert graph](https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%93R%C3%A9nyi_model) $G$ with probability p for an edge to exist and where for each element $x$ of $X$, there exists a set $F = \{y \in X \vert D_G(x,y) \le d\}$ where $D_G$ is the distance in $G$.
