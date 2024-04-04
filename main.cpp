@@ -49,12 +49,13 @@ int main(int argc, char** argv){
     int d = 2;
     int m = d*sqrt(n);
     int t = 16;
+    float p = .5;
     SetSystem test;
     string ss_type = "grid";
     bool save = false;
     int c;
     vector<int> algoList;
-    while ((c = getopt (argc, argv, "a:n:t:d:f:r:s")) != -1){
+    while ((c = getopt (argc, argv, "a:n:t:d:f:r:p:m:s")) != -1){
         switch (c)
         {
         case 'a':
@@ -69,6 +70,9 @@ int main(int argc, char** argv){
         case 'd':
             d = stoi(optarg);
             break;
+        case 'm':
+            m = stoi(optarg);
+            break;
         case 'f':
             ss_type = optarg;
             break;
@@ -78,8 +82,11 @@ int main(int argc, char** argv){
         case 'r':
             srand(stoi(optarg));
             break;
+        case 'p':
+            p = stof(optarg);
+            break;
         case '?':
-            if (optopt == 'a' || optopt == 'n' || optopt == 't' || optopt == 'd' || optopt == 'f' || optopt == 'r')
+            if (optopt == 'a' || optopt == 'n' || optopt == 't' || optopt == 'd' || optopt == 'f' || optopt == 'r' || optopt == 'p' || optopt == 'm')
             fprintf (stderr, "Option -%c requires an argument.\n", optopt);
             else if (isprint (optopt))
             fprintf (stderr, "Unknown option `-%c'.\n", optopt);
@@ -108,8 +115,11 @@ int main(int argc, char** argv){
     if (ss_type == "exponential_grid"){
         test = ExponentialGrid(n,d);
     }
-    if (ss_type == "directional_grid"){
+    if (ss_type == "directed_grid"){
         test = DirectionalGrid(n,d);
+    }
+    if (ss_type == "random"){
+        test = Random(n,d,m,p);
     }
     m = test.sets.size();
     test.buildAdjacency(false);

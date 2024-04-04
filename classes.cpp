@@ -405,6 +405,30 @@ SetSystem DirectionalGrid(int n, int d){
     return SetSystem(p,s);
 }
 
+SetSystem Random(int n, int d, int m, float p){
+    vector<Point> pt;
+    vector<Set> s;
+
+    for (int i = 0; i < n; i++){
+        pt.push_back(Point(d));
+    }
+
+    for (int j = 0 ; j < m; j++){
+        vector<bool> temp;
+        temp.clear();
+        for (int i = 0; i < n; i++){
+            if (static_cast<float>(rand())/RAND_MAX < p){
+                temp.push_back(1);
+            } else {
+                temp.push_back(0);
+            }
+        }
+        s.push_back(temp);
+    }    
+
+    return SetSystem(pt,s);
+}
+
 class Result: public SetSystem {
     public:
         vector<float> weights;
