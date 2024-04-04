@@ -59,6 +59,7 @@ int main(int argc, char** argv){
     int d = 2;
     int m = d*sqrt(n);
     int t = 16;
+    float p = .1;
     SetSystem test;
     string ss_type = "grid";
     bool save = false;
@@ -137,9 +138,15 @@ int main(int argc, char** argv){
         }
         test = ProjectivePlane(n);
     }
+    if (ss_type == "ERGGraph"){
+        test = ERGGraph(n,d,p);
+    }
     m = test.sets.size();
     n = test.points.size();
     test.buildAdjacency(false);
+    for (Set& s : test.sets){
+        cout << s.points_indices.size() << endl;
+    }
     
     for (int k = 0; k < algoList.size()/2;k++){
         for (int ite = 0; ite < algoList.at(2*k+1); ite ++){

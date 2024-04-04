@@ -5,6 +5,7 @@
 #include <cmath>
 #include <math.h>
 #include <random>
+#include <deque>
 
 #include "Eigen/Dense"
 
@@ -450,6 +451,73 @@ SetSystem ProjectivePlane(int o){
     }
 
     return SetSystem(p,s);
+}
+
+SetSystem ERGGraph(int n, int d, float p){
+    vector<Point> pt;
+    vector<Set> s;
+
+    for (int i = 0; i < n; i++){
+        pt.push_back(Point(d));
+    }
+
+    vector<vector<int>> edges;
+
+    for (int i = 0; i < n-1; i++){
+        vector<int> temp;
+        temp.clear();
+        for (int j = i+1; j < n; j++){
+            if (rand()/static_cast<float>(RAND_MAX) < p){
+                temp.push_back(j);
+            }
+        }
+        edges.push_back(temp);
+    }
+    edges.push_back({});
+    for (int i = 1; i < n; i++){
+        for (int& j : edges.at(i)){
+            if (j > i){
+                edges.at(j).push_back(i);
+            }
+        }
+    }
+
+    #pragma omp for
+    for (int i = 0; i < n; i++){
+        vector<int> steps(n,-1);
+        vector<bool> visited(n,false);
+        deque<int> file = {i};
+        steps.at(i) = 0;
+        visited.at(i) = true;
+        while(file.size() > 0){
+            int a = file.at(0);
+            file.pop_front();
+            visited.at(a) = true;
+            for (int& x : edges.at(a)){
+                if (!visited.at(x)){
+                    if (steps.at(x) == -1){
+                        steps.at(x) = steps.at(a) + 1;
+                    } else {
+                        steps.at(x) = min(steps.at(x), steps.at(a) + 1);
+                    }
+                    if (steps.at(x) < d){
+                        file.push_back(x);
+                    }
+                }
+            }
+        }
+        vector<bool> temp;
+        for (int i = 0; i < n; i++){
+            if (steps.at(i) > -1 && steps.at(i) <= d){
+                temp.push_back(1);
+            } else {
+                temp.push_back(0);
+            }
+        }
+        s.push_back(temp);
+    }
+
+    return SetSystem(pt,s);
 }
 
 class Result: public SetSystem {
