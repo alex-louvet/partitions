@@ -3,8 +3,8 @@ import sys
 import pandas as pd
 import numpy as np
 
-label_table = ["","min","","rate","","","","","dequeue","","","","","","","","","","parallel"]
-color_table = ["", "red","", "green","","","","","blue","","","","","","","","","","purple"]
+label_table = ["","min","rate","sampling","dequeue","parallel","parallel","parallel","parallel","parallel","parallel"]
+color_table = ["", "red","green","orange","blue","purple","purple","purple","purple","purple","purple"]
 join_table = {'d': 2, 't': 512, 'n':8192}
 
 df = pd.read_csv("results.csv", sep=";")

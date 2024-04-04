@@ -30,7 +30,7 @@ int pick_according_to_weights(vector<float> weights){
         partial_sum += weights.at(i);
         i++;
     }
-    return i <= weights.size() ? i : weights.size();
+    return i < weights.size() ? i : weights.size() - 1;
 }
 
 int pick_according_to_weights_exponentially(vector<float> weights, float coeff){
@@ -48,11 +48,11 @@ int pick_according_to_weights_exponentially(vector<float> weights, float coeff){
         partial_sum += (weights.at(i) == 0 ? 0 : pow(coeff,weights.at(i)));
         i++;
     }
-    return i <= weights.size() ? i : weights.size();
+    return i < weights.size() ? i : weights.size() - 1;
 }
 
 
-vector<float> l2(vector<Point> pts, vector<bool> available, int start, vector<Set> sets){
+vector<float> l2(vector<Point> pts, vector<bool> available, int start, vector<Set> sets, int k){
     int n = pts.size();
     int d = pts.at(0).coordinates.size();
     vector<float> distances(n,0);
@@ -66,7 +66,7 @@ vector<float> l2(vector<Point> pts, vector<bool> available, int start, vector<Se
     return distances;
 }
 
-vector<float> l1(vector<Point> pts, vector<bool> available, int start, vector<Set> sets){
+vector<float> l1(vector<Point> pts, vector<bool> available, int start, vector<Set> sets, int k){
     int n = pts.size();
     int d = pts.at(0).coordinates.size();
     vector<float> distances(n,0);
@@ -80,7 +80,7 @@ vector<float> l1(vector<Point> pts, vector<bool> available, int start, vector<Se
     return distances;
 }
 
-vector<float> dw(vector<Point> pts, vector<bool> available, int start, vector<Set> sets){
+vector<float> dw(vector<Point> pts, vector<bool> available, int start, vector<Set> sets, int k){
     int n = pts.size();
     int d = pts.at(0).coordinates.size();
     int m = sets.size();
@@ -92,7 +92,7 @@ vector<float> dw(vector<Point> pts, vector<bool> available, int start, vector<Se
         }
     }
 
-    for (int t = 0; t < log(n*m); t++){
+    for (int t = 0; t < k; t++){
         int s = pick_according_to_weights_exponentially(set_weight, 2);
         int p = pick_according_to_weights_exponentially(distances, 2);
 
@@ -120,7 +120,7 @@ vector<float> dw(vector<Point> pts, vector<bool> available, int start, vector<Se
     return distances;
 }
 
-vector<float> sw(vector<Point> pts, vector<bool> available, int start, vector<Set> sets){
+vector<float> sw(vector<Point> pts, vector<bool> available, int start, vector<Set> sets, int k){
     int n = pts.size();
     int d = pts.at(0).coordinates.size();
     int m = sets.size();
@@ -130,7 +130,7 @@ vector<float> sw(vector<Point> pts, vector<bool> available, int start, vector<Se
             distances.at(i) = 0;
         }
     }
-    for (int t = 0; t < log(n*m); t++){
+    for (int t = 0; t < k; t++){
         int s = floor(m*static_cast<float>(rand())/RAND_MAX);
 
         if (sets.at(s).points.at(start)){
@@ -151,7 +151,7 @@ vector<float> sw(vector<Point> pts, vector<bool> available, int start, vector<Se
     return distances;
 }
 
-vector<float> sw_weighted(vector<Point> pts, vector<bool> available, int start, vector<Set> sets){
+vector<float> sw_weighted(vector<Point> pts, vector<bool> available, int start, vector<Set> sets, int k){
     int n = pts.size();
     int d = pts.at(0).coordinates.size();
     int m = sets.size();
@@ -161,7 +161,7 @@ vector<float> sw_weighted(vector<Point> pts, vector<bool> available, int start, 
             distances.at(i) = 0;
         }
     }
-    for (int t = 0; t < log(n*m); t++){
+    for (int t = 0; t < k; t++){
         int s = floor(m*static_cast<float>(rand())/RAND_MAX);
         if (sets.at(s).points.at(start)){
             for (int& i : sets.at(s).complement_indices){
@@ -181,7 +181,7 @@ vector<float> sw_weighted(vector<Point> pts, vector<bool> available, int start, 
     return distances;
 }
 
-vector<float> sw_weighted_w_sample(vector<Point> pts, vector<bool> available, int start, vector<Set> sets){
+vector<float> sw_weighted_w_sample(vector<Point> pts, vector<bool> available, int start, vector<Set> sets, int k){
     int n = pts.size();
     int d = pts.at(0).coordinates.size();
     int m = sets.size();
@@ -195,109 +195,7 @@ vector<float> sw_weighted_w_sample(vector<Point> pts, vector<bool> available, in
     for (int j = 0; j < m; j++){
         set_weight.push_back(sets.at(j).weight);
     }
-    for (int t = 0; t < log(n*m); t++){
-        int s = pick_according_to_weights_exponentially(set_weight, 2);
-        if (sets.at(s).points.at(start)){
-            for (int& i : sets.at(s).complement_indices){
-                if (available.at(i)){
-                    distances.at(i) += 1 << sets.at(s).weight;
-                }
-            }
-        } else {
-            for (int& i : sets.at(s).points_indices){
-                if (available.at(i)){
-                    distances.at(i) += 1 << sets.at(s).weight;
-                }
-            }
-        }
-    }
-    
-    return distances;
-}
-
-vector<float> long_sw_weighted_w_sample(vector<Point> pts, vector<bool> available, int start, vector<Set> sets){
-    int n = pts.size();
-    int d = pts.at(0).coordinates.size();
-    int m = sets.size();
-    vector<float> distances(n,1);
-    for (int i = 0; i < n; i++){
-        if (!available.at(i)){
-            distances.at(i) = 0;
-        }
-    }
-    vector<float> set_weight;
-    for (int j = 0; j < m; j++){
-        set_weight.push_back(sets.at(j).weight);
-    }
-    for (int t = 0; t < 10*log(n*m); t++){
-        int s = pick_according_to_weights_exponentially(set_weight, 2);
-        if (sets.at(s).points.at(start)){
-            for (int& i : sets.at(s).complement_indices){
-                if (available.at(i)){
-                    distances.at(i) += 1 << sets.at(s).weight;
-                }
-            }
-        } else {
-            for (int& i : sets.at(s).points_indices){
-                if (available.at(i)){
-                    distances.at(i) += 1 << sets.at(s).weight;
-                }
-            }
-        }
-    }
-    
-    return distances;
-}
-
-vector<float> very_long_sw_weighted_w_sample(vector<Point> pts, vector<bool> available, int start, vector<Set> sets){
-    int n = pts.size();
-    int d = pts.at(0).coordinates.size();
-    int m = sets.size();
-    vector<float> distances(n,1);
-    for (int i = 0; i < n; i++){
-        if (!available.at(i)){
-            distances.at(i) = 0;
-        }
-    }
-    vector<float> set_weight;
-    for (int j = 0; j < m; j++){
-        set_weight.push_back(sets.at(j).weight);
-    }
-    for (int t = 0; t < 100*log(n*m); t++){
-        int s = pick_according_to_weights_exponentially(set_weight, 2);
-        if (sets.at(s).points.at(start)){
-            for (int& i : sets.at(s).complement_indices){
-                if (available.at(i)){
-                    distances.at(i) += 1 << sets.at(s).weight;
-                }
-            }
-        } else {
-            for (int& i : sets.at(s).points_indices){
-                if (available.at(i)){
-                    distances.at(i) += 1 << sets.at(s).weight;
-                }
-            }
-        }
-    }
-    
-    return distances;
-}
-
-vector<float> very_very_long_sw_weighted_w_sample(vector<Point> pts, vector<bool> available, int start, vector<Set> sets){
-    int n = pts.size();
-    int d = pts.at(0).coordinates.size();
-    int m = sets.size();
-    vector<float> distances(n,1);
-    for (int i = 0; i < n; i++){
-        if (!available.at(i)){
-            distances.at(i) = 0;
-        }
-    }
-    vector<float> set_weight;
-    for (int j = 0; j < m; j++){
-        set_weight.push_back(sets.at(j).weight);
-    }
-    for (int t = 0; t < 1000*log(n*m); t++){
+    for (int t = 0; t < k; t++){
         int s = pick_according_to_weights_exponentially(set_weight, 2);
         if (sets.at(s).points.at(start)){
             for (int& i : sets.at(s).complement_indices){

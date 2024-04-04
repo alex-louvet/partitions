@@ -5,6 +5,7 @@
 #include <cmath>
 #include <math.h>
 #include <random>
+#include <deque>
 
 #include "Eigen/Dense"
 
@@ -406,6 +407,77 @@ SetSystem DirectionalGrid(int n, int d){
 }
 
 SetSystem Random(int n, int d, int m, float p){
+        vector<Point> pt;
+        vector<Set> s;
+
+        for (int i = 0; i < n; i++){
+            pt.push_back(Point(d));
+        }
+        for (int j = 0 ; j < m; j++){
+            vector<bool> temp;
+            temp.clear();
+            for (int i = 0; i < n; i++){
+                if (static_cast<float>(rand())/RAND_MAX < p){
+                    temp.push_back(1);
+                } else {
+                    temp.push_back(0);
+                }
+            }
+            s.push_back(temp);
+        }
+        return SetSystem(pt,s);
+}
+
+
+
+/*
+Credits to Salmelu for its code that I just adapted to my data model:
+https://github.com/Salmelu/ProjectivePlane
+*/
+SetSystem ProjectivePlane(int o){
+    vector<Point> p;
+    vector<Set> s;
+
+    p.push_back(Point({1.,0.,0.}));
+
+    for (float i = 0; i < o; i++){
+        p.push_back(Point({i,1.,0.}));
+    }
+
+    for (float i = 0; i < o; i++){
+        for (float j = 0; j < o; j++){
+            p.push_back(Point({i,j,1.}));
+        }
+    }
+
+    vector<bool> unique(o*o*o, true);
+    unique.at(0) = false;
+
+    for (int a = 0; a < o; a++) {
+		for (int b = 0; b < o; b++) {
+			for (int c = 0; c < o; c++) {
+                if (!unique[(a * o * o) + (b * o) + c]) continue;
+                vector<bool> temp;
+                temp.clear();
+                for (int i = 0; i < p.size(); i++){
+                    if ((static_cast<int>(a*p.at(i).coordinates.at(0) + b*p.at(i).coordinates.at(1) + c*p.at(i).coordinates.at(2)) % o) == 0) {
+                        temp.push_back(1);
+                    } else{
+                        temp.push_back(0);
+                    }
+                }
+                for (int i = 2; i < o; i++) {			
+					unique.at(((i * a) % o) * o * o + ((i * b) % o) * o + (i * c) % o) = false;
+				}
+                s.push_back(temp);
+            }
+        }
+    }
+
+    return SetSystem(p,s);
+}
+
+SetSystem ERGGraph(int n, int d, float p){
     vector<Point> pt;
     vector<Set> s;
 
@@ -413,18 +485,62 @@ SetSystem Random(int n, int d, int m, float p){
         pt.push_back(Point(d));
     }
 
-    for (int j = 0 ; j < m; j++){
-        vector<bool> temp;
+
+    vector<vector<int>> edges;
+
+    for (int i = 0; i < n-1; i++){
+        vector<int> temp;
         temp.clear();
+        for (int j = i+1; j < n; j++){
+            if (rand()/static_cast<float>(RAND_MAX) < p){
+                temp.push_back(j);
+            }
+        }
+        edges.push_back(temp);
+    }
+    edges.push_back({});
+    for (int i = 1; i < n; i++){
+        for (int& j : edges.at(i)){
+            if (j > i){
+                edges.at(j).push_back(i);
+            }
+        }
+    }
+
+    #pragma omp for
+    for (int i = 0; i < n; i++){
+        vector<int> steps(n,-1);
+        vector<bool> visited(n,false);
+        deque<int> file = {i};
+        steps.at(i) = 0;
+        visited.at(i) = true;
+        while(file.size() > 0){
+            int a = file.at(0);
+            file.pop_front();
+            visited.at(a) = true;
+            for (int& x : edges.at(a)){
+                if (!visited.at(x)){
+                    if (steps.at(x) == -1){
+                        steps.at(x) = steps.at(a) + 1;
+                    } else {
+                        steps.at(x) = min(steps.at(x), steps.at(a) + 1);
+                    }
+                    if (steps.at(x) < d){
+                        file.push_back(x);
+                    }
+                }
+            }
+        }
+        vector<bool> temp;
         for (int i = 0; i < n; i++){
-            if (static_cast<float>(rand())/RAND_MAX < p){
+            if (steps.at(i) > -1 && steps.at(i) <= d){
                 temp.push_back(1);
             } else {
                 temp.push_back(0);
             }
         }
         s.push_back(temp);
-    }    
+    }
 
     return SetSystem(pt,s);
 }

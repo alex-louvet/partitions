@@ -1,3 +1,4 @@
+#include <cmath>
 #include <cstdlib>
 #include <ios>
 #include <iostream>
@@ -41,7 +42,16 @@ vector<int> simple_tokenizer(string s)
         res.push_back(stoi(word));
     }
     return res;
-} 
+}
+
+bool isPrime(int n){
+    for (int i = 2; i <= sqrt(n); i++){
+        if (n%i == 0){
+            return false;
+        }
+    }
+    return true;
+}
 
 int main(int argc, char** argv){
     srand(time(NULL));
@@ -49,12 +59,14 @@ int main(int argc, char** argv){
     int d = 2;
     int m = d*sqrt(n);
     int t = 16;
-    float p = .5;
+    float p = .1;
     SetSystem test;
     string ss_type = "grid";
     bool save = false;
     int c;
     vector<int> algoList;
+    bool hask = false;
+    int warmup = floor(log(m*n));
     while ((c = getopt (argc, argv, "a:n:t:d:f:r:p:m:s")) != -1){
         switch (c)
         {
@@ -85,6 +97,11 @@ int main(int argc, char** argv){
         case 'p':
             p = stof(optarg);
             break;
+        
+        case 'k':
+            warmup = stoi(optarg);
+            hask = true;
+            break;
         case '?':
             if (optopt == 'a' || optopt == 'n' || optopt == 't' || optopt == 'd' || optopt == 'f' || optopt == 'r' || optopt == 'p' || optopt == 'm')
             fprintf (stderr, "Option -%c requires an argument.\n", optopt);
@@ -98,6 +115,9 @@ int main(int argc, char** argv){
         default:
             abort ();
         }
+    }
+    if (!hask){
+        warmup = floor(log(m*n));
     }
     if (ss_type == "grid"){
         test = Grid(n,d);
@@ -121,7 +141,18 @@ int main(int argc, char** argv){
     if (ss_type == "random"){
         test = Random(n,d,m,p);
     }
+    if (ss_type == "projective_plane"){
+        if (!isPrime(n)){
+            fprintf (stderr, "Projective plane needs n to be prime, given: '%d'.\n", n);
+            return 1;
+        }
+        test = ProjectivePlane(n);
+    }
+    if (ss_type == "ERGGraph"){
+        test = ERGGraph(n,d,p);
+    }
     m = test.sets.size();
+    n = test.points.size();
     test.buildAdjacency(false);
     
     for (int k = 0; k < algoList.size()/2;k++){
@@ -160,51 +191,44 @@ int main(int argc, char** argv){
                 }
 
                 if (algoList.at(2*k) == 5){
-                    res = partition_distance_set_weight_par(test,t,sw);
+                    res = partition_distance_set_weight_par(test,t,l1,0);
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_set_sw.csv");
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_l1.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 6){
-                    res = partition_distance_set_weight_par(test,t,dw);
+                    res = partition_distance_set_weight_par(test,t,l2,warmup);
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_set_dw.csv");
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_l2.csv");
                     }
                 }
-                
+
                 if (algoList.at(2*k) == 7){
-                    res = partition_distance_set_weight_par(test,t,sw_weighted);
+                    res = partition_distance_set_weight_par(test,t,sw,warmup);
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_set_weight_batch.csv");
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_sw.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 8){
-                    res = partition_distance_set_weight_par(test,t,sw_weighted_w_sample);
+                    res = partition_distance_set_weight_par(test,t,dw,warmup);
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_set_weight_sample_batch.csv");
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_dw.csv");
                     }
                 }
-
+                
                 if (algoList.at(2*k) == 9){
-                    res = partition_distance_set_weight_par(test,t,sw_weighted_w_sample);
+                    res = partition_distance_set_weight_par(test,t,sw_weighted,warmup);
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_set_weight_sample_batch.csv");
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_sw_weighted.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 10){
-                    res = partition_distance_set_weight_par(test,t,long_sw_weighted_w_sample);
+                    res = partition_distance_set_weight_par(test,t,sw_weighted_w_sample, warmup);
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_set_weight_sample_batch.csv");
-                    }
-                }
-
-                if (algoList.at(2*k) == 11){
-                    res = partition_distance_set_weight_par(test,t,very_long_sw_weighted_w_sample);
-                    if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_set_weight_sample_batch.csv");
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_sw_sample.csv");
                     }
                 }
 

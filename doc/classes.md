@@ -1,6 +1,6 @@
 # classes.cpp
 
-This is the file refering to set system generation, it contains all the object defined for the purpose of the experiments.
+This is the file referring to set system generation, it contains all the object defined for the purpose of the experiments.
 
 ## `class Point`
 
@@ -24,7 +24,7 @@ This is the file refering to set system generation, it contains all the object d
 
 `int points[2]` tuple of points froming the Edge
 
-`int weight` weight of the egde
+`int weight` weight of the edge
 
 ### Constructor
 
@@ -34,7 +34,7 @@ This is the file refering to set system generation, it contains all the object d
 
 ### Attributes
 
-`vector<bool> points` cine of the incidence matrix corresponding ot the set
+`vector<bool> points` cine of the incidence matrix corresponding to the set
 
 `int weight` weight of the set
 
@@ -80,9 +80,12 @@ This is the file refering to set system generation, it contains all the object d
 
 `SetSystem GridGraph(int n, int d)` builds `n*n` points on the integer grid and s one set is added to the set system for each point containing points with $L_1$ distance `d` to the considered point
 
-`SetSystem LinearGrid(int n, int d)` similar to the grid set system but the ith set orthogonal to a cannonical vector is duplicated i times
+`SetSystem LinearGrid(int n, int d)` similar to the grid set system but the ith set orthogonal to a canonical vector is duplicated i times
 
-`SetSystem ExponentialGrid(int n, int d)` similar to the grid set system but the ith set orthogonal to a cannonical vector is duplicated $e^i$ times
+`SetSystem ExponentialGrid(int n, int d)` similar to the grid set system but the ith set orthogonal to a canonical vector is duplicated $e^i$ times
 
 `SetSystem DirectionalGrid(int n, int d)` similar to the grid set system the sets orthogonal to $1 0 \ldots 0$ are duplicated $n^{1/d}$ times
 
+`SetSystem ProjectivePlane(int n)` generates a projective plane of order n where n is a prime. That is a ground set of size $n^2+n+1$ and sets with the properties of [projective planes](https://en.wikipedia.org/wiki/Projective_plane). The code to generate them is adapted from [Salmelu's work](https://github.com/Salmelu/ProjectivePlane).
+
+`SetSystem ERGGraph(int n, int d, float p)` generates a set system from an [Erdos–Rényi–Gilbert graph](https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%93R%C3%A9nyi_model) $G$ with probability p for an edge to exist and where for each element $x$ of $X$, there exists a set $F = \{y \in X \vert D_G(x,y) \le d\}$ where $D_G$ is the distance in $G$.
