@@ -405,6 +405,53 @@ SetSystem DirectionalGrid(int n, int d){
     return SetSystem(p,s);
 }
 
+/*
+Credits to Salmelu for its code that I just adapted to my data model:
+https://github.com/Salmelu/ProjectivePlane
+*/
+SetSystem ProjectivePlane(int o){
+    vector<Point> p;
+    vector<Set> s;
+
+    p.push_back(Point({1.,0.,0.}));
+
+    for (float i = 0; i < o; i++){
+        p.push_back(Point({i,1.,0.}));
+    }
+
+    for (float i = 0; i < o; i++){
+        for (float j = 0; j < o; j++){
+            p.push_back(Point({i,j,1.}));
+        }
+    }
+
+    vector<bool> unique(o*o*o, true);
+    unique.at(0) = false;
+
+    for (int a = 0; a < o; a++) {
+		for (int b = 0; b < o; b++) {
+			for (int c = 0; c < o; c++) {
+                if (!unique[(a * o * o) + (b * o) + c]) continue;
+                vector<bool> temp;
+                temp.clear();
+                for (int i = 0; i < p.size(); i++){
+                    if ((static_cast<int>(a*p.at(i).coordinates.at(0) + b*p.at(i).coordinates.at(1) + c*p.at(i).coordinates.at(2)) % o) == 0) {
+                        temp.push_back(1);
+                    } else{
+                        temp.push_back(0);
+                    }
+                }
+                for (int i = 2; i < o; i++) {			
+					unique.at(((i * a) % o) * o * o + ((i * b) % o) * o + (i * c) % o) = false;
+				}
+                s.push_back(temp);
+            }
+        }
+    }
+
+    return SetSystem(p,s);
+}
+
 class Result: public SetSystem {
     public:
         vector<float> weights;

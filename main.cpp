@@ -42,7 +42,16 @@ vector<int> simple_tokenizer(string s)
         res.push_back(stoi(word));
     }
     return res;
-} 
+}
+
+bool isPrime(int n){
+    for (int i = 2; i <= sqrt(n); i++){
+        if (n%i == 0){
+            return false;
+        }
+    }
+    return true;
+}
 
 int main(int argc, char** argv){
     srand(time(NULL));
@@ -121,7 +130,15 @@ int main(int argc, char** argv){
     if (ss_type == "directional_grid"){
         test = DirectionalGrid(n,d);
     }
+    if (ss_type == "projective_plane"){
+        if (!isPrime(n)){
+            fprintf (stderr, "Projective plane needs n to be prime, given: '%d'.\n", n);
+            return 1;
+        }
+        test = ProjectivePlane(n);
+    }
     m = test.sets.size();
+    n = test.points.size();
     test.buildAdjacency(false);
     
     for (int k = 0; k < algoList.size()/2;k++){

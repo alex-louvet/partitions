@@ -85,3 +85,5 @@ This is the file referring to set system generation, it contains all the object 
 `SetSystem ExponentialGrid(int n, int d)` similar to the grid set system but the ith set orthogonal to a canonical vector is duplicated $e^i$ times
 
 `SetSystem DirectionalGrid(int n, int d)` similar to the grid set system the sets orthogonal to $1 0 \ldots 0$ are duplicated $n^{1/d}$ times
+
+`SetSystem ProjectivePlane(int n)` generates a projective plane of order n where n is a prime. That is a ground set of size $n^2+n+1$ and sets with the properties of [projective planes](https://en.wikipedia.org/wiki/Projective_plane). The code to generate them is heavily inspired from [Salmelu's work](https://github.com/Salmelu/ProjectivePlane)
