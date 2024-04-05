@@ -517,9 +517,9 @@ SetSystem ERGGraph(int n, int d, float p){
         while(file.size() > 0){
             int a = file.at(0);
             file.pop_front();
-            visited.at(a) = true;
             for (int& x : edges.at(a)){
                 if (!visited.at(x)){
+                    visited.at(x) = true;
                     if (steps.at(x) == -1){
                         steps.at(x) = steps.at(a) + 1;
                     } else {
