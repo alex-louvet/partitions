@@ -411,7 +411,7 @@ SetSystem Random(int n, int d, int m, float p){
         vector<Set> s;
 
         for (int i = 0; i < n; i++){
-            pt.push_back(Point(d));
+            pt.push_back(Point(2));
         }
         for (int j = 0 ; j < m; j++){
             vector<bool> temp;
@@ -482,7 +482,7 @@ SetSystem ERGGraph(int n, int d, float p){
     vector<Set> s;
 
     for (int i = 0; i < n; i++){
-        pt.push_back(Point(d));
+        pt.push_back(Point(2));
     }
 
 
@@ -543,6 +543,112 @@ SetSystem ERGGraph(int n, int d, float p){
     }
 
     return SetSystem(pt,s);
+}
+
+/*
+Credits to Laurent Vienno et al. for its code that I just adapted to my data model:
+https://gitlab.inria.fr/viennot/graph-vcdim
+*/
+SetSystem PowerLaw(int n, int d, float beta, int seed){
+    vector<Point> pt;
+    vector<Set> s;
+
+    for (int i = 0; i < n; i++){
+        pt.push_back(Point(2));
+    }
+
+    vector<vector<int>> edges;
+
+
+    vector<double> p_deg(n);
+    double nf = n;
+    for (uint k=1; k<n; ++k) p_deg[k] = nf / pow((float)k, beta);
+    p_deg[0] = 0.;
+    discrete_distribution<> power_law(p_deg.begin(), p_deg.end()); // normalization is done by std::discrete_distribution
+    // generate degrees :
+    mt19937 rand_gen(seed);
+    vector<int> deg(n);
+    int m = 0;
+    for(int u=0; u<n; ++u) {
+        deg[u] = power_law(rand_gen);
+        m += deg[u];
+    }
+    // generate edges :
+    vector<int> dst, src;
+    for (int u=0; u<n; ++u) {
+        for (int e=0; e<deg[u]; ++e) {
+            dst.push_back(u); src.push_back(u);
+        }
+    }
+    uniform_int_distribution<> rnd_int(0, m-1);
+    for (int e=m-1; e>0; --e) {
+        int f = rnd_int(rand_gen) % (e+1);
+        swap(dst[e], dst[f]);
+    }
+    for (int u=0, e=0; u<n; ++u) {
+        for (int i=0; i<deg[u]; ++i, ++e) {
+            while (u == dst[e]) {
+                int f = rnd_int(rand_gen) % m;
+                while (u == dst[f] || src[f] == dst[e]) {
+                    f = rnd_int(rand_gen) % m;
+                }
+                swap(dst[e], dst[f]);
+            }
+        }
+    }
+    int current = 0;
+    vector<int> temp;
+    for (int e=0; e < src.size(); e++) {
+        if (src[e] != current){
+            edges.push_back(temp);
+            current = src[e];
+            temp.clear();
+        }
+        temp.push_back(dst[e]);
+    }
+    edges.push_back({});
+
+    for (int e=0; e < dst.size(); e++) {
+        edges.at(dst[e]).push_back(src[e]);
+    }
+
+    //#pragma omp for
+    for (int i = 0; i < n; i++){
+        vector<int> steps(n,-1);
+        vector<bool> visited(n,false);
+        deque<int> file = {i};
+        steps.at(i) = 0;
+        visited.at(i) = true;
+        while(file.size() > 0){
+            int a = file.at(0);
+            file.pop_front();
+            for (int& x : edges.at(a)){
+                if (!visited.at(x)){
+                    visited.at(x) = true;
+                    if (steps.at(x) == -1){
+                        steps.at(x) = steps.at(a) + 1;
+                    } else {
+                        steps.at(x) = min(steps.at(x), steps.at(a) + 1);
+                    }
+                    if (steps.at(x) < d){
+                        file.push_back(x);
+                    }
+                }
+            }
+        }
+        vector<bool> temp;
+        for (int i = 0; i < n; i++){
+            if (steps.at(i) > -1 && steps.at(i) <= d){
+                temp.push_back(1);
+            } else {
+                temp.push_back(0);
+            }
+        }
+        s.push_back(temp);
+    }
+
+    return SetSystem(pt,s);
+
 }
 
 class Result: public SetSystem {

@@ -54,7 +54,8 @@ bool isPrime(int n){
 }
 
 int main(int argc, char** argv){
-    srand(time(NULL));
+    int r = time(NULL);
+    srand(r);
     int n = 1024;
     int d = 2;
     int m = d*sqrt(n);
@@ -92,7 +93,8 @@ int main(int argc, char** argv){
             save = true;
             break;
         case 'r':
-            srand(stoi(optarg));
+            r = stoi(optarg);
+            srand(r);
             break;
         case 'p':
             p = stof(optarg);
@@ -122,39 +124,46 @@ int main(int argc, char** argv){
     if (ss_type == "grid"){
         test = Grid(n,d);
     }
-    if (ss_type == "random_hs"){
+    else if (ss_type == "random_hs"){
         m = n*log(n);
         test = RandomHyperplanes(n,d,m);
     }
-    if (ss_type == "grid_graph"){
+    else if (ss_type == "grid_graph"){
         test = GridGraph(sqrt(n),d);      
     }
-    if (ss_type == "linear_grid"){
+    else if (ss_type == "linear_grid"){
         test = LinearGrid(n,d);
     }
-    if (ss_type == "exponential_grid"){
+    else if (ss_type == "exponential_grid"){
         test = ExponentialGrid(n,d);
     }
-    if (ss_type == "directed_grid"){
+    else if (ss_type == "directed_grid"){
         test = DirectionalGrid(n,d);
     }
-    if (ss_type == "random"){
+    else if (ss_type == "random"){
         test = Random(n,d,m,p);
     }
-    if (ss_type == "projective_plane"){
+    else if (ss_type == "projective_plane"){
         if (!isPrime(n)){
             fprintf (stderr, "Projective plane needs n to be prime, given: '%d'.\n", n);
             return 1;
         }
         test = ProjectivePlane(n);
     }
-    if (ss_type == "ERGGraph"){
+    else if (ss_type == "ERGGraph"){
         test = ERGGraph(n,d,p);
+    }
+    else if (ss_type == "power_law"){
+        test = PowerLaw(n,d,p,r);
+    }
+    else {
+        fprintf (stderr, "Unknown set system, given: '%s'.\n", ss_type);
+        return 1;
     }
     m = test.sets.size();
     n = test.points.size();
     test.buildAdjacency(false);
-    
+
     for (int k = 0; k < algoList.size()/2;k++){
         for (int ite = 0; ite < algoList.at(2*k+1); ite ++){
             cout << "algo "  << algoList.at(2*k) << ", n = "<< n << ", d = " << d << ", t = " << t << " " << ss_type << endl;
