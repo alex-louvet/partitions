@@ -86,6 +86,8 @@ This is the file referring to set system generation, it contains all the object 
 
 `SetSystem DirectionalGrid(int n, int d)` similar to the grid set system the sets orthogonal to $1 0 \ldots 0$ are duplicated $n^{1/d}$ times
 
+`SetSystem Random(int n, int d, int m, float p)` generates a random set system with $n$ points in dimension $d$ and $m$ sets where each point has probbility $p$ to belong to each set.
+
 `SetSystem ProjectivePlane(int n)` generates a projective plane of order n where n is a prime. That is a ground set of size $n^2+n+1$ and sets with the properties of [projective planes](https://en.wikipedia.org/wiki/Projective_plane). The code to generate them is adapted from [Salmelu's work](https://github.com/Salmelu/ProjectivePlane).
 
 `SetSystem ERGGraph(int n, int d, float p)` generates a set system from an [Erdos–Rényi–Gilbert graph](https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%93R%C3%A9nyi_model) $G$ with probability p for an edge to exist and where for each element $x$ of $X$, there exists a set $F = \{y \in X \vert D_G(x,y) \le d\}$ where $D_G$ is the distance in $G$.
