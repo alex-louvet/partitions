@@ -99,7 +99,6 @@ int main(int argc, char** argv){
         case 'p':
             p = stof(optarg);
             break;
-        
         case 'k':
             warmup = stoi(optarg);
             hask = true;
@@ -304,7 +303,7 @@ int main(int argc, char** argv){
 
             ofstream MyFile("results.csv",std::ios_base::app);
 
-            MyFile << algoList.at(2*k) << ";" << n << ";" << t << ";" << ss_type << ";" << m << ";" << d << ";" << maxcrossing << ";" << avgcrossing << ";" << mincrossing << ";" << rate_stats << ";" << time << endl;
+            MyFile << algoList.at(2*k) << ";" << n << ";" << t << ";" << ss_type << ";" << m << ";" << d << ";" << p << ";" << maxcrossing << ";" << avgcrossing << ";" << mincrossing << ";" << rate_stats << ";" << time << endl;
         }
     }
     
