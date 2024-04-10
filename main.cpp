@@ -247,7 +247,7 @@ int main(int argc, char** argv){
             }
             auto end_time = chrono::high_resolution_clock::now();
             std::chrono::duration<double> duration = end_time - start_time;
-            printf("Time taken: %.2fs\n", duration.count());
+            printf("Runtime: %.2fs\n", duration.count());
             auto time = duration.count();
 
             cout << "Computing intersection number" << endl;
