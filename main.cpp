@@ -68,7 +68,8 @@ int main(int argc, char** argv){
     vector<int> algoList;
     bool hask = false;
     int warmup = floor(log(m*n));
-    while ((c = getopt (argc, argv, "a:n:t:d:f:r:p:m:s")) != -1){
+    string filename = "";
+    while ((c = getopt (argc, argv, "a:n:t:d:f:r:p:m:i:s")) != -1){
         switch (c)
         {
         case 'a':
@@ -99,12 +100,15 @@ int main(int argc, char** argv){
         case 'p':
             p = stof(optarg);
             break;
+        case 'i':
+            filename = optarg;
+            break;
         case 'k':
             warmup = stoi(optarg);
             hask = true;
             break;
         case '?':
-            if (optopt == 'a' || optopt == 'n' || optopt == 't' || optopt == 'd' || optopt == 'f' || optopt == 'r' || optopt == 'p' || optopt == 'm')
+            if (optopt == 'a' || optopt == 'n' || optopt == 't' || optopt == 'd' || optopt == 'f' || optopt == 'r' || optopt == 'p' || optopt == 'm' || optopt == 'i')
             fprintf (stderr, "Option -%c requires an argument.\n", optopt);
             else if (isprint (optopt))
             fprintf (stderr, "Unknown option `-%c'.\n", optopt);
@@ -154,6 +158,9 @@ int main(int argc, char** argv){
     }
     else if (ss_type == "power_law"){
         test = PowerLaw(n,d,p,r);
+    }
+    else if (ss_type == "file"){
+        test = SetSystem(filename);
     }
     else {
         fprintf (stderr, "Unknown set system, given: '%s'.\n", ss_type);

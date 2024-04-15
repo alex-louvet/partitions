@@ -136,6 +136,45 @@ class SetSystem {
             points = p;
             sets = s;
         }
+
+        SetSystem(string filename){
+            vector<Point> p;
+            vector<Set> s;
+
+            ifstream ss(filename);
+            string line;
+
+            bool test = false;
+
+            if (ss.is_open())
+            {
+                while ( getline (ss,line) )
+                {
+                    if (!(line == "sets")){
+                        if (!test){
+                        float a = stof(line.substr(0,line.find(",")));
+                        line.erase(0,line.find(",") + 1);
+                        line.pop_back();
+                        float b = stof(line);
+                        p.push_back(Point({a,b}));
+                    } else {
+                        vector<bool> temp;
+                        for (int i = 0; i < line.size()/2;i++){
+                            temp.push_back(line.at(2*i) - '0');
+                        }
+                        s.push_back(Set(temp));
+                    }
+                } else {
+                    test = true;
+                }     
+
+                }
+
+            }
+            points = p;
+            sets = s;
+        }
+
         void buildAdjacency(bool pts){
             for (Point& p : points){
                 p.belongs_to.clear();
