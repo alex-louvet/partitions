@@ -68,6 +68,8 @@ This is the file referring to set system generation, it contains all the object 
 
 `SetSystem()` builds empty set system
 
+`SetSystem(filename string)` builds the set system from the file `filename`. The file must contain first the points of the set system with a point per line where coordinates of the point are flllowed by a comma `,` (even the last one). A line containing the word `sets` separates the points from the adjacency vector of the sets. After that each line represents a set with a comma after each element of the adjacency vector. Each set must be represented by a vector of size $n$. The file [setSystem.example](./setSystem.example) illustrates how to format the file.
+
 ### Method
 
 `void buildAdjacency(bool pts)` calls `buildAdjacency` for each set and creates `belongs_to` and `not_in` for each point if `pts = true`
