@@ -15,6 +15,7 @@ g++ -fopenmp main.cpp
 - `-n int` : Number of points in the set system. Default: `1024`
 - `-t int` : Number of partitions to build. Default: `16`
 - `-f string` : Type of set system (explained in [classes.cpp](./classes.md)) among `["grid","random_hs","grid_graph","linear_grid","exponential_grid","directional_grid","random","projective_plane","ERGGraph","power_law","file"]`. Default: `grid`
+- `-d int`: Dimension in which the points of $X$ live or distance to build the adjecency set system from the graph in case of graph set systems. Explained in more details in [classes.cpp](./classes.md). Default `2`
 - `-s` : Save the results. It saves a line in `results.csv` with the parameters of the set system, the number of crossings, average crossing number and the runtime and creates a file with the points and the partition sets
 - `-r int` : Seed for random generation. Default: `time(NULL)`
 - `-k int` : Number of rounds to run the different sample algorithms as described in the paper. Default `log(m*n)`

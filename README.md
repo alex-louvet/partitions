@@ -4,8 +4,6 @@ This is the code for the experiments related to the paper [Simplicial partition 
 
 ## Dependencies
 
-We detail the dependencies for the code to be run
-
 ### C++ dependencies
 
 - [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page)
@@ -18,7 +16,7 @@ We detail the dependencies for the code to be run
 - [Numpy](https://numpy.org/)
 - [Scipy](https://scipy.org/)
 
-## Organisation
+## Organization
 
 The code is divided in different files which all have their own documentation in the [doc](./doc) folder:
 
@@ -27,3 +25,5 @@ The code is divided in different files which all have their own documentation in
 - [distances.cpp](./doc/distance.md): Variation of the weight function for the parallel algorithm detailed in the paper
 - [classes.cpp](./doc/classes.md): Set systems generation functions
 - [visualization](./doc/visualization.md): Scripts to visualize the results obtained
+
+- [main_osm_graphs.cpp](./doc/main_osm_graphs.md): Script to handle graph set systems generated from Open Street Map data
