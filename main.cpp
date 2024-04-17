@@ -70,7 +70,7 @@ int main(int argc, char** argv){
     bool hask = false;
     int warmup = floor(log(m*n));
     string filename = "";
-    while ((c = getopt (argc, argv, "a:n:t:d:f:r:p:m:i:c:s")) != -1){
+    while ((c = getopt (argc, argv, "a:n:t:d:f:r:p:m:i:c:k:s")) != -1){
         switch (c)
         {
         case 'a':
@@ -112,7 +112,7 @@ int main(int argc, char** argv){
             centers = stoi(optarg);
             break;
         case '?':
-            if (optopt == 'a' || optopt == 'n' || optopt == 't' || optopt == 'd' || optopt == 'f' || optopt == 'r' || optopt == 'p' || optopt == 'm' || optopt == 'i' || optopt == 'c')
+            if (optopt == 'a' || optopt == 'n' || optopt == 't' || optopt == 'd' || optopt == 'f' || optopt == 'r' || optopt == 'p' || optopt == 'm' || optopt == 'i' || optopt == 'c' || optopt == 'k')
             fprintf (stderr, "Option -%c requires an argument.\n", optopt);
             else if (isprint (optopt))
             fprintf (stderr, "Unknown option `-%c'.\n", optopt);
@@ -125,13 +125,11 @@ int main(int argc, char** argv){
             abort ();
         }
     }
-    if (!hask){
-        warmup = floor(log(m*n));
-    }
+
     if (ss_type == "grid"){
         test = Grid(n,d);
     }
-    if (ss_type == "grid_centers"){
+    else if (ss_type == "grid_centers"){
         test = GridWithCenters(n,d,centers);
     }
     else if (ss_type == "random_hs"){
@@ -175,6 +173,9 @@ int main(int argc, char** argv){
     }
     m = test.sets.size();
     n = test.points.size();
+    if (!hask){
+        warmup = floor(log(m*n));
+    }
     test.buildAdjacency(false);
 
     for (int k = 0; k < algoList.size()/2;k++){
