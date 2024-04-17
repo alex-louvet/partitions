@@ -65,11 +65,12 @@ int main(int argc, char** argv){
     string ss_type = "grid";
     bool save = false;
     int c;
+    int centers = 3;
     vector<int> algoList;
     bool hask = false;
     int warmup = floor(log(m*n));
     string filename = "";
-    while ((c = getopt (argc, argv, "a:n:t:d:f:r:p:m:i:s")) != -1){
+    while ((c = getopt (argc, argv, "a:n:t:d:f:r:p:m:i:c:s")) != -1){
         switch (c)
         {
         case 'a':
@@ -107,8 +108,11 @@ int main(int argc, char** argv){
             warmup = stoi(optarg);
             hask = true;
             break;
+        case 'c':
+            centers = stoi(optarg);
+            break;
         case '?':
-            if (optopt == 'a' || optopt == 'n' || optopt == 't' || optopt == 'd' || optopt == 'f' || optopt == 'r' || optopt == 'p' || optopt == 'm' || optopt == 'i')
+            if (optopt == 'a' || optopt == 'n' || optopt == 't' || optopt == 'd' || optopt == 'f' || optopt == 'r' || optopt == 'p' || optopt == 'm' || optopt == 'i' || optopt == 'c')
             fprintf (stderr, "Option -%c requires an argument.\n", optopt);
             else if (isprint (optopt))
             fprintf (stderr, "Unknown option `-%c'.\n", optopt);
@@ -126,6 +130,9 @@ int main(int argc, char** argv){
     }
     if (ss_type == "grid"){
         test = Grid(n,d);
+    }
+    if (ss_type == "grid_centers"){
+        test = GridWithCenters(n,d,centers);
     }
     else if (ss_type == "random_hs"){
         m = n*log(n);

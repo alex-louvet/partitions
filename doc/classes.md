@@ -78,6 +78,8 @@ This is the file referring to set system generation, it contains all the object 
 
 `SetSystem Grid(int n, int d)` builds a grid sets system on `n` points and $dn^{1/d}$ sets  evenly spaced and facing towards $(1\ldots 1)$
 
+`SetSystem GridWithCenters(int n, int d, int c)` builds a grid sets system on `n` points and $dn^{1/d}$ sets  evenly spaced and facing towards $(1\ldots 1)$ but points are generated following a gaussian distribution around `c` different centers generated uniformly. Each center gets the same number of points generated from the distribution centered on them
+
 `SetSystem RandomHyperplanes(int n, int d, int m)` build a random halfspaces set system that are each defined by the hyperplane passing through a random subsets of `d` points and oriented towards $(1\ldots 1)$
 
 `SetSystem GridGraph(int n, int d)` builds `n*n` points on the integer grid and s one set is added to the set system for each point containing points with $L_1$ distance `d` to the considered point

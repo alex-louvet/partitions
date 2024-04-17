@@ -241,6 +241,59 @@ SetSystem Grid(int n, int d){
     return SetSystem(p,s);
 }
 
+SetSystem GridWithCenters(int n, int d, int c){
+    vector<Point> p;
+    vector<Set> s;
+    vector<Point> centers;
+
+    for (int i = 0; i < c; i++){
+        centers.push_back(Point(d));
+    }
+
+    random_device rd2{};
+    mt19937 geng{rd2()};
+
+    cout << "Centers are:" << endl;
+    for(int j = 0; j < c ; j++){
+        p.push_back(centers.at(j));
+        for (int k = 0; k < d; k++){
+            cout << centers.at(j).coordinates.at(k) << " ";
+        }
+        cout << endl;
+        for (int i = 0; i < n/c; i++){
+            vector<float> temp;
+            for (int k = 0; k < d; k++){
+                normal_distribution<float> dist(centers.at(j).coordinates.at(k), 0.1);
+                temp.push_back(dist(geng));
+            }
+            p.push_back(Point(temp));
+        }
+    }
+
+    vector<bool> temp;
+    for (int dim = 0; dim < d; dim++){
+        for (int i = 0; i < pow(n,1.0/d); i++){
+            temp.clear();
+            for (const Point& pt : p) {
+                if (pt.coordinates[dim] > i/(pow(n,1.0/d))){
+                    temp.push_back(1);
+                } else {
+                    temp.push_back(0);
+                }
+            }
+            s.push_back(Set(temp));
+        }
+    }
+
+		random_device rd;
+		mt19937 g(rd());
+		for (int i = 0; i < 10*s.size(); i++){
+			shuffle(s.begin(), s.end(), g);
+		}
+
+    return SetSystem(p,s);
+}
+
 float dot(vector<float> p, vector<float> q)	//dot product of two vectors
 {
 	assert(p.size() == q.size());
