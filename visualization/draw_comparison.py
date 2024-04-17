@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import sys
 import pandas as pd
 import numpy as np
@@ -7,18 +8,24 @@ label_table = ["","min","rate","sampling","deque","atOnce","atOnce","atOnce","at
 color_table = ["", "red","green","orange","blue","purple","purple","purple","purple","purple","purple"]
 join_table = {'d': 2, 't': 512, 'n':8192}
 
-df = pd.read_csv("temp.csv", sep=";")
-toplot = df.drop(df[(df["t"] != join_table['t']) | (df["d"] != join_table['d']) | (df["ss_type"] != int(sys.argv[2])) ].index).sort_values(sys.argv[1])
+df = pd.read_csv("results.csv", sep=";")
+toplot = df.drop(df[(df["t"] != join_table['t']) | (df["d"] != join_table['d']) | (df["ss_type"] != sys.argv[2]) ].index).sort_values(sys.argv[1])
 if sys.argv[1] == 't':
-    toplot = df.drop(df[(df["n"] != join_table['n']) | (df["d"] != join_table['d']) | (df["ss_type"] != int(sys.argv[2]))].index).sort_values(sys.argv[1])
+    toplot = df.drop(df[(df["n"] != join_table['n']) | (df["d"] != join_table['d']) | (df["ss_type"] != sys.argv[2])].index).sort_values(sys.argv[1])
 if sys.argv[1] == 'd':
-    toplot = df.drop(df[(df["t"] != join_table['t']) | (df["n"] != join_table['n']) | (df["ss_type"] != int(sys.argv[2]))].index).sort_values(sys.argv[1])
+    toplot = df.drop(df[(df["t"] != join_table['t']) | (df["n"] != join_table['n']) | (df["ss_type"] != sys.argv[2])].index).sort_values(sys.argv[1])
 
 fig, ax = plt.subplots()
 
 for key, grp in toplot.groupby(['algo']):
-    ax = grp.groupby([sys.argv[1]]).mean().plot(ax=ax, kind='line', y="max_crossing", label=label_table[int(key)], color=color_table[int(key)])
-    ax = grp.groupby([sys.argv[1]]).mean().plot(ax=ax, kind='line', y="avg_crossing", label='avg ' + label_table[int(key)], color=color_table[int(key)],linestyle="dotted")
+    temp = grp.groupby([sys.argv[1]],as_index=False).agg(min=pd.NamedAgg(column="max_crossing", aggfunc="min"), max=pd.NamedAgg(column="max_crossing", aggfunc="max"))
+    grp.groupby([sys.argv[1]]).mean("max_crossing").plot(ax=ax,y="max_crossing", label=label_table[int(key)], color=color_table[int(key)])
+    ax.fill_between(x=sys.argv[1],y1='min',y2='max',data=temp,color=mpl.colors.to_rgba(color_table[int(key)], 0.15))
+
+    temp = grp.groupby([sys.argv[1]],as_index=False).agg(min=pd.NamedAgg(column="avg_crossing", aggfunc="min"), max=pd.NamedAgg(column="avg_crossing", aggfunc="max"))
+    grp.groupby([sys.argv[1]]).mean("avg_crossing").plot(ax=ax,y="avg_crossing", label="avg " + label_table[int(key)], color=color_table[int(key)],linestyle='dotted')
+    ax.fill_between(x=sys.argv[1],y1='min',y2='max',data=temp,color=mpl.colors.to_rgba(color_table[int(key)], 0.15))
+
 
 ax.set_xlabel(sys.argv[1], fontsize=25)
 ax.set_ylabel("crossing number",fontsize=25)
