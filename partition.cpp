@@ -167,7 +167,7 @@ Result partition_min_stats(SetSystem ss, int t){
     return res;
 }
 
-Result partition_rate_stats(SetSystem ss, int t){
+Result partition_rate_stats(SetSystem ss, int t, float constant){
     
     const int n = ss.points.size();
     const int d = ss.points.at(0).coordinates.size();
@@ -231,7 +231,7 @@ Result partition_rate_stats(SetSystem ss, int t){
             vector<int> candidates;
             candidates.clear();
             while (j < n) {
-                if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k),1.0/d)){
+                if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= constant*pow(static_cast<float>(k),1.0/d)){
                     candidates.push_back(j);
                     break;
                 } else {
@@ -304,7 +304,7 @@ Result partition_rate_stats(SetSystem ss, int t){
     return res;
 }
 
-Result partition_sampling(SetSystem ss, int t, int sample_size){
+Result partition_sampling(SetSystem ss, int t, int sample_size, float constant){
     
     const int n = ss.points.size();
     const int d = ss.points.at(0).coordinates.size();
@@ -382,7 +382,7 @@ Result partition_sampling(SetSystem ss, int t, int sample_size){
                         }
                     }
 
-                    if (m/static_cast<float>(sample_size)*(partitionWeight + weight.at(j))/static_cast<float>(setsWeight) <= 1*pow(static_cast<float>(k),1.0/d)/pow(static_cast<float>(n-n/static_cast<float>(t)*i),1.0/d)){
+                    if (m/static_cast<float>(sample_size)*(partitionWeight + weight.at(j))/static_cast<float>(setsWeight) <= constant*pow(static_cast<float>(k),1.0/d)/pow(static_cast<float>(n-n/static_cast<float>(t)*i),1.0/d)){
                         min = j;
                         break;
                     } else {
@@ -444,7 +444,7 @@ Result partition_sampling(SetSystem ss, int t, int sample_size){
     return res;
 }
 
-Result no_weight_update_deque_insert_middle(SetSystem ss, int t){
+Result no_weight_update_deque_insert_middle(SetSystem ss, int t, float constant){
     const int n = ss.points.size();
     const int d = ss.points.at(0).coordinates.size();
     const int m = ss.sets.size();
@@ -508,7 +508,7 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t){
             int min = -1;
             int j = 0;
             while (j < n) {
-                if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k),1.0/d)){
+                if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= constant*pow(static_cast<float>(k),1.0/d)){
                     min=j;
                     break;
                 } else {
