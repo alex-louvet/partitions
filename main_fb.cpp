@@ -91,8 +91,9 @@ int main(int argc, char** argv){
     bool hask = false;
     int warmup;
     int r;
+    float constant;
 
-    while ((c = getopt (argc, argv, "a:n:t:d:r:e:k:s")) != -1){
+    while ((c = getopt (argc, argv, "a:n:t:d:r:e:k:c:s")) != -1){
         switch (c)
         {
         case 'a':
@@ -121,8 +122,11 @@ int main(int argc, char** argv){
             warmup = stoi(optarg);
             hask = true;
             break;
+        case 'c':
+            constant = stof(optarg);
+            break;
         case '?':
-            if (optopt == 'a' || optopt == 'n' || optopt == 't' || optopt == 'd' || optopt == 'r' || optopt == 'e' || optopt == 'k')
+            if (optopt == 'a' || optopt == 'n' || optopt == 't' || optopt == 'd' || optopt == 'r' || optopt == 'e' || optopt == 'k' || optopt == 'c')
             fprintf (stderr, "Option -%c requires an argument.\n", optopt);
             else if (isprint (optopt))
             fprintf (stderr, "Unknown option `-%c'.\n", optopt);
@@ -238,21 +242,21 @@ int main(int argc, char** argv){
             }
 
             if (algoList.at(2*k) == 2){
-                res = partition_rate_stats(test,t);
+                res = partition_rate_stats(test,t,constant);
                 if (save){
                     writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_algo_rate.csv");
                 }
             }
 
             if (algoList.at(2*k) == 3){
-                res = partition_sampling(test,t,pow(static_cast<float>(m),2/3));
+                res = partition_sampling(test,t,pow(static_cast<float>(m),2/3),constant);
                 if (save){
                     writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_sampling.csv");
                 }
             }
 
             if (algoList.at(2*k) == 4){
-                res = no_weight_update_deque_insert_middle(test,t);
+                res = no_weight_update_deque_insert_middle(test,t,constant);
                 if (save){
                     writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_update_deque_middle.csv");
                 }
@@ -352,7 +356,7 @@ int main(int argc, char** argv){
 
             int rate_stats = 0;
             for (int j = 0; j < res.weights.size(); j++){
-                if (res.weights.at(j) > 2*pow(static_cast<float>(j%(n/t-1)+1),1.0/d)){
+                if (res.weights.at(j) > constant*pow(static_cast<float>(j%(n/t-1)+1),1.0/d)){
                     rate_stats++;
                 };
             }
