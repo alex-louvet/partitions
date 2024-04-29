@@ -27,3 +27,4 @@ The code is divided in different files which all have their own documentation in
 - [visualization](./doc/visualization.md): Scripts to visualize the results obtained
 
 - [main_osm_graphs.cpp](./doc/main_osm_graphs.md): Script to handle graph set systems generated from Open Street Map data
+- [main_fb.cpp](./doc/main_fb.md): Script to handle graph set systems generated from graph data sych as facebook social circles and ArXiv coauthorship graph
