@@ -72,7 +72,8 @@ int main(int argc, char** argv){
     int warmup = floor(log(m*n));
     string filename = "";
     float constant = 2.0;
-    while ((c = getopt (argc, argv, "a:n:t:d:f:r:p:m:i:c:k:s")) != -1){
+    bool approx = false;
+    while ((c = getopt (argc, argv, "a:n:t:d:f:r:p:m:i:c:k:es")) != -1){
         switch (c)
         {
         case 'a':
@@ -115,6 +116,9 @@ int main(int argc, char** argv){
             break;
         case 'c':
             constant = stof(optarg);
+            break;
+        case 'e':
+            approx = true;
             break;
         case '?':
             if (optopt == 'a' || optopt == 'n' || optopt == 't' || optopt == 'd' || optopt == 'f' || optopt == 'r' || optopt == 'p' || optopt == 'm' || optopt == 'i' || optopt == 'c' || optopt == 'k' || optopt == 'g')
@@ -297,6 +301,75 @@ int main(int argc, char** argv){
             printf("Runtime: %.2fs\n", duration.count());
             auto time = duration.count();
 
+            float max_random_sample = 0.;
+            float max_approx_partition = 0.;
+
+            if (approx){
+                vector<int> random_sample;
+                while (random_sample.size() < t){
+                    int a = rand()%n;
+                    bool test = false;
+                    for (int& i : random_sample){
+                        if (i == a){
+                            test = true;
+                            break;
+                        }
+                    }
+                    if (!test){
+                        random_sample.push_back(a);
+                    }
+                }
+
+                vector<int> approx_partition;
+                for (Set& s : res.sets){
+                    vector<int> temp;
+                    for (int i = 0; i < n; i++){
+                        if (s.points.at(i)){
+                            temp.push_back(i);
+                        }
+                    }
+                    approx_partition.push_back(temp.at(rand()%temp.size()));
+                }
+
+                vector<float> approx_partition_count(m,0);
+                vector<float> random_sample_count(m,0);
+                #pragma omp parallel for
+                for (int j = 0; j < m; j ++){
+                    int set_size = 0;
+                    int approx_partition_inter = 0;
+                    int random_sample_inter = 0;
+                    for (int i = 0; i < n; i++){
+                        if (test.sets.at(j).points.at(i)){
+                            set_size ++;
+                        }
+                    }
+                    for (int& i : approx_partition){
+                        if (test.sets.at(j).points.at(i)){
+                            approx_partition_inter ++;
+                        }
+                    }                
+                    for (int& i : random_sample){
+                        if (test.sets.at(j).points.at(i)){
+                            random_sample_inter ++;
+                        }
+                    }
+                    approx_partition_count.at(j) = abs(static_cast<float>(set_size)/n - static_cast<float>(approx_partition_inter)/t);
+                    random_sample_count.at(j) = abs(static_cast<float>(set_size)/n - static_cast<float>(random_sample_inter)/t);
+                }
+
+                for (int j = 0; j < m; j ++){
+                    if (max_approx_partition < approx_partition_count.at(j)){
+                        max_approx_partition = approx_partition_count.at(j);
+                    }
+                    if (max_random_sample < random_sample_count.at(j)){
+                        max_random_sample = random_sample_count.at(j);
+                    }
+                }
+                cout << "Max epsilon: "<< max_random_sample << " (random) - " << max_approx_partition << " (with simplicial partition)" << endl;
+
+            }
+            
+
             cout << "Computing intersection number" << endl;
             if (res.intersections.size() == 0){
                 for (int j = 0; j < m; j++){
@@ -383,7 +456,7 @@ int main(int argc, char** argv){
 
             ofstream MyFile("results.csv",std::ios_base::app);
 
-            MyFile << algoList.at(2*k) << ";" << n << ";" << list.size() << ";" << ss_type << ";" << m << ";" << d << ";" << p << ";" << maxcrossing << ";" << avgcrossing << ";" << mincrossing << ";" << rate_stats << ";" << time << endl;
+            MyFile << algoList.at(2*k) << ";" << n << ";" << t << ";" << ss_type << ";" << m << ";" << d << ";" << p << ";" << maxcrossing << ";" << avgcrossing << ";" << mincrossing << ";" << rate_stats << ";" << time << ";" << max_approx_partition << ";" << max_random_sample << endl;
         }
     }
     
