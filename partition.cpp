@@ -41,7 +41,22 @@ int posNum(vector<unsigned long> weight){
     return res;
 }
 
-Result partition_min_stats(SetSystem ss, int t){
+bool valid_partition_size_list(vector<int> partition_size, int n){
+    int count = 0;
+    for (int& x : partition_size){
+        if (x < 1){
+            return false;
+        } else {
+            count += x;
+        }
+    }
+    if (count > n){
+        return false;
+    }
+    return true;
+}
+
+Result partition_min_stats(SetSystem ss, int t, vector<int> partition_size){
     
     const int n = ss.points.size();
     const int d = ss.points.at(0).coordinates.size();
@@ -66,7 +81,7 @@ Result partition_min_stats(SetSystem ss, int t){
     Result res = Result(ss.points, s);
     vector<bool> intersect_partition(m,0);
 
-    for (int i = 0 ; i < t; i++){
+    for (int i = 0 ; i < partition_size.size(); i++){
         //cout << "\nPartition " << i+1 << "\n";
 
         Set partition = Set(n);
@@ -102,7 +117,7 @@ Result partition_min_stats(SetSystem ss, int t){
             }
         }
 
-        for (int k = 1 ; k < n / t; k++){
+        for (int k = 1 ; k < partition_size.at(i); k++){
             int min = -1;
             for (auto j = 0; j < n; j++) {
                 // Replace previous minimum if the weight is strictly smaller in all valid cases (no restriction if the partition has no edge yet, connectiveness otherwise)
@@ -167,7 +182,7 @@ Result partition_min_stats(SetSystem ss, int t){
     return res;
 }
 
-Result partition_rate_stats(SetSystem ss, int t, float constant){
+Result partition_rate_stats(SetSystem ss, int t, float constant, vector<int> partition_size){
     
     const int n = ss.points.size();
     const int d = ss.points.at(0).coordinates.size();
@@ -189,7 +204,7 @@ Result partition_rate_stats(SetSystem ss, int t, float constant){
     Result res = Result(ss.points, s);
     vector<bool> intersect_partition(m,0);
 
-    for (int i = 0 ; i < t; i++){
+    for (int i = 0 ; i < partition_size.size(); i++){
         //cout << "\nPartition " << i+1 << "\n";
 
         Set partition = Set(n);
@@ -225,7 +240,7 @@ Result partition_rate_stats(SetSystem ss, int t, float constant){
             }
         }
 
-        for (int k = 1 ; k < n / t; k++){
+        for (int k = 1 ; k < partition_size.at(i); k++){
             int min = -1;
             int j = 0;
             vector<int> candidates;
@@ -304,7 +319,7 @@ Result partition_rate_stats(SetSystem ss, int t, float constant){
     return res;
 }
 
-Result partition_sampling(SetSystem ss, int t, int sample_size, float constant){
+Result partition_sampling(SetSystem ss, int t, int sample_size, float constant, vector<int> partition_size){
     
     const int n = ss.points.size();
     const int d = ss.points.at(0).coordinates.size();
@@ -326,7 +341,7 @@ Result partition_sampling(SetSystem ss, int t, int sample_size, float constant){
     Result res = Result(ss.points, s);
     vector<bool> intersect_partition(m,0);
 
-    for (int i = 0 ; i < t; i++){
+    for (int i = 0 ; i < partition_size.size(); i++){
         //cout << "\nPartition " << i+1 << "\n";
 
         Set partition = Set(n);
@@ -352,7 +367,7 @@ Result partition_sampling(SetSystem ss, int t, int sample_size, float constant){
         available.at(start) = false;
         partition.points.at(start) = 1;
 
-        for (int k = 1 ; k < n / t; k++){
+        for (int k = 1 ; k < partition_size.at(i); k++){
             int min = -1;
 
             //get sampled_size distinct random number between 0 and m-1
@@ -444,7 +459,7 @@ Result partition_sampling(SetSystem ss, int t, int sample_size, float constant){
     return res;
 }
 
-Result no_weight_update_deque_insert_middle(SetSystem ss, int t, float constant){
+Result no_weight_update_deque_insert_middle(SetSystem ss, int t, float constant, vector<int> partition_size){
     const int n = ss.points.size();
     const int d = ss.points.at(0).coordinates.size();
     const int m = ss.sets.size();
@@ -466,7 +481,7 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t, float constant)
     vector<bool> intersect_partition(m,0);
     deque<int> update_weight;
 
-    for (int i = 0 ; i < t; i++){
+    for (int i = 0 ; i < partition_size.size(); i++){
         //cout << "\nPartition " << i+1 << "\n";
 
         Set partition = Set(n);
@@ -504,7 +519,7 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t, float constant)
 
         update_weight.clear();
 
-        for (int k = 1 ; k < n / t; k++){
+        for (int k = 1 ; k < partition_size.at(i); k++){
             int min = -1;
             int j = 0;
             while (j < n) {
@@ -593,7 +608,7 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t, float constant)
     return res;
 }
 
-Result partition_distance_set_weight_par(SetSystem ss, int t, vector<float> (*lf)(vector<Point>, vector<bool>, int, vector<Set> , int k), int k){
+Result partition_distance_set_weight_par(SetSystem ss, int t, vector<float> (*lf)(vector<Point>, vector<bool>, int, vector<Set> , int k), int k, vector<int> partition_size){
     
     const int n = ss.points.size();
     const int d = ss.points.at(0).coordinates.size();
@@ -605,7 +620,12 @@ Result partition_distance_set_weight_par(SetSystem ss, int t, vector<float> (*lf
     vector<Set> s;
     Result res = Result(ss.points, s);
 
-    for (int i = 0 ; i < t; i++){
+    if (!valid_partition_size_list(partition_size, n)){
+        fprintf (stderr, "the list of part size can not be used\n");
+        return res;
+    }
+
+    for (int j = 0 ; j < partition_size.size(); j++){
         //cout << "\nPartition " << i+1 << "\n";
 
         Set partition = Set(n);
@@ -628,7 +648,7 @@ Result partition_distance_set_weight_par(SetSystem ss, int t, vector<float> (*lf
         }
         sort(tosort.begin(),tosort.end(),floatWeightOrder);
 
-        for (int i = 0; i < n/t-1; i++){
+        for (int i = 0; i < partition_size.at(j) - 1; i++){
             //Add selected edge to the partition
             partition.points.at(get<0>(tosort.at(i))) = 1;
 
@@ -647,7 +667,7 @@ Result partition_distance_set_weight_par(SetSystem ss, int t, vector<float> (*lf
                     if (test){
                         break;
                     }
-                    for (int i = 0; i < n/t-1; i++){
+                    for (int i = 0; i < partition_size.at(j) - 1; i++){
                         if (pt == get<0>(tosort.at(i))){
                             s.increase();
                             test = true;
@@ -660,7 +680,7 @@ Result partition_distance_set_weight_par(SetSystem ss, int t, vector<float> (*lf
                     if (test){
                         break;
                     }
-                    for (int i = 0; i < n/t-1; i++){
+                    for (int i = 0; i < partition_size.at(j) - 1; i++){
                         if (pt == get<0>(tosort.at(i))){
                             s.increase();
                             test = true;

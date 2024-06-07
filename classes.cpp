@@ -10,6 +10,7 @@
 #include "Eigen/Dense"
 
 using namespace std;
+#define PI 3.14159265
 
 class Point {
     public:
@@ -731,6 +732,45 @@ SetSystem PowerLaw(int n, int d, float beta, int seed){
         vector<bool> temp;
         for (int i = 0; i < n; i++){
             if (steps.at(i) > -1 && steps.at(i) <= d){
+                temp.push_back(1);
+            } else {
+                temp.push_back(0);
+            }
+        }
+        s.push_back(temp);
+    }
+
+    return SetSystem(pt,s);
+
+}
+
+float euclidian_distance(Point p1, Point p2){
+    return sqrt((p1.coordinates.at(0) - p2.coordinates.at(0))*(p1.coordinates.at(0) - p2.coordinates.at(0))+(p1.coordinates.at(1) - p2.coordinates.at(1))*(p1.coordinates.at(1) - p2.coordinates.at(1)));
+}
+
+SetSystem ConcentricCircles(int n, int m){
+    vector<Point> pt;
+    vector<Set> s;
+
+    for (float j = 1.0; j < 5.0; j++){
+        for (int i = 0; i < n/4; i++){
+            float theta = rand()/static_cast<float>(RAND_MAX) * 2 * PI;
+            vector<float> temp;
+            temp.push_back(0.5+0.1*j*cos(theta));
+            temp.push_back(0.5+0.1*j*sin(theta));
+            pt.push_back(Point(temp));
+        }
+    }
+
+    for (int i = 0; i < m; i++){
+        vector<bool> temp;
+        int c = rand()/static_cast<float>(RAND_MAX) * pt.size();
+        int r = rand()/static_cast<float>(RAND_MAX) * pt.size();
+        while (r == c){
+            r = rand()/static_cast<float>(RAND_MAX) * pt.size();
+        }
+        for (Point& p : pt){
+            if (euclidian_distance(p,pt.at(c)) <= euclidian_distance(pt.at(c),pt.at(r))){
                 temp.push_back(1);
             } else {
                 temp.push_back(0);

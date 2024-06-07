@@ -13,7 +13,6 @@
 #include <unistd.h>
 
 #include "partition.cpp"
-#include "part_size.cpp"
 
 using namespace std;
 
@@ -181,7 +180,6 @@ int main(int argc, char** argv){
     }
     m = test.sets.size();
     n = test.points.size();
-    vector<int> list = equi_distro(n,t);
     if (!hask){
         warmup = floor(log(m*n));
     }
@@ -195,98 +193,74 @@ int main(int argc, char** argv){
             Result res;
             if (argc >= 2){
                 if (algoList.at(2*k) == 1){
-                    res = partition_min_stats(test,t, equi_distro(n,t));
+                    res = partition_min_stats(test,t);
                     if (save){
                         writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_algo_min.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 2){
-                    res = partition_rate_stats(test,t, constant, equi_distro(n,t));
+                    res = partition_rate_stats(test,t, constant);
                     if (save){
                         writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_algo_rate.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 3){
-                    res = partition_sampling(test,t,pow(static_cast<float>(m),2/3), constant, equi_distro(n,t));
+                    res = partition_sampling(test,t,pow(static_cast<float>(m),2/3), constant);
                     if (save){
                         writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_sampling.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 4){
-                    res = no_weight_update_deque_insert_middle(test,t, constant, equi_distro(n,t));
+                    res = no_weight_update_deque_insert_middle(test,t, constant);
                     if (save){
                         writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_update_deque_middle.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 5){
-                    res = partition_distance_set_weight_par(test,t,l1,0, equi_distro(n,t));
+                    res = partition_distance_set_weight_par(test,t,l1,0);
                     if (save){
                         writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_l1.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 6){
-                    res = partition_distance_set_weight_par(test,t,l2,warmup, equi_distro(n,t));
+                    res = partition_distance_set_weight_par(test,t,l2,warmup);
                     if (save){
                         writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_l2.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 7){
-                    res = partition_distance_set_weight_par(test,t,sw,warmup, equi_distro(n,t));
+                    res = partition_distance_set_weight_par(test,t,sw,warmup);
                     if (save){
                         writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_sw.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 8){
-                    res = partition_distance_set_weight_par(test,t,dw,warmup, equi_distro(n,t));
+                    res = partition_distance_set_weight_par(test,t,dw,warmup);
                     if (save){
                         writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_dw.csv");
                     }
                 }
                 
                 if (algoList.at(2*k) == 9){
-                    res = partition_distance_set_weight_par(test,t,sw_weighted,warmup, equi_distro(n,t));
+                    res = partition_distance_set_weight_par(test,t,sw_weighted,warmup);
                     if (save){
                         writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_sw_weighted.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 10){
-                    res = partition_distance_set_weight_par(test,t,sw_weighted_w_sample, warmup, equi_distro(n,t));
+                    res = partition_distance_set_weight_par(test,t,sw_weighted_w_sample, warmup);
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_sw_sample_equi.csv");
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_sw_sample.csv");
                     }
                 }
-
-                if (algoList.at(2*k) == 11){
-                    list = interval_size(n,t,n/t/2,4*n/t);
-                    res = partition_distance_set_weight_par(test,t,sw_weighted_w_sample, warmup, list);
-                    if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_sw_sample_interval.csv");
-                    }
-                }
-
-                if (algoList.at(2*k) == 12){
-                    list = same_number_different_size_3(n,t);
-                    res = partition_distance_set_weight_par(test,t,sw_weighted_w_sample, warmup, list);
-                    if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_sw_sample_3.csv");
-                    }
-                }
-                if (algoList.at(2*k) == 13){
-                    list = same_number_different_size_linear(n,t, 0.8);
-                    res = partition_distance_set_weight_par(test,t,sw_weighted_w_sample, warmup, list);
-                    if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_sw_sample_linear.csv");
-                    }
-                }
-
 
             } else {
                 fprintf (stderr, "Algorithm -%c not defined.\n", algoList.at(2*k));
@@ -297,6 +271,70 @@ int main(int argc, char** argv){
             printf("Runtime: %.2fs\n", duration.count());
             auto time = duration.count();
 
+            vector<int> random_sample;
+            while (random_sample.size() < t){
+                int a = rand()%n;
+                bool test = false;
+                for (int& i : random_sample){
+                    if (i == a){
+                        test = true;
+                        break;
+                    }
+                }
+                if (!test){
+                    random_sample.push_back(a);
+                }
+            }
+
+            vector<int> approx_partition;
+            for (Set& s : res.sets){
+                vector<int> temp;
+                for (int i = 0; i < n; i++){
+                    if (s.points.at(i)){
+                        temp.push_back(i);
+                    }
+                }
+                approx_partition.push_back(temp.at(rand()%temp.size()));
+            }
+
+            vector<float> approx_partition_count(m,0);
+            vector<float> random_sample_count(m,0);
+            #pragma omp parallel for
+            for (int j = 0; j < m; j ++){
+                int set_size = 0;
+                int approx_partition_inter = 0;
+                int random_sample_inter = 0;
+                for (int i = 0; i < n; i++){
+                    if (test.sets.at(j).points.at(i)){
+                        set_size ++;
+                    }
+                }
+                for (int& i : approx_partition){
+                    if (test.sets.at(j).points.at(i)){
+                        approx_partition_inter ++;
+                    }
+                }                
+                for (int& i : random_sample){
+                    if (test.sets.at(j).points.at(i)){
+                        random_sample_inter ++;
+                    }
+                }
+                approx_partition_count.at(j) = abs(static_cast<float>(set_size)/n - static_cast<float>(approx_partition_inter)/t);
+                random_sample_count.at(j) = abs(static_cast<float>(set_size)/n - static_cast<float>(random_sample_inter)/t);
+            }
+
+            float max_random_sample = 0.;
+            float max_approx_partition =0.;
+            for (int j = 0; j < m; j ++){
+                if (max_approx_partition < approx_partition_count.at(j)){
+                    max_approx_partition = approx_partition_count.at(j);
+                }
+                if (max_random_sample < random_sample_count.at(j)){
+                    max_random_sample = random_sample_count.at(j);
+                }
+            }
+            cout << "Max epsilon: "<< max_random_sample << " (random) - " << max_approx_partition << " (with simplicial partition)" << endl;
+
             cout << "Computing intersection number" << endl;
             if (res.intersections.size() == 0){
                 for (int j = 0; j < m; j++){
@@ -304,7 +342,7 @@ int main(int argc, char** argv){
                 }
                 #pragma omp parallel for
                 for (int j = 0; j < m; j ++){
-                    for (int i = 0; i < res.sets.size(); i++){
+                    for (int i = 0; i < t; i++){
                         int start = -1;
                         for (int k = 0; k < n; k++){
                             if (res.sets.at(i).points.at(k)){
@@ -321,7 +359,6 @@ int main(int argc, char** argv){
                     }
                 }
             }
-
 
             int maxcrossing = 0;
             int mincrossing = 0;
@@ -343,37 +380,8 @@ int main(int argc, char** argv){
                 avgcrossing /= static_cast<float>(res.intersections.size());
             }
 
-
             int rate_stats = 0;
-            if (res.weights.size() > 0){
-                ofstream pot("potential.csv",std::ios_base::app);
-                pot << algoList.at(2*k) << ";" << n << ";" << t << ";" << d << ";";
-                for (int j = 0; j < t; j++){
-                    int part_stat = 0;
-                    for (int jp = 0; jp < n/t-1; jp++){
-                        if (res.weights.at(j*(n/t-1)+jp) > constant*pow(static_cast<float>(jp+1),1.0/d)){
-                            part_stat++;
-                        };
-                    }
-                    pot << part_stat << ",";
-                }
-                pot << endl;
 
-                int rate_stats2 = 0;
-                ofstream pot2("potential2.csv",std::ios_base::app);
-                pot2 << algoList.at(2*k) << ";" << n << ";" << t << ";" << d << ";";
-                for (int j = 0; j < t; j++){
-                    int part_stat = 0;
-                    for (int jp = 0; jp < n/t-1; jp++){
-                        if (res.weights.at(j*(n/t-1)+jp) > t/(t-j)*constant*pow(static_cast<float>(jp+1),1.0/d)){
-                            part_stat++;
-                        };
-                    }
-                    pot2 << part_stat << ",";
-                }
-                pot2 << endl;
-            }
-            
             for (int j = 0; j < res.weights.size(); j++){
                 //cout << res.weights.at(j) << " ";
                 if (res.weights.at(j) > constant*pow(static_cast<float>(j%(n/t-1)+1),1.0/d)){
@@ -383,7 +391,7 @@ int main(int argc, char** argv){
 
             ofstream MyFile("results.csv",std::ios_base::app);
 
-            MyFile << algoList.at(2*k) << ";" << n << ";" << list.size() << ";" << ss_type << ";" << m << ";" << d << ";" << p << ";" << maxcrossing << ";" << avgcrossing << ";" << mincrossing << ";" << rate_stats << ";" << time << endl;
+            MyFile << algoList.at(2*k) << ";" << n << ";" << t << ";" << ss_type << ";" << m << ";" << d << ";" << p << ";" << maxcrossing << ";" << avgcrossing << ";" << mincrossing << ";" << rate_stats << ";" << time << ";" << max_approx_partition << ";" << max_random_sample << endl;
         }
     }
     
