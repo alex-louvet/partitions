@@ -21,6 +21,7 @@ g++ -fopenmp main.cpp
 - `-r int` : Seed for random generation. Default: `time(NULL)`
 - `-k int` : Number of rounds to run the different sample algorithms as described in the paper. Default `log(m*n)`
 - `-i string` : Name of the file containing the set system when giving option `-f file`. Specification for the files can be found in [classes.cpp](./classes.md)
+- `-e` : Also compute the maximum value of $\lvert |F|/|X| - |A\cap F|/|A|\rvert$ overall $F$ of $\mathcal{F}$ with $A$ a random sample of $X$ and $A$ composed of one element of each part of the computed partition. This allows to compare the approximation performances of approximation obtained via random sample and  thy obtained from a partition
 
 for instance if compiled with the command above
 
