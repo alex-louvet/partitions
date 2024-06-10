@@ -58,7 +58,7 @@ vector<int> same_number_different_size_3(int n, int t){
     for (int i = 0; i < t/3 ; i++){
         res.push_back(3*n/(2*t));
     }
-    for (int i = 0; i < t/3 ; i++){
+    for (int i = 0; i < t/3 + t%3 ; i++){
         res.push_back(n/t);
     }
     for (int i = 0; i < t/3 ; i++){
