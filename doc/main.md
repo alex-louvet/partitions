@@ -14,7 +14,7 @@ g++ -fopenmp main.cpp
 `./.a.out -a '1 1 2 3 5 1'` runs algorithm 1 once, algorithm 2 three times and algorithm 5 once. Algorithm number is between 1 and 10 and are detailed in [partition.cpp](./partition.md)
 - `-n int` : Number of points in the set system. Default: `1024`
 - `-t int` : Number of partitions to build. Default: `16`
-- `-f string` : Type of set system (explained in [classes.cpp](./classes.md)) among `["grid","grid_centers","random_hs","grid_graph","linear_grid","exponential_grid","directional_grid","random","projective_plane","ERGGraph","power_law","file"]`. Default: `grid`
+- `-f string` : Type of set system (explained in [classes.cpp](./classes.md)) among `["grid","grid_centers","random_hs","grid_graph","linear_grid","exponential_grid","directed_grid","random","projective_plane","ERGGraph","power_law","concentric_circles,"file"]`. Default: `grid`
 - `-d int`: Dimension in which the points of $X$ live or distance to build the adjecency set system from the graph in case of graph set systems. Explained in more details in [classes.cpp](./classes.md). Default `2`
 - `-c int`: Number of centers to generate when giving option `-f grid_centers
 - `-s` : Save the results. It saves a line in `results.csv` with the parameters of the set system, the number of crossings, average crossing number and the runtime and creates a file with the points and the partition sets
