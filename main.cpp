@@ -322,17 +322,6 @@ int main(int argc, char** argv){
             printf("Runtime: %.2fs\n", duration.count());
             auto time = duration.count();
 
-            for (Set& s : res.sets){
-                int c = 0;
-                for (bool b : s.points){
-                    if (b){
-                        c += 1;
-                    }
-                }
-                cout << c << " ";
-            }
-            cout << endl;
-
             float max_random_sample = 0.;
             float max_approx_partition = 0.;
 
