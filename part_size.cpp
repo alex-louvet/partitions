@@ -83,3 +83,26 @@ vector<int> same_number_different_size_linear(int n, int t, float mineps){
     }
     return res;
 }
+
+vector<int> ninty_percent(int n, int t, int min){
+    vector<int> res;
+    int c = n;
+    int current = n/(2*t);
+    while (c >= 0.1*n){
+        res.push_back(n/t);
+        c -= n/t;
+    }
+    while (current > min){
+        int atStart = c;
+        while (c >= atStart/2){
+            res.push_back(current);
+            c -= current;
+        }
+        current /= 2;
+    }
+    while (c >= current){
+        res.push_back(current);
+        c -= current;
+    }
+    return res;
+}

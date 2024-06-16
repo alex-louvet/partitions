@@ -304,6 +304,13 @@ int main(int argc, char** argv){
                         writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_min_linear.csv");
                     }
                 }
+                if (algoList.at(2*k) == 16){
+                    list = ninty_percent(n,t,(n/(8*t)));
+                    res = partition_min_stats(test, t, list);
+                    if (save){
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_min_linear.csv");
+                    }
+                }
 
 
             } else {
@@ -314,6 +321,17 @@ int main(int argc, char** argv){
             std::chrono::duration<double> duration = end_time - start_time;
             printf("Runtime: %.2fs\n", duration.count());
             auto time = duration.count();
+
+            for (Set& s : res.sets){
+                int c = 0;
+                for (bool b : s.points){
+                    if (b){
+                        c += 1;
+                    }
+                }
+                cout << c << " ";
+            }
+            cout << endl;
 
             float max_random_sample = 0.;
             float max_approx_partition = 0.;
@@ -408,7 +426,6 @@ int main(int argc, char** argv){
                 }
             }
 
-
             int maxcrossing = 0;
             int mincrossing = 0;
             float avgcrossing = 0.;
@@ -430,14 +447,15 @@ int main(int argc, char** argv){
             }
 
 
+
             int rate_stats = 0;
-            if (res.weights.size() > 0){
+            /*if (res.weights.size() > 0){
                 ofstream pot("potential.csv",std::ios_base::app);
                 pot << algoList.at(2*k) << ";" << n << ";" << t << ";" << d << ";";
-                for (int j = 0; j < t; j++){
+                for (int j = 0; j < list.size(); j++){
                     int part_stat = 0;
-                    for (int jp = 0; jp < n/t-1; jp++){
-                        if (res.weights.at(j*(n/t-1)+jp) > constant*pow(static_cast<float>(jp+1),1.0/d)){
+                    for (int jp = 0; jp < list.at(j) - 1; jp++){
+                        if (res.weights.at(partialSum(list,j) - j+jp) > constant*pow(static_cast<float>(jp+1),1.0/d)){
                             part_stat++;
                         };
                     }
@@ -448,23 +466,25 @@ int main(int argc, char** argv){
                 int rate_stats2 = 0;
                 ofstream pot2("potential2.csv",std::ios_base::app);
                 pot2 << algoList.at(2*k) << ";" << n << ";" << t << ";" << d << ";";
-                for (int j = 0; j < t; j++){
+                for (int j = 0; j < list.size(); j++){
                     int part_stat = 0;
-                    for (int jp = 0; jp < n/t-1; jp++){
-                        if (res.weights.at(j*(n/t-1)+jp) > t/(t-j)*constant*pow(static_cast<float>(jp+1),1.0/d)){
+                    for (int jp = 0; jp < list.at(j) - 1; jp++){
+                        if (res.weights.at(partialSum(list,j) - j+jp) > t/(t-j)*constant*pow(static_cast<float>(jp+1),1.0/d)){
                             part_stat++;
                         };
                     }
                     pot2 << part_stat << ",";
                 }
                 pot2 << endl;
-            }
+            }*/
             
-            for (int j = 0; j < res.weights.size(); j++){
+            for (int j = 0; j < list.size(); j++){
+                for (int jp = 0; jp < list.at(j) - 1; jp++){
+                    if (res.weights.at(partialSum(list,j-1) + jp - j +1) > constant*pow(jp + 1,1.0/d)){
+                        rate_stats++;
+                    };
+                }
                 //cout << res.weights.at(j) << " ";
-                if (res.weights.at(j) > constant*pow(static_cast<float>(j%(n/t-1)+1),1.0/d)){
-                    rate_stats++;
-                };
             }
 
             ofstream MyFile("results.csv",std::ios_base::app);
