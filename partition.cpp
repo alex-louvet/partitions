@@ -56,6 +56,14 @@ bool valid_partition_size_list(vector<int> partition_size, int n){
     return true;
 }
 
+int partialSum(vector<int> v, int i){
+    int res = 0;
+    for (int j = 0 ; j < i; j++){
+        res += v.at(j);
+    }
+    return res;
+}
+
 Result partition_min_stats(SetSystem ss, int t, vector<int> partition_size){
     
     const int n = ss.points.size();
@@ -137,7 +145,7 @@ Result partition_min_stats(SetSystem ss, int t, vector<int> partition_size){
             //Update partition weight
             partitionWeight += weight.at(min);
             available.at(min) = false;
-            weights.push_back(partitionWeight*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight);
+            weights.push_back(partitionWeight*pow(n - partialSum(partition_size, i-1),1.0/d)/setsWeight);
 
             // Remove from the weight of edges the weight of sets that intersect the selected edge
             for (int j = 0; j < ss.sets.size(); j++) {
@@ -246,7 +254,7 @@ Result partition_rate_stats(SetSystem ss, int t, float constant, vector<int> par
             vector<int> candidates;
             candidates.clear();
             while (j < n) {
-                if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= constant*pow(static_cast<float>(k),1.0/d)){
+                if (available.at(j) && (partitionWeight + weight.at(j))*pow(n - partialSum(partition_size, i-1),1.0/d)/setsWeight <= constant*pow(static_cast<float>(k),1.0/d)){
                     candidates.push_back(j);
                     break;
                 } else {
@@ -272,7 +280,7 @@ Result partition_rate_stats(SetSystem ss, int t, float constant, vector<int> par
             //Update partition weight
             partitionWeight += weight.at(min);
             available.at(min) = false;
-            weights.push_back(partitionWeight*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight);
+            weights.push_back(partitionWeight*pow(n - partialSum(partition_size, i-1),1.0/d)/setsWeight);
 
             // Remove from the weight of edges the weight of sets that intersect the selected edge
             for (int j = 0; j < ss.sets.size(); j++) {
@@ -397,7 +405,7 @@ Result partition_sampling(SetSystem ss, int t, int sample_size, float constant, 
                         }
                     }
 
-                    if (m/static_cast<float>(sample_size)*(partitionWeight + weight.at(j))/static_cast<float>(setsWeight) <= constant*pow(static_cast<float>(k),1.0/d)/pow(static_cast<float>(n-n/static_cast<float>(t)*i),1.0/d)){
+                    if (m/static_cast<float>(sample_size)*(partitionWeight + weight.at(j))/static_cast<float>(setsWeight) <= constant*pow(static_cast<float>(k),1.0/d)/pow(n - partialSum(partition_size, i-1),1.0/d)){
                         min = j;
                         break;
                     } else {
@@ -419,7 +427,7 @@ Result partition_sampling(SetSystem ss, int t, int sample_size, float constant, 
             //Update partition weight
             partitionWeight += weight.at(min);
             available.at(min) = false;
-            weights.push_back(partitionWeight*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight);
+            weights.push_back(partitionWeight*pow(n - partialSum(partition_size, i-1),1.0/d)/setsWeight);
 
             // Remove from the weight of edges the weight of sets that intersect the selected edge
             for (int j = 0; j < ss.sets.size(); j++) {
@@ -523,7 +531,7 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t, float constant,
             int min = -1;
             int j = 0;
             while (j < n) {
-                if (available.at(j) && (partitionWeight + weight.at(j))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= constant*pow(static_cast<float>(k),1.0/d)){
+                if (available.at(j) && (partitionWeight + weight.at(j))*pow(n - partialSum(partition_size, i-1),1.0/d)/setsWeight <= constant*pow(static_cast<float>(k),1.0/d)){
                     min=j;
                     break;
                 } else {
@@ -546,7 +554,7 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t, float constant,
             //Update partition weight
             partitionWeight += weight.at(min);
             available.at(min) = false;
-            weights.push_back(partitionWeight*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight);
+            weights.push_back(partitionWeight*pow(n - partialSum(partition_size, i-1),1.0/d)/setsWeight);
 
             // Remove from the weight of edges the weight of sets that intersect the selected edge
             for (int j = 0; j < ss.sets.size(); j++) {
@@ -568,7 +576,7 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t, float constant,
                     for (int& pt : ss.sets.at(set).complement_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),ss.sets.at(set))){
                             weight.at(pt) -= (1 << (ss.sets.at(set).weight - 1));
-                            if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k+1),1.0/d)){
+                            if ((partitionWeight + weight.at(pt))*pow(n - partialSum(partition_size, i-1),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k+1),1.0/d)){
                                 test = true;
                             }
                         }
@@ -577,7 +585,7 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t, float constant,
                     for (int& pt : ss.sets.at(set).points_indices) {
                         if (available.at(pt) && intersects(Edge(start,pt),ss.sets.at(set))){
                             weight.at(pt) -= (1 << (ss.sets.at(set).weight - 1));
-                            if ((partitionWeight + weight.at(pt))*pow(static_cast<float>(n)-(static_cast<float>(n)/static_cast<float>(t))*static_cast<float>(i),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k+1),1.0/d)){
+                            if ((partitionWeight + weight.at(pt))*pow(n - partialSum(partition_size, i-1),1.0/d)/setsWeight <= 2*pow(static_cast<float>(k+1),1.0/d)){
                                 test = true;
                             }
                         }

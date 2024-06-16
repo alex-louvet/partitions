@@ -284,10 +284,24 @@ int main(int argc, char** argv){
                     }
                 }
                 if (algoList.at(2*k) == 13){
-                    list = same_number_different_size_linear(n,t, 0.8);
+                    list = same_number_different_size_linear(n,t, 0.9);
                     res = partition_distance_set_weight_par(test,t,sw_weighted_w_sample, warmup, list);
                     if (save){
                         writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_sw_sample_linear.csv");
+                    }
+                }
+                if (algoList.at(2*k) == 14){
+                    list = same_number_different_size_3(n,t);
+                    res = partition_min_stats(test, t, list);
+                    if (save){
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_min_linear.csv");
+                    }
+                }
+                if (algoList.at(2*k) == 15){
+                    list = same_number_different_size_linear(n,t,0.9);
+                    res = partition_min_stats(test, t, list);
+                    if (save){
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_min_linear.csv");
                     }
                 }
 
@@ -368,7 +382,6 @@ int main(int argc, char** argv){
                 cout << "Max epsilon: "<< max_random_sample << " (random) - " << max_approx_partition << " (with simplicial partition)" << endl;
 
             }
-            
 
             cout << "Computing intersection number" << endl;
             if (res.intersections.size() == 0){
