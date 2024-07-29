@@ -294,7 +294,7 @@ int main(int argc, char** argv){
                     list = same_number_different_size_3(n,t);
                     res = partition_min_stats(test, t, list);
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_min_linear.csv");
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_min_3.csv");
                     }
                 }
                 if (algoList.at(2*k) == 15){
@@ -308,7 +308,7 @@ int main(int argc, char** argv){
                     list = ninty_percent(n,t,(n/(8*t)));
                     res = partition_min_stats(test, t, list);
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_min_linear.csv");
+                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_min_90percent.csv");
                     }
                 }
 
