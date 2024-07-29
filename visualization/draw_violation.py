@@ -4,11 +4,13 @@ import sys
 import pandas as pd
 import numpy as np
 
+name = sys.argv[1]
+
 label_table = ["","min","rate","sampling","deque","atOnce","atOnce","atOnce","atOnce","atOnce","atOnce"]
 color_table = ["", "red","green","orange","blue","purple","purple","purple","purple","purple","purple"]
 join_table = {'d': 2, 't': 512, 'n':8192}
 
-df = pd.read_csv("results_17_04.csv", sep=";")
+df = pd.read_csv(name, sep=";")
 toplot = df.drop(df[(df["t"] != join_table['t']) | (df["d"] != join_table['d']) | (df["ss_type"] != sys.argv[2]) | (df["algo"] > 4)].index).sort_values(sys.argv[1])
 if sys.argv[1] == 't':
     toplot = df.drop(df[(df["n"] != join_table['n']) | (df["d"] != join_table['d']) | (df["ss_type"] != sys.argv[2]) | (df["algo"] > 4)].index).sort_values(sys.argv[1])

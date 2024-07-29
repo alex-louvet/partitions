@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import math as m
 import matplotlib as mpl
-
+name = sys.argv[1]
 
 dlist = [2,3,4,5,10]
 tlist = [16,32,64,128,256]
@@ -34,7 +34,7 @@ plt.plot(dlist, [1/int(sys.argv[3])**((d+1)/(d)) for d in dlist], c='grey')
 
 fig, ax = plt.subplots()
 
-df = pd.read_csv("test.csv", sep=";")
+df = pd.read_csv(name, sep=";")
 toplot = df.drop(df[(df["n"] != int(sys.argv[1])) | (df["t"] != int(sys.argv[3])) | (df["ss_type"] != sys.argv[4])  | (df["algo"] >= 12)].index)
 for key, grp in toplot.groupby('algo'):
     temp = grp.groupby([var],as_index=False).agg(min=pd.NamedAgg(column="approx_part", aggfunc="min"), max=pd.NamedAgg(column="approx_part", aggfunc="max"))

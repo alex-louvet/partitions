@@ -3,6 +3,11 @@ import numpy as np
 import pandas as pd
 import sys
 
+name = sys.argv[1]
+
+name2 = sys.argv[2]
+
+
 def listify(x):
     x = x[:-1].split(",")
     temp = []
@@ -10,7 +15,7 @@ def listify(x):
         temp.append(int(y))
     return np.array(temp)
 
-df = pd.read_csv("potential.csv", sep=";")
+df = pd.read_csv(name, sep=";")
 df['table'] = df['table'].apply(listify)
 
 toplot = df.drop(df[(df["n"] != int(sys.argv[1])) | (df["d"] != int(sys.argv[2])) |(df["t"] != int(sys.argv[3])) | (df["algo"] != 1)].index)
@@ -33,7 +38,7 @@ for x in sum2:
     temp.append(x/100)
 sum2 = np.array(temp)
 
-df2 = pd.read_csv("potential2.csv", sep=";")
+df2 = pd.read_csv(name2, sep=";")
 df2['table'] = df2['table'].apply(listify)
 
 toplot = df2.drop(df2[(df2["n"] != int(sys.argv[1])) | (df2["d"] != int(sys.argv[2])) |(df2["t"] != int(sys.argv[3])) | (df2["algo"] != 1)].index)

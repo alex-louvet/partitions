@@ -19,3 +19,13 @@ These scripts can be found in the [visualization](./visualization) folder.
 `draw_partition_osm.py string file string edges (y)` draws the partition for a graph set system obtained from osm data from a partition `file`. It will draw the edges stores in the `edges` file. Add the argyment `y` if you want the outline of each partition to be drawn as well
 
 ![result image of draw_partition_osm.py](../img/osm.png)
+
+`approx_graphs.py file` draws the graph of error factor from file `file`
+
+![result image of approx_graphs.py](../img/approx_t.png)
+
+`draw_activity.py file1 file2` draw bar graphs from a list of number of violations representain the number of violation averaged over the runs with the same parameters
+
+![result image of draw_activity.py](../img/cob_16s.png)
+
+`draw_violation.py file` draw number of violation in a graph (replaced in the paper by bar plot generated with `draw_activity.py`)
