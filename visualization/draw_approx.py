@@ -4,10 +4,8 @@ import matplotlib.cm as cm
 import numpy as np
 import math as m
 import sys
+import random as r
 name = sys.argv[1]
-grid = True
-if len(sys.argv) > 2:
-    grid = False
 
 file1 = open(name, "r")
 
@@ -40,26 +38,33 @@ n = sum([len(part) for part in partition])
 t = len(partition)
 
 legend = name[:-4]
-
-if grid:
-    for k in range(m.ceil(m.sqrt(n))+1):
-        plt.plot([k/m.ceil(m.sqrt(n)),k/m.ceil(m.sqrt(n))],[0,1], color='lightgrey')
-    for k in range(m.ceil(m.sqrt(n))+1):
-        plt.plot([0,1],[k/m.ceil(m.sqrt(n)),k/m.ceil(m.sqrt(n))], color='lightgrey')
         
 if len(partition[0][0]) != 2:
     raise ValueError('Wrong dimension to plot: required 2, got ', len(partition[0][0]))
 
 colors = cm.viridis(np.linspace(0, 1, len(partition)))
 for p,c in zip(partition,colors):
-    ch = scipy.spatial.ConvexHull(p)
-    plt.scatter([x[0] for x in p], [x[1] for x in p], marker='.',s=3, label='partition' + str(i+1),zorder=100,color=c)
-    plt.scatter([x[0] for x in p], [x[1] for x in p], marker='.',s=3, label='partition' + str(i+1),zorder=100,color=c)
-    for simplex in ch.simplices:
-        plt.plot([p[simplex[0]][0],p[simplex[1]][0]], [p[simplex[0]][1], p[simplex[1]][1]], 'k-',zorder=101)
+    #ch = scipy.spatial.ConvexHull(p)
+    plt.scatter([x[0] for x in p[:1]], [x[1] for x in p[:1]], marker='.',s=3, label='partition' + str(i+1),zorder=100,color='blue')
+    plt.scatter([x[0] for x in p[:1]], [x[1] for x in p[:1]], marker='.',s=3, label='partition' + str(i+1),zorder=100,color='blue')
+    #for simplex in ch.simplices:
+        #plt.plot([p[simplex[0]][0],p[simplex[1]][0]], [p[simplex[0]][1], p[simplex[1]][1]], 'k-',zorder=101)
 plt.axis('equal')
-plt.title(legend)
+plt.title('Sample size $\\frac{n}{4}$', fontsize=25)
+ax = plt.gca()
+ax.set_xlim([0, 1])
+ax.set_ylim([0, 1])
+plt.axis('off')
 plt.savefig(name[:-4]+'.png',dpi=300)
 plt.clf()
 
 file1.close()
+
+sam = r.sample(X,t)
+plt.scatter([x[0] for x in sam], [x[1] for x in sam], marker='.',s=3, color='blue')
+plt.axis('equal')
+ax = plt.gca()
+ax.set_xlim([0, 1])
+ax.set_ylim([0, 1])
+plt.axis('off')
+plt.savefig(name[:-4]+'approx.png',dpi=300)

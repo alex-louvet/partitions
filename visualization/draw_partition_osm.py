@@ -4,6 +4,7 @@ import matplotlib.cm as cm
 import numpy as np
 import math as m
 import sys
+import random as r
 name = sys.argv[1]
 edges = sys.argv[2]
 draw_ch = (len(sys.argv) > 3)
@@ -38,6 +39,7 @@ for s in S:
 
 for line in file2.readlines():
     temp = line.split(" ")
+    #if r.random() < 0.01:
     plt.plot([X[int(temp[0])-1][0],X[int(temp[1])-1][0]],[X[int(temp[0])-1][1],X[int(temp[1])-1][1]],color='lightgrey',linewidth=1)
 
 n = sum([len(part) for part in partition])
