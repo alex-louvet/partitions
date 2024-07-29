@@ -438,8 +438,8 @@ int main(int argc, char** argv){
 
 
             int rate_stats = 0;
-            /*if (res.weights.size() > 0){
-                ofstream pot("potential.csv",std::ios_base::app);
+            if (res.weights.size() > 0){
+            /*    ofstream pot("potential.csv",std::ios_base::app);
                 pot << algoList.at(2*k) << ";" << n << ";" << t << ";" << d << ";";
                 for (int j = 0; j < list.size(); j++){
                     int part_stat = 0;
@@ -474,7 +474,7 @@ int main(int argc, char** argv){
                     };
                 }
                 //cout << res.weights.at(j) << " ";
-            }
+            }}
 
             ofstream MyFile("results.csv",std::ios_base::app);
 
