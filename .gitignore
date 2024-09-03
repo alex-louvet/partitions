@@ -12,7 +12,6 @@ fb
 graph
 test
 test.cpposm
-*.txt
 osm
 *_old*
 test.cpp

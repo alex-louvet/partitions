@@ -24,7 +24,7 @@ These scripts can be found in the [visualization](./visualization) folder.
 
 ![result image of approx_graphs.py](../img/approx_t.png)
 
-`draw_activity.py file1 file2` draw bar graphs from a list of number of violations representain the number of violation averaged over the runs with the same parameters
+`draw_activity.py file1 file2` draw bar graphs from a list of number of violations representing the number of violation averaged over the runs with the same parameters
 
 ![result image of draw_activity.py](../img/cob_16s.png)
 
