@@ -1,6 +1,6 @@
 # A Greedy Algorithm for Low-Crossing Partitions for General Set Systems
 
-This is the code for the experiments related to the paper [Simplicial partition construction point by point](link to come). We provide C++ implementations of the code detailed in the paper as well as some python visualization scripts.
+This is the code for the experiments related to the paper [A Greedy Algorithm for Low-Crossing Partitions for General Set Systems](link to come). We provide C++ implementations of the code detailed in the paper as well as some python visualization scripts.
 
 ## Dependencies
 
