@@ -1,6 +1,6 @@
 # A Greedy Algorithm for Low-Crossing Partitions for General Set Systems
 
-This is the code for the experiments related to the paper [Simplicial partition construction point by point](link to come). We provide C++ implementations of the code detailed in the paper as well as some python visualization scripts.
+This is the code for the experiments related to the paper [A Greedy Algorithm for Low-Crossing Partitions for General Set Systems](link to come). We provide C++ implementations of the code detailed in the paper as well as some python visualization scripts.
 
 ## Dependencies
 
@@ -27,4 +27,4 @@ The code is divided in different files which all have their own documentation in
 - [visualization](./doc/visualization.md): Scripts to visualize the results obtained
 
 - [main_osm_graphs.cpp](./doc/main_osm_graphs.md): Script to handle graph set systems generated from Open Street Map data
-- [main_fb.cpp](./doc/main_fb.md): Script to handle graph set systems generated from graph data sych as facebook social circles and ArXiv coauthorship graph
+- [main_fb.cpp](./doc/main_fb.md): Script to handle graph set systems generated from graph data such as facebook social circles and ArXiv coauthorship graph
