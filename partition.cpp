@@ -64,6 +64,7 @@ int partialSum(vector<int> v, int i){
     return res;
 }
 
+// min algo
 Result partition_min_stats(SetSystem ss, int t, vector<int> partition_size){
     
     const int n = ss.points.size();
@@ -190,6 +191,8 @@ Result partition_min_stats(SetSystem ss, int t, vector<int> partition_size){
     return res;
 }
 
+
+// Greedy algo
 Result partition_rate_stats(SetSystem ss, int t, float constant, vector<int> partition_size){
     
     const int n = ss.points.size();
@@ -467,6 +470,7 @@ Result partition_sampling(SetSystem ss, int t, int sample_size, float constant, 
     return res;
 }
 
+// Optimized version of greedy algo
 Result no_weight_update_deque_insert_middle(SetSystem ss, int t, float constant, vector<int> partition_size){
     const int n = ss.points.size();
     const int d = ss.points.at(0).coordinates.size();
@@ -616,6 +620,7 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t, float constant,
     return res;
 }
 
+// PartitionAtOnce algo
 Result partition_distance_set_weight_par(SetSystem ss, int t, vector<float> (*lf)(vector<Point>, vector<bool>, int, vector<Set> , int k), int k, vector<int> partition_size){
     
     const int n = ss.points.size();

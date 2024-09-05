@@ -80,6 +80,7 @@ vector<float> l1(vector<Point> pts, vector<bool> available, int start, vector<Se
     return distances;
 }
 
+// Dual weights weights sampling where for k rounds we sample a set and a point and double the weight of points which edge with start intersects the set picked and halve the weight of sets intersecting the edge between start and the point picked
 vector<float> dw(vector<Point> pts, vector<bool> available, int start, vector<Set> sets, int k){
     int n = pts.size();
     int d = pts.at(0).coordinates.size();
@@ -120,6 +121,7 @@ vector<float> dw(vector<Point> pts, vector<bool> available, int start, vector<Se
     return distances;
 }
 
+// For k iterations uniformly pick a set and double the weight of elements whioch edge with start intersects the set picked
 vector<float> sw(vector<Point> pts, vector<bool> available, int start, vector<Set> sets, int k){
     int n = pts.size();
     int d = pts.at(0).coordinates.size();
@@ -151,6 +153,7 @@ vector<float> sw(vector<Point> pts, vector<bool> available, int start, vector<Se
     return distances;
 }
 
+// For k iterations uniformly pick a set and add the weight of the set to the weight of points which edge with start intersects the set picked
 vector<float> sw_weighted(vector<Point> pts, vector<bool> available, int start, vector<Set> sets, int k){
     int n = pts.size();
     int d = pts.at(0).coordinates.size();
@@ -181,6 +184,7 @@ vector<float> sw_weighted(vector<Point> pts, vector<bool> available, int start, 
     return distances;
 }
 
+// For k iterations randomly pick a set according to its weight and add the weight of the set to the weight of points which edge with start intersects the set picked
 vector<float> sw_weighted_w_sample(vector<Point> pts, vector<bool> available, int start, vector<Set> sets, int k){
     int n = pts.size();
     int d = pts.at(0).coordinates.size();

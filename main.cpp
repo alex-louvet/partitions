@@ -17,6 +17,7 @@
 
 using namespace std;
 
+//Write CSV file wit the data of a set system
 void writeCSVFile(SetSystem res, string fileName){
     ofstream MyFile(fileName);
     for (Point& p : res.points) {
@@ -73,6 +74,7 @@ int main(int argc, char** argv){
     string filename = "";
     float constant = 2.0;
     bool approx = false;
+    //Options are detailed on the main.cpp documentation file
     while ((c = getopt (argc, argv, "a:n:t:d:f:r:p:m:i:c:k:es")) != -1){
         switch (c)
         {
@@ -135,6 +137,7 @@ int main(int argc, char** argv){
         }
     }
 
+    // Generates set system
     if (ss_type == "grid"){
         test = Grid(n,d);
     }
@@ -191,6 +194,7 @@ int main(int argc, char** argv){
     }
     test.buildAdjacency(false);
 
+    // Run the algorithm in algoList on the same set system "test"
     for (int k = 0; k < algoList.size()/2;k++){
         for (int ite = 0; ite < algoList.at(2*k+1); ite ++){
             cout << "algo "  << algoList.at(2*k) << ", n = "<< n << ", d = " << d << ", t = " << t << " " << ss_type << endl;
