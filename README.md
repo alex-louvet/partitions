@@ -20,7 +20,7 @@ This is the code for the experiments related to the paper "A Greedy Algorithm fo
 
 ## Reproducibility
 
-We include a a script [`runme.sh`](./runme.sh) to reproduce the main results of our experiments. This script will run 10 times each necessary execution of the algorithm. Each resulting partition will be stored in the folder `run_artifacts`, the partitions information in `result.csv` and the potential funvtion values in `potential.csv` and `potential2.csv`. In addition it will generate a latex report with all the figures (stored in the `latex_report/img` folder) and tables in the `latex_report` folder. Creating the latex file requires the following dependencies (in addition to the dependencies listed above):
+We include a script [`runme.sh`](./runme.sh) to reproduce the main results of our experiments. This script will run 10 times each necessary execution of the algorithms. Each resulting partition will be stored in the folder `run_artifacts`, the partitions information in `result.csv` and the potential function values in `potential.csv` and `potential2.csv`. In addition it will generate a latex report with all the figures (stored in the `latex_report/img` folder) and tables in the `latex_report` folder. Creating the latex file requires the following dependencies (in addition to the dependencies listed above):
 
 - [latexmk](https://ctan.org/pkg/latexmk/)
 - [amsmath](https://ctan.org/pkg/amsmath)
