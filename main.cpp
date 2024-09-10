@@ -197,7 +197,7 @@ int main(int argc, char** argv){
     // Run the algorithm in algoList on the same set system "test"
     for (int k = 0; k < algoList.size()/2;k++){
         for (int ite = 0; ite < algoList.at(2*k+1); ite ++){
-            cout << "algo "  << algoList.at(2*k) << ", n = "<< n << ", d = " << d << ", t = " << t << " " << ss_type << endl;
+            cout << endl << "algo "  << algoList.at(2*k) << ", n = "<< n << ", d = " << d << ", t = " << t << " " << ss_type << endl;
             test.resetWeight();
             auto start_time = chrono::high_resolution_clock::now();
             Result res;
@@ -205,70 +205,70 @@ int main(int argc, char** argv){
                 if (algoList.at(2*k) == 1){
                     res = partition_min_stats(test,t, equi_distro(n,t));
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_algo_min.csv");
+                        writeCSVFile(res, "run_artifacts/" + to_string(time(NULL)) + "_" + ss_type + "_algo_min.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 2){
                     res = partition_rate_stats(test,t, constant, equi_distro(n,t));
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_algo_rate.csv");
+                        writeCSVFile(res, "run_artifacts/" + to_string(time(NULL)) + "_" + ss_type + "_algo_rate.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 3){
                     res = partition_sampling(test,t,pow(static_cast<float>(m),2/3), constant, equi_distro(n,t));
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_sampling.csv");
+                        writeCSVFile(res, "run_artifacts/" + to_string(time(NULL)) + "_" + ss_type + "_sampling.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 4){
                     res = no_weight_update_deque_insert_middle(test,t, constant, equi_distro(n,t));
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_no_update_deque_middle.csv");
+                        writeCSVFile(res, "run_artifacts/" + to_string(time(NULL)) + "_" + ss_type + "_no_update_deque_middle.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 5){
                     res = partition_distance_set_weight_par(test,t,l1,0, equi_distro(n,t));
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_l1.csv");
+                        writeCSVFile(res, "run_artifacts/" + to_string(time(NULL)) + "_" + ss_type + "_par_l1.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 6){
                     res = partition_distance_set_weight_par(test,t,l2,warmup, equi_distro(n,t));
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_l2.csv");
+                        writeCSVFile(res, "run_artifacts/" + to_string(time(NULL)) + "_" + ss_type + "_par_l2.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 7){
                     res = partition_distance_set_weight_par(test,t,sw,warmup, equi_distro(n,t));
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_sw.csv");
+                        writeCSVFile(res, "run_artifacts/" + to_string(time(NULL)) + "_" + ss_type + "_par_sw.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 8){
                     res = partition_distance_set_weight_par(test,t,dw,warmup, equi_distro(n,t));
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_dw.csv");
+                        writeCSVFile(res, "run_artifacts/" + to_string(time(NULL)) + "_" + ss_type + "_par_dw.csv");
                     }
                 }
                 
                 if (algoList.at(2*k) == 9){
                     res = partition_distance_set_weight_par(test,t,sw_weighted,warmup, equi_distro(n,t));
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_sw_weighted.csv");
+                        writeCSVFile(res, "run_artifacts/" + to_string(time(NULL)) + "_" + ss_type + "_par_sw_weighted.csv");
                     }
                 }
 
                 if (algoList.at(2*k) == 10){
                     res = partition_distance_set_weight_par(test,t,sw_weighted_w_sample, warmup, equi_distro(n,t));
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_sw_sample_equi.csv");
+                        writeCSVFile(res, "run_artifacts/" + to_string(time(NULL)) + "_" + ss_type + "_par_sw_sample_equi.csv");
                     }
                 }
 
@@ -276,7 +276,7 @@ int main(int argc, char** argv){
                     list = interval_size(n,t,n/t/2,4*n/t);
                     res = partition_distance_set_weight_par(test,t,sw_weighted_w_sample, warmup, list);
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_sw_sample_interval.csv");
+                        writeCSVFile(res, "run_artifacts/" + to_string(time(NULL)) + "_" + ss_type + "_par_sw_sample_interval.csv");
                     }
                 }
 
@@ -284,35 +284,35 @@ int main(int argc, char** argv){
                     list = same_number_different_size_3(n,t);
                     res = partition_distance_set_weight_par(test,t,sw_weighted_w_sample, warmup, list);
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_sw_sample_3.csv");
+                        writeCSVFile(res, "run_artifacts/" + to_string(time(NULL)) + "_" + ss_type + "_par_sw_sample_3.csv");
                     }
                 }
                 if (algoList.at(2*k) == 13){
                     list = same_number_different_size_linear(n,t, 0.9);
                     res = partition_distance_set_weight_par(test,t,sw_weighted_w_sample, warmup, list);
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_par_sw_sample_linear.csv");
+                        writeCSVFile(res, "run_artifacts/" + to_string(time(NULL)) + "_" + ss_type + "_par_sw_sample_linear.csv");
                     }
                 }
                 if (algoList.at(2*k) == 14){
                     list = same_number_different_size_3(n,t);
                     res = partition_min_stats(test, t, list);
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_min_3.csv");
+                        writeCSVFile(res, "run_artifacts/" + to_string(time(NULL)) + "_" + ss_type + "_min_3.csv");
                     }
                 }
                 if (algoList.at(2*k) == 15){
                     list = same_number_different_size_linear(n,t,0.9);
                     res = partition_min_stats(test, t, list);
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_min_linear.csv");
+                        writeCSVFile(res, "run_artifacts/" + to_string(time(NULL)) + "_" + ss_type + "_min_linear.csv");
                     }
                 }
                 if (algoList.at(2*k) == 16){
                     list = ninty_percent(n,t,(n/(8*t)));
                     res = partition_min_stats(test, t, list);
                     if (save){
-                        writeCSVFile(res, to_string(time(NULL)) + "_" + ss_type + "_min_90percent.csv");
+                        writeCSVFile(res, "run_artifacts/" + to_string(time(NULL)) + "_" + ss_type + "_min_90percent.csv");
                     }
                 }
 
@@ -394,7 +394,6 @@ int main(int argc, char** argv){
 
             }
 
-            cout << "Computing intersection number" << endl;
             if (res.intersections.size() == 0){
                 for (int j = 0; j < m; j++){
                     res.intersections.push_back(0);
@@ -442,8 +441,8 @@ int main(int argc, char** argv){
 
 
             int rate_stats = 0;
-            if (res.weights.size() > 0){
-            /*    ofstream pot("potential.csv",std::ios_base::app);
+            if (res.weights.size() > 0 && ss_type == "grid"){
+                ofstream pot("potential.csv",std::ios_base::app);
                 pot << algoList.at(2*k) << ";" << n << ";" << t << ";" << d << ";";
                 for (int j = 0; j < list.size(); j++){
                     int part_stat = 0;
@@ -469,7 +468,7 @@ int main(int argc, char** argv){
                     pot2 << part_stat << ",";
                 }
                 pot2 << endl;
-            }*/
+            
             
             for (int j = 0; j < list.size(); j++){
                 for (int jp = 0; jp < list.at(j) - 1; jp++){

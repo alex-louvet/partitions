@@ -3,9 +3,9 @@ import numpy as np
 import pandas as pd
 import sys
 
-name = sys.argv[1]
+name = "potential.csv"
 
-name2 = sys.argv[2]
+name2 = "potential2.csv"
 
 
 def listify(x):
@@ -61,16 +61,18 @@ for x in sum4:
     temp.append(x/100)
 sum4 = np.array(temp)
 
-print(max(sum2))
-
 #plt.pcolor([sum,sum2], cmap="viridis", edgecolor="w", vmin=0, vmax=max(np.max(sum),np.max(sum2)), linewidths=2)
 c = plt.pcolor([sum,sum2,sum3,sum4], cmap="Greens", edgecolor="w", vmin=0, vmax=max(1,max(sum2)), linewidths=2)
 plt.colorbar(c,shrink=0.1, pad=0.01,extend='neither')
 plt.axis('equal')
 plt.axis('off')
 fs = 10
+if sys.argv[3] == "64":
+    fs = 5
+if sys.argv[3] == "16":
+    fs = 20
 plt.text(-1,0,"4",fontsize=fs)
 plt.text(-1,1,"3",fontsize=fs)
 plt.text(-1,2,"2",fontsize=fs)
 plt.text(-1,3,"1",fontsize=fs)
-plt.show()
+plt.savefig(sys.argv[4])

@@ -2,11 +2,11 @@
 
 These scripts can be found in the [visualization](./visualization) folder.
 
-`draw_comparison.py [n,t,d] string set_system` draw the graph for the variation of the crossing number depending on either `n`, `t` or `d` for the given type of `set_system`. By default, it gets the data from `results.csv`
+`draw_comparison.py [n,t,d] string set_system string filename` draw the graph for the variation of the crossing number depending on either `n`, `t` or `d` for the given type of `set_system` and saves it in `filename`. It gets the data from `results.csv`
 
 ![result image of draw_comparison.py](../img/grid.png)
 
-`draw_runtime.py [n,t,d] string set_system` draw the graph for the variation of the runtime depending on either `n`, `t` or `d` for the given type of `set_system`. By default, it gets the data from `results.csv`
+`draw_runtime.py [n,t,d] string set_system` draw the graph for the variation of the runtime depending on either `n`, `t` or `d` for the given type of `set_system` and saves it in `filename`. It gets the data from `results.csv`
 
 ![result image of draw_runtime.py](../img/gridrt.png)
 
@@ -24,8 +24,10 @@ These scripts can be found in the [visualization](./visualization) folder.
 
 ![result image of approx_graphs.py](../img/approx_t.png)
 
-`draw_activity.py file1 file2` draw bar graphs from a list of number of violations representing the number of violation averaged over the runs with the same parameters
+`draw_activity.py int n int d int t string filename` draw bar graphs representing the number of violation averaged over the runs with the same parameters `n,d,t` and saves it in `filename`. It gets the data from `potential.csv` and `potential2.csv`.
 
 ![result image of draw_activity.py](../img/cob_16s.png)
 
 `draw_violation.py file` draw number of violation in a graph (replaced in the paper by bar plot generated with `draw_activity.py`)
+
+`draw_table.py int n int d int t string ss_type string table_type` output a formatted line of the table `table_type` (either `rate`, `grid`, `pl`, `approx`) from the data in `results.csv` in a latex format to display them in the latex report. In the case of `table_type == pl`, d is replaced with $\beta$.

@@ -18,6 +18,24 @@ This is the code for the experiments related to the paper "A Greedy Algorithm fo
 - [Numpy](https://numpy.org/)
 - [Scipy](https://scipy.org/)
 
+## Reproducibility
+
+We include a a script [`runme.sh`](./runme.sh) to reproduce the main results of our experiments. This script will run 10 times each necessary execution of the algorithm. Each resulting partition will be stored in the folder `run_artifacts`, the partitions information in `result.csv` and the potential funvtion values in `potential.csv` and `potential2.csv`. In addition it will generate a latex report with all the figures (stored in the `latex_report/img` folder) and tables in the `latex_report` folder. Creating the latex file requires the following dependencies (in addition to the dependencies listed above):
+
+- [latexmk](https://ctan.org/pkg/latexmk/)
+- [amsmath](https://ctan.org/pkg/amsmath)
+- [amsfonts](https://ctan.org/pkg/amsfonts)
+- [multirow](https://ctan.org/pkg/multirow)
+- [booktabs](https://ctan.org/pkg/booktabs)
+- [section](https://ctan.org/pkg/section)
+
+We also provide the [`clear_run.sh`](./clear_run.sh) script to clean all data from previous run. It should also be ran once to create the necessary files before running `runme.sh`.
+
+```bash
+./clear_run.sh
+./runme.sh
+```
+
 ## Organization
 
 The code is divided in different files which all have their own documentation in the [doc](./doc) folder:

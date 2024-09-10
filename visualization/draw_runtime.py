@@ -9,12 +9,12 @@ label_table = ["MP-Mat","min","potential","sampling","deque","atOnce","atOnce","
 color_table = ["blue", "red","green","orange","blue","purple","purple","purple","purple","purple","purple"]
 join_table = {'d': 2, 't': 512, 'n':8192}
 
-df = pd.read_csv("experiments_grid.csv", sep=";")
-toplot = df.drop(df[(df["t"] != join_table['t']) | (df["d"] != join_table['d']) | (df["ss_type"] != sys.argv[2]) | (df["ss_type"] != sys.argv[2])| (df["algo"] == 4)| (df["algo"] == 2)].index).sort_values(sys.argv[1])
+df = pd.read_csv("results.csv", sep=";")
+toplot = df.drop(df[(df["t"] != join_table['t']) | (df["d"] != join_table['d']) | (df["ss_type"] != sys.argv[2]) | (df["ss_type"] != sys.argv[2])| (df["algo"] == 2)].index).sort_values(sys.argv[1])
 if sys.argv[1] == 't':
-    toplot = df.drop(df[(df["n"] != join_table['n']) | (df["d"] != join_table['d']) | (df["ss_type"] != sys.argv[2]) | (df["ss_type"] != sys.argv[2])| (df["algo"] == 4)| (df["algo"] == 2)].index).sort_values(sys.argv[1])
+    toplot = df.drop(df[(df["n"] != join_table['n']) | (df["d"] != join_table['d']) | (df["ss_type"] != sys.argv[2]) | (df["ss_type"] != sys.argv[2])| (df["algo"] == 2)].index).sort_values(sys.argv[1])
 if sys.argv[1] == 'd':
-    toplot = df.drop(df[(df["t"] != join_table['t']) | (df["n"] != join_table['n']) | (df["ss_type"] != sys.argv[2]) | (df["ss_type"] != sys.argv[2])| (df["algo"] == 4)| (df["algo"] == 2)].index).sort_values(sys.argv[1])
+    toplot = df.drop(df[(df["t"] != join_table['t']) | (df["n"] != join_table['n']) | (df["ss_type"] != sys.argv[2]) | (df["ss_type"] != sys.argv[2])| (df["algo"] == 2)].index).sort_values(sys.argv[1])
 
 fig, ax = plt.subplots()
 
@@ -33,5 +33,5 @@ if sys.argv[1] == 'd':
 ax.set_xlabel(sys.argv[1], fontsize=25)
 ax.set_ylabel("runtime",fontsize=25)
 
-plt.legend(loc='best', fontsize="xx-large")
-plt.show()
+plt.legend(loc='best', fontsize="large")
+plt.savefig(sys.argv[3])
