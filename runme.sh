@@ -1,6 +1,10 @@
 g++ -fopenmp -Ofast main.cpp
 
-mkdir run_artifacts
+if [ ! -d "run_artifacts" ]; then
+  mkdir run_artifacts
+fi
+
+
 
 for i in {1..10}
 do
@@ -60,9 +64,18 @@ do
 	./a.out -a '1 1 10 1' -n 10000 -d 1 -p 3 -t 512 -f power_law -k 150 -s -e
 done
 
-mkdir latex_report
-mkdir latex_report/img
-touch latex_report/report.tex
+if [ ! -d "latex_report" ]; then
+    mkdir latex_report
+fi
+
+if [ ! -d "latex_report/img" ]; then
+    mkdir latex_report/img
+fi
+
+if [ ! -d "latex_report/report.tex" ]; then
+    touch latex_report/report.tex
+fi
+
 echo "\documentclass[10pt]{article}
 \usepackage{graphicx}
 \usepackage{amsmath}
