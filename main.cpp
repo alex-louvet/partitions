@@ -183,7 +183,7 @@ int main(int argc, char** argv){
         test = SetSystem(filename);
     }
     else {
-        fprintf (stderr, "Unknown set system, given: '%s'.\n", ss_type);
+        fprintf (stderr, "Unknown set system, given: '%s'.\n", ss_type.c_str());
         return 1;
     }
     m = test.sets.size();

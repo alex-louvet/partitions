@@ -1,4 +1,5 @@
 g++ -fopenmp -Ofast main.cpp
+g++ -fopenmp -Ofast main_fb.cpp -o fb
 
 if [ ! -d "run_artifacts" ]; then
   mkdir run_artifacts
@@ -62,6 +63,15 @@ do
 	./a.out -a '1 1 10 1' -n 10000 -d 1 -p 2 -t 512 -f power_law -k 150 -s -e
 	./a.out -a '1 1 10 1' -n 10000 -d 1 -p 2.5 -t 512 -f power_law -k 150 -s -e
 	./a.out -a '1 1 10 1' -n 10000 -d 1 -p 3 -t 512 -f power_law -k 150 -s -e
+    ./fb -a '1 1 10 1' -n 'facebook' -t 10 -d 1 -e data/fb.txt -s
+    ./fb -a '1 1 10 1' -n 'facebook' -t 20 -d 1 -e data/fb.txt -s
+    ./fb -a '1 1 10 1' -n 'facebook' -t 40 -d 1 -e data/fb.txt -s
+    ./fb -a '1 1 10 1' -n 'facebook' -t 10 -d 2 -e data/fb.txt -s
+    ./fb -a '1 1 10 1' -n 'facebook' -t 20 -d 2 -e data/fb.txt -s
+    ./fb -a '1 1 10 1' -n 'facebook' -t 40 -d 2 -e data/fb.txt -s
+    ./fb -a '1 1 10 1' -n 'facebook' -t 10 -d 3 -e data/fb.txt -s
+    ./fb -a '1 1 10 1' -n 'facebook' -t 20 -d 3 -e data/fb.txt -s
+    ./fb -a '1 1 10 1' -n 'facebook' -t 40 -d 3 -e data/fb.txt -s
 done
 
 if [ ! -d "latex_report" ]; then
@@ -159,10 +169,10 @@ echo "\\newpage
 
 \\begin{figure}[!htb]
 \\centering
-\\includegraphics[width=0.48\\textwidth]{img/crossing_d.png}
-\\includegraphics[width=0.48\\textwidth]{img/runtime_d.png}
 \\includegraphics[width=0.48\\textwidth]{img/crossing_n.png}
 \\includegraphics[width=0.48\\textwidth]{img/runtime_n.png}
+\\includegraphics[width=0.48\\textwidth]{img/crossing_d.png}
+\\includegraphics[width=0.48\\textwidth]{img/runtime_d.png}
 \\includegraphics[width=0.48\\textwidth]{img/crossing_t.png}
 \\includegraphics[width=0.48\\textwidth]{img/runtime_t.png}
 \\caption{Average crossing numbers and runtimes of the 3 variations of the algorithm depending on the parameters \$n,d,t\$ of the set system.}
@@ -338,10 +348,52 @@ python3 visualization/draw_table.py 8192 10 32 grid approx >> latex_report/repor
 python3 visualization/draw_table.py 8192 10 64 grid approx >> latex_report/report.tex
 python3 visualization/draw_table.py 8192 10 128 grid approx >> latex_report/report.tex
 python3 visualization/draw_table.py 8192 10 256 grid approx >> latex_report/report.tex
-echo "\\midrule" >> latex_report/report.tex
 
 echo "\\end{tabular}
     \\caption{ : \$\\max\\limits_{F \\in \\F} \\left\\lvert\\frac{|F|}{|X|} - \\frac{|F\\cap A|}{|A|}\\right\\rvert\$ for our algorithms on the grid set system averaged over 10 runs.}
+\\end{table}" >> latex_report/report.tex
+
+echo "
+\\newpage
+\\section{Facebook social circles}
+\\begin{table}[!htb]
+    \\centering
+
+        \\begin{tabular}{@{}ccccc@{}}
+
+
+            \\multicolumn{1}{c|}{Input}
+            & \\multicolumn{2}{c|}{MinWeight}
+            & \\multicolumn{2}{c}{PartitionSetsAtOnce}
+
+
+            \\\\
+
+
+            \\multicolumn{1}{c|}{\$r,t\$}
+            & $\\kappa_{\\mathcal{F}}$
+            & \\multicolumn{1}{c|}{runtime (s)}
+            & $\\kappa_{\\mathcal{F}}$
+            & \\multicolumn{1}{c}{runtime (s)}
+
+
+            \\\\
+            \\midrule" >> latex_report/report.tex
+
+python3 visualization/draw_table.py 4039 1 10 facebook fb >> latex_report/report.tex
+python3 visualization/draw_table.py 4039 1 20 facebook fb >> latex_report/report.tex
+python3 visualization/draw_table.py 4039 1 40 facebook fb >> latex_report/report.tex
+echo "\\midrule" >> latex_report/report.tex
+python3 visualization/draw_table.py 4039 2 10 facebook fb >> latex_report/report.tex
+python3 visualization/draw_table.py 4039 2 20 facebook fb >> latex_report/report.tex
+python3 visualization/draw_table.py 4039 2 40 facebook fb >> latex_report/report.tex
+echo "\\midrule" >> latex_report/report.tex
+python3 visualization/draw_table.py 4039 3 10 facebook fb >> latex_report/report.tex
+python3 visualization/draw_table.py 4039 3 20 facebook fb >> latex_report/report.tex
+python3 visualization/draw_table.py 4039 3 40 facebook fb >> latex_report/report.tex
+
+echo "\\end{tabular}
+    \\caption{ : \$\\kappa_{\\F}\$ and runtime for our algorithms on the Facebook social circles set systems.}
 \\end{table}" >> latex_report/report.tex
 
 echo "\\end{document}" >> latex_report/report.tex

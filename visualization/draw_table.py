@@ -13,7 +13,6 @@ else:
     toplotpl = df.drop(df[(df["n"] != int(sys.argv[1])) | (df["p"] != float(sys.argv[2])) | (df["t"] != float(sys.argv[3]))| (df["ss_type"] != sys.argv[4])].index)
     crosspl = toplotpl.groupby('algo').mean("max_crossing")
 
-
 #rate violation
 if sys.argv[5] == "rate":
     print("\\multicolumn{1}{c|}{"+sys.argv[1]+","+sys.argv[2]+","+sys.argv[3]+"} & \\multicolumn{1}{c|}{" + str('{:.4}'.format(cross.iat[1,8])) + "} & \\multicolumn{1}{c}{" + str('{:.4}'.format(cross.iat[0,8])) + "}\\\\")
@@ -31,3 +30,7 @@ if sys.argv[5] == "grid":
 #approx
 if sys.argv[5] == "approx":
     print("\\multicolumn{1}{c|}{" + sys.argv[1]+"," +sys.argv[2]+"," + sys.argv[3] + "} & \\multicolumn{1}{c|}{" + str('{:.4}'.format(cross.iat[0,11]/3 + cross.iat[1,11]/3 + cross.iat[2,11]/3)) + "} & \\multicolumn{1}{c|}{" + str('{:.4}'.format(cross.iat[0,10])) + "} & \\multicolumn{1}{c|}{" + str('{:.4}'.format(cross.iat[1,10])) + "} & \\multicolumn{1}{c}{" + str('{:.4}'.format(cross.iat[2,10])) + "}\\\\")
+
+#facebook
+if sys.argv[5] == "fb":
+    print("\\multicolumn{1}{c|}{" +sys.argv[2]+"," + sys.argv[3] + "} & " + str('{:.4}'.format(cross.iat[0,5])) + " & \\multicolumn{1}{c|}{" + str('{:.4}'.format(cross.iat[0,9])) + "} & " + str('{:.4}'.format(cross.iat[1,5])) + " & \\multicolumn{1}{c}{" + str('{:.4}'.format(cross.iat[1,9])) + "}\\\\")
