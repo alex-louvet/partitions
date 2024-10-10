@@ -29,9 +29,20 @@ We include a script [`runme.sh`](./runme.sh) to reproduce the main results of ou
 - [booktabs](https://ctan.org/pkg/booktabs)
 - [section](https://ctan.org/pkg/section)
 
-We also provide the [`clear_run.sh`](./clear_run.sh) script to clean all data from previous run. It should also be ran once to create the necessary files before running `runme.sh`.
+The `runme.sh` script will reproduce:
+
+- Table 2,3,4,7,8
+- Figure 3,4
+
+Table 1 is not reproduced as it is simply fine tuning of parameters. Table 5 and 6 are not reproduced as they do require long computation times. Additionally, Table 5 shows the performances of our algorithms on set system generated from graph which is also the case of Table 3 and 4 that are reproduced.
+
+Figure 1 and 2 are not relevant or reproducibility and Figure 5 is a plot of Table 8 that we reproduce.
+
+We also provide the [`clear_run.sh`](./clear_run.sh) script to clean all data from previous run. It should also be ran once to create the necessary files before running `runme.sh`. Finally we provide the `runme-test.sh` script that will run our algorithm on one instance of the grid set system and generate a report based on that result to check if all the necessary dependencies are installed. If the `runme-test.sh` scripts runs and generates a report with a title and one image. The `runme.sh` script should run without dependencies troubles.
 
 ```bash
+./clear_run.sh
+./runme-test.sh
 ./clear_run.sh
 ./runme.sh
 ```
