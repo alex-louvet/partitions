@@ -7,14 +7,9 @@
 #include <vector>
 #include <cmath>
 #include <random>
-#include <iostream>
 #include <deque>
-#include <list>
-#include <fstream>
 //#include <omp.h>
 
-#include "Eigen/Core"
-#include "Eigen/src/Core/util/Constants.h"
 #include "distances.cpp"
 
 using namespace std;
@@ -33,7 +28,7 @@ int sumSet(Set s){
 
 int posNum(vector<unsigned long> weight){
     int res = 0;
-    for (const float& value : weight) {
+    for (const long unsigned int& value : weight) {
         if (value >= 0){
             res ++;
         }
@@ -90,7 +85,7 @@ Result partition_min_stats(SetSystem ss, int t, vector<int> partition_size){
     Result res = Result(ss.points, s);
     vector<bool> intersect_partition(m,0);
 
-    for (int i = 0 ; i < partition_size.size(); i++){
+    for (size_t i = 0 ; i < partition_size.size(); i++){
         //cout << "\nPartition " << i+1 << "\n";
 
         Set partition = Set(n);
@@ -149,7 +144,7 @@ Result partition_min_stats(SetSystem ss, int t, vector<int> partition_size){
             weights.push_back(partitionWeight*pow(n - partialSum(partition_size, i-1),1.0/d)/setsWeight);
 
             // Remove from the weight of edges the weight of sets that intersect the selected edge
-            for (int j = 0; j < ss.sets.size(); j++) {
+            for (size_t j = 0; j < ss.sets.size(); j++) {
                 if (!intersect_partition.at(j) && intersects(Edge(start,min),ss.sets.at(j))){
                     intersect_partition.at(j) = 1;
                     if (ss.sets.at(j).points.at(start)){
@@ -215,7 +210,7 @@ Result partition_rate_stats(SetSystem ss, int t, float constant, vector<int> par
     Result res = Result(ss.points, s);
     vector<bool> intersect_partition(m,0);
 
-    for (int i = 0 ; i < partition_size.size(); i++){
+    for (size_t i = 0 ; i < partition_size.size(); i++){
         //cout << "\nPartition " << i+1 << "\n";
 
         Set partition = Set(n);
@@ -266,7 +261,7 @@ Result partition_rate_stats(SetSystem ss, int t, float constant, vector<int> par
                         min = j;
                     } else {
                         // If the algorithm finds a valid edge with the same weight it swaps it with probability 1/2 to avoid obteining the same result for every algo because of order
-                        if (available.at(j) && (min == -1 || weight.at(j) <= weight.at(min) && rand() > 0.5*RAND_MAX)){
+                        if (available.at(j) && (min == -1 || (weight.at(j) <= weight.at(min) && rand() > 0.5*RAND_MAX))){
                             min = j;
                         }
                     }
@@ -286,7 +281,7 @@ Result partition_rate_stats(SetSystem ss, int t, float constant, vector<int> par
             weights.push_back(partitionWeight*pow(n - partialSum(partition_size, i-1),1.0/d)/setsWeight);
 
             // Remove from the weight of edges the weight of sets that intersect the selected edge
-            for (int j = 0; j < ss.sets.size(); j++) {
+            for (size_t j = 0; j < ss.sets.size(); j++) {
                 if (!intersect_partition.at(j) && intersects(Edge(start,min),ss.sets.at(j))){
                     intersect_partition.at(j) = 1;
                     if (ss.sets.at(j).points.at(start)){
@@ -352,7 +347,7 @@ Result partition_sampling(SetSystem ss, int t, int sample_size, float constant, 
     Result res = Result(ss.points, s);
     vector<bool> intersect_partition(m,0);
 
-    for (int i = 0 ; i < partition_size.size(); i++){
+    for (size_t i = 0 ; i < partition_size.size(); i++){
         //cout << "\nPartition " << i+1 << "\n";
 
         Set partition = Set(n);
@@ -417,7 +412,7 @@ Result partition_sampling(SetSystem ss, int t, int sample_size, float constant, 
                             min = j;
                         } else {
                             // If the algorithm finds a valid edge with the same weight it swaps it with probability 1/2 to avoid obteining the same result for every algo because of order
-                            if (min == -1 || weight.at(j) <= weight.at(min) && rand() > 0.5*RAND_MAX){
+                            if (min == -1 || (weight.at(j) <= weight.at(min) && rand() > 0.5*RAND_MAX)){
                                 min = j;
                             }
                         }
@@ -433,7 +428,7 @@ Result partition_sampling(SetSystem ss, int t, int sample_size, float constant, 
             weights.push_back(partitionWeight*pow(n - partialSum(partition_size, i-1),1.0/d)/setsWeight);
 
             // Remove from the weight of edges the weight of sets that intersect the selected edge
-            for (int j = 0; j < ss.sets.size(); j++) {
+            for (size_t j = 0; j < ss.sets.size(); j++) {
                 if (!intersect_partition.at(j) && intersects(Edge(start,min),ss.sets.at(j))){
                     intersect_partition.at(j) = 1;
                     /*for (int pt = 0; pt < n; pt++) {
@@ -493,7 +488,7 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t, float constant,
     vector<bool> intersect_partition(m,0);
     deque<int> update_weight;
 
-    for (int i = 0 ; i < partition_size.size(); i++){
+    for (size_t i = 0 ; i < partition_size.size(); i++){
         //cout << "\nPartition " << i+1 << "\n";
 
         Set partition = Set(n);
@@ -544,7 +539,7 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t, float constant,
                         min = j;
                     } else {
                         // If the algorithm finds a valid edge with the same weight it swaps it with probability 1/2 to avoid obteining the same result for every algo because of order
-                        if (available.at(j) && (min == -1 || weight.at(j) <= weight.at(min) && rand() > 0.5*RAND_MAX)){
+                        if (available.at(j) && (min == -1 || (weight.at(j) <= weight.at(min) && rand() > 0.5*RAND_MAX))){
                             min = j;
                         }
                     }
@@ -561,7 +556,7 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t, float constant,
             weights.push_back(partitionWeight*pow(n - partialSum(partition_size, i-1),1.0/d)/setsWeight);
 
             // Remove from the weight of edges the weight of sets that intersect the selected edge
-            for (int j = 0; j < ss.sets.size(); j++) {
+            for (size_t j = 0; j < ss.sets.size(); j++) {
                 if (!intersect_partition.at(j) && intersects(Edge(start,min),ss.sets.at(j))){
                     intersect_partition.at(j) = 1;
                     if (update_weight.size() > 0 && ss.sets.at(j).weight >= ss.sets.at(update_weight.at((update_weight.size()-1)/2)).weight){
@@ -624,8 +619,8 @@ Result no_weight_update_deque_insert_middle(SetSystem ss, int t, float constant,
 Result partition_distance_set_weight_par(SetSystem ss, int t, vector<float> (*lf)(vector<Point>, vector<bool>, int, vector<Set> , int k), int k, vector<int> partition_size){
     
     const int n = ss.points.size();
-    const int d = ss.points.at(0).coordinates.size();
-    const int m = ss.sets.size();
+    // const int d = ss.points.at(0).coordinates.size();
+    // const int m = ss.sets.size();
 
     //Initialize weight vector
     vector<bool> available(n,true);
@@ -638,7 +633,7 @@ Result partition_distance_set_weight_par(SetSystem ss, int t, vector<float> (*lf
         return res;
     }
 
-    for (int j = 0 ; j < partition_size.size(); j++){
+    for (size_t j = 0 ; j < partition_size.size(); j++){
         //cout << "\nPartition " << i+1 << "\n";
 
         Set partition = Set(n);

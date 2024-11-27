@@ -1,9 +1,6 @@
 #include <cmath>
 #include <cstdlib>
-#include <iterator>
 #include <vector>
-#include <iostream>
-
 #include "classes.cpp"
 
 bool intersects(int a, int b, Set s){
@@ -12,7 +9,7 @@ bool intersects(int a, int b, Set s){
 
 float distance(Point a, Point b){
     float res = 0;
-    for (int d = 0; d < a.coordinates.size(); d++){
+    for (size_t d = 0; d < a.coordinates.size(); d++){
         res += pow((a.coordinates.at(d) - b.coordinates.at(d)),2);
     }
     return sqrt(res);
@@ -20,12 +17,12 @@ float distance(Point a, Point b){
 
 int pick_according_to_weights(vector<float> weights){
     float total = 0;
-    for (int i = 0; i < weights.size(); i++){
+    for (size_t i = 0; i < weights.size(); i++){
         total += weights.at(i);
     }
     float stop_at = static_cast<float>(rand())/RAND_MAX*total;
     float partial_sum = 0;
-    int i = 0;
+    size_t i = 0;
     while(i < weights.size() && partial_sum + weights.at(i) < stop_at){
         partial_sum += weights.at(i);
         i++;
@@ -35,7 +32,7 @@ int pick_according_to_weights(vector<float> weights){
 
 int pick_according_to_weights_exponentially(vector<float> weights, float coeff){
     float total = 0;
-    for (int i = 0; i < weights.size(); i++){
+    for (size_t i = 0; i < weights.size(); i++){
         total += (weights.at(i) == 0 ? 0 : pow(coeff,weights.at(i)));
     }
     if (total == INFINITY){
@@ -43,7 +40,7 @@ int pick_according_to_weights_exponentially(vector<float> weights, float coeff){
     }
     float stop_at = static_cast<float>(rand())/RAND_MAX*total;
     float partial_sum = 0.;
-    int i = 0;
+    size_t i = 0;
     while(i < weights.size() && partial_sum + (weights.at(i) == 0 ? 0 : pow(coeff,weights.at(i))) < stop_at){
         partial_sum += (weights.at(i) == 0 ? 0 : pow(coeff,weights.at(i)));
         i++;
@@ -83,7 +80,7 @@ vector<float> l1(vector<Point> pts, vector<bool> available, int start, vector<Se
 // Dual weights weights sampling where for k rounds we sample a set and a point and double the weight of points which edge with start intersects the set picked and halve the weight of sets intersecting the edge between start and the point picked
 vector<float> dw(vector<Point> pts, vector<bool> available, int start, vector<Set> sets, int k){
     int n = pts.size();
-    int d = pts.at(0).coordinates.size();
+    //int d = pts.at(0).coordinates.size();
     int m = sets.size();
     vector<float> distances(n,1);
     vector<float> set_weight(m,log(n*m)+1);
@@ -124,7 +121,7 @@ vector<float> dw(vector<Point> pts, vector<bool> available, int start, vector<Se
 // For k iterations uniformly pick a set and double the weight of elements whioch edge with start intersects the set picked
 vector<float> sw(vector<Point> pts, vector<bool> available, int start, vector<Set> sets, int k){
     int n = pts.size();
-    int d = pts.at(0).coordinates.size();
+    //int d = pts.at(0).coordinates.size();
     int m = sets.size();
     vector<float> distances(n,1);
     for (int i = 0; i < n; i++){
@@ -156,7 +153,7 @@ vector<float> sw(vector<Point> pts, vector<bool> available, int start, vector<Se
 // For k iterations uniformly pick a set and add the weight of the set to the weight of points which edge with start intersects the set picked
 vector<float> sw_weighted(vector<Point> pts, vector<bool> available, int start, vector<Set> sets, int k){
     int n = pts.size();
-    int d = pts.at(0).coordinates.size();
+    //int d = pts.at(0).coordinates.size();
     int m = sets.size();
     vector<float> distances(n,1);
     for (int i = 0; i < n; i++){
@@ -187,7 +184,7 @@ vector<float> sw_weighted(vector<Point> pts, vector<bool> available, int start, 
 // For k iterations randomly pick a set according to its weight and add the weight of the set to the weight of points which edge with start intersects the set picked
 vector<float> sw_weighted_w_sample(vector<Point> pts, vector<bool> available, int start, vector<Set> sets, int k){
     int n = pts.size();
-    int d = pts.at(0).coordinates.size();
+    // int d = pts.at(0).coordinates.size();
     int m = sets.size();
     vector<float> distances(n,1);
     for (int i = 0; i < n; i++){

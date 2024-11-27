@@ -195,7 +195,7 @@ int main(int argc, char** argv){
     test.buildAdjacency(false);
 
     // Run the algorithm in algoList on the same set system "test"
-    for (int k = 0; k < algoList.size()/2;k++){
+    for (size_t k = 0; k < algoList.size()/2;k++){
         for (int ite = 0; ite < algoList.at(2*k+1); ite ++){
             cout << endl << "algo "  << algoList.at(2*k) << ", n = "<< n << ", d = " << d << ", t = " << t << " " << ss_type << endl;
             test.resetWeight();
@@ -331,7 +331,7 @@ int main(int argc, char** argv){
 
             if (approx){
                 vector<int> random_sample;
-                while (random_sample.size() < t){
+                while ((int) random_sample.size() < t){
                     int a = rand()%n;
                     bool test = false;
                     for (int& i : random_sample){
@@ -400,7 +400,7 @@ int main(int argc, char** argv){
                 }
                 #pragma omp parallel for
                 for (int j = 0; j < m; j ++){
-                    for (int i = 0; i < res.sets.size(); i++){
+                    for (size_t i = 0; i < res.sets.size(); i++){
                         int start = -1;
                         for (int k = 0; k < n; k++){
                             if (res.sets.at(i).points.at(k)){
@@ -426,7 +426,7 @@ int main(int argc, char** argv){
                 maxcrossing = res.intersections.at(0);
                 mincrossing = res.intersections.at(0);
 
-                for (int j = 0; j < res.intersections.size(); j++){
+                for (size_t j = 0; j < res.intersections.size(); j++){
                     if (res.intersections.at(j) > maxcrossing){
                         maxcrossing = res.intersections.at(j);
                     }
@@ -444,7 +444,7 @@ int main(int argc, char** argv){
             if (res.weights.size() > 0 && ss_type == "grid"){
                 ofstream pot("potential.csv",std::ios_base::app);
                 pot << algoList.at(2*k) << ";" << n << ";" << t << ";" << d << ";";
-                for (int j = 0; j < list.size(); j++){
+                for (size_t j = 0; j < list.size(); j++){
                     int part_stat = 0;
                     for (int jp = 0; jp < list.at(j) - 1; jp++){
                         if (res.weights.at(partialSum(list,j) - j+jp) > constant*pow(static_cast<float>(jp+1),1.0/d)){
@@ -455,10 +455,10 @@ int main(int argc, char** argv){
                 }
                 pot << endl;
 
-                int rate_stats2 = 0;
+                // int rate_stats2 = 0;
                 ofstream pot2("potential2.csv",std::ios_base::app);
                 pot2 << algoList.at(2*k) << ";" << n << ";" << t << ";" << d << ";";
-                for (int j = 0; j < list.size(); j++){
+                for (size_t j = 0; j < list.size(); j++){
                     int part_stat = 0;
                     for (int jp = 0; jp < list.at(j) - 1; jp++){
                         if (res.weights.at(partialSum(list,j) - j+jp) > t/(t-j)*constant*pow(static_cast<float>(jp+1),1.0/d)){
@@ -470,7 +470,7 @@ int main(int argc, char** argv){
                 pot2 << endl;
             
             
-            for (int j = 0; j < list.size(); j++){
+            for (size_t j = 0; j < list.size(); j++){
                 for (int jp = 0; jp < list.at(j) - 1; jp++){
                     if (res.weights.at(partialSum(list,j-1) + jp - j +1) > constant*pow(jp + 1,1.0/d)){
                         rate_stats++;

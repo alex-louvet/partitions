@@ -6,6 +6,8 @@
 #include <math.h>
 #include <random>
 #include <deque>
+#include <iostream>
+#include <fstream>
 
 #include "Eigen/Dense"
 
@@ -28,12 +30,6 @@ class Point {
             coordinates = coords;
         }
 };
-
-struct
-    {
-        bool operator()(tuple<int,int> a, tuple<int,int> b) const { return get<1>(a) < get<1>(b); }
-    }
-    indexWeightOrder;
 
 struct
 {
@@ -96,7 +92,7 @@ class Set {
         void buildAdjacency(){
             points_indices.clear();
             complement_indices.clear();
-            for (int i = 0; i < points.size(); i++){
+            for (size_t i = 0; i < points.size(); i++){
                 if (points.at(i)){
                     points_indices.push_back(i);
                 } else {
@@ -105,12 +101,6 @@ class Set {
             }
         }
 };
-
-struct
-    {
-        bool operator()(Set a, Set b) const { return a.weight < b.weight; }
-    }
-    setWeightOrder;
 
 class SetSystem {
     public:
@@ -160,7 +150,7 @@ class SetSystem {
                         p.push_back(Point({a,b}));
                     } else {
                         vector<bool> temp;
-                        for (int i = 0; i < line.size()/2;i++){
+                        for (size_t i = 0; i < line.size()/2;i++){
                             temp.push_back(line.at(2*i) - '0');
                         }
                         s.push_back(Set(temp));
@@ -181,10 +171,10 @@ class SetSystem {
                 p.belongs_to.clear();
             }
             #pragma omp parallel for
-            for (int j = 0; j < sets.size(); j++){
+            for (size_t j = 0; j < sets.size(); j++){
                 sets.at(j).buildAdjacency();
                 if (pts){
-                    for (int i = 0 ; i < sets.at(j).points.size(); i++){
+                    for (size_t i = 0 ; i < sets.at(j).points.size(); i++){
                         if (sets.at(j).points.at(i)){
                             points.at(i).belongs_to.push_back(j);
                         } else{
@@ -235,7 +225,7 @@ SetSystem Grid(int n, int d){
 
 		random_device rd;
 		mt19937 g(rd());
-		for (int i = 0; i < 10*s.size(); i++){
+		for (size_t i = 0; i < 10*s.size(); i++){
 			shuffle(s.begin(), s.end(), g);
 		}
 
@@ -288,7 +278,7 @@ SetSystem GridWithCenters(int n, int d, int c){
 
 		random_device rd;
 		mt19937 g(rd());
-		for (int i = 0; i < 10*s.size(); i++){
+		for (size_t i = 0; i < 10*s.size(); i++){
 			shuffle(s.begin(), s.end(), g);
 		}
 
@@ -303,7 +293,7 @@ float dot(vector<float> p, vector<float> q)	//dot product of two vectors
 	return sum;
 }
 
-SetSystem RandomHyperplanes(int n, int d, int m){
+SetSystem RandomHyperplanes(int n, size_t d, int m){
     vector<Point> p;
     vector<Set> s;
     vector<int> sample;
@@ -325,8 +315,8 @@ SetSystem RandomHyperplanes(int n, int d, int m){
             }
         }
         Eigen::MatrixXd A(d, d);
-		for (int i = 0; i < d; i++)
-			for (int j = 0; j < d; j++)
+		for (size_t i = 0; i < d; i++)
+			for (size_t j = 0; j < d; j++)
 				A(i, j) = p.at(sample.at(i)).coordinates.at(j);
 		Eigen::VectorXd b(d);
 		for (size_t i = 0; i < d; i++) b(i) = 1.0f;
@@ -420,7 +410,7 @@ SetSystem LinearGrid(int n, int d){
 
 		random_device rd;
 		mt19937 g(rd());
-		for (int i = 0; i < 10*s.size(); i++){
+		for (size_t i = 0; i < 10*s.size(); i++){
 			shuffle(s.begin(), s.end(), g);
 		}
 
@@ -454,7 +444,7 @@ SetSystem ExponentialGrid(int n, int d){
 
 		random_device rd;
 		mt19937 g(rd());
-		for (int i = 0; i < 10*s.size(); i++){
+		for (size_t i = 0; i < 10*s.size(); i++){
 			shuffle(s.begin(), s.end(), g);
 		}
 
@@ -492,7 +482,7 @@ SetSystem DirectionalGrid(int n, int d){
 
 		random_device rd;
 		mt19937 g(rd());
-		for (int i = 0; i < 10*s.size(); i++){
+		for (size_t i = 0; i < 10*s.size(); i++){
 			shuffle(s.begin(), s.end(), g);
 		}
 
@@ -552,7 +542,7 @@ SetSystem ProjectivePlane(int o){
                 if (!unique[(a * o * o) + (b * o) + c]) continue;
                 vector<bool> temp;
                 temp.clear();
-                for (int i = 0; i < p.size(); i++){
+                for (size_t i = 0; i < p.size(); i++){
                     if ((static_cast<int>(a*p.at(i).coordinates.at(0) + b*p.at(i).coordinates.at(1) + c*p.at(i).coordinates.at(2)) % o) == 0) {
                         temp.push_back(1);
                     } else{
@@ -655,7 +645,7 @@ SetSystem PowerLaw(int n, int d, float beta, int seed){
 
     vector<double> p_deg(n);
     double nf = n;
-    for (uint k=1; k<n; ++k) p_deg[k] = nf / pow((float)k, beta);
+    for (int k=1; k<n; ++k) p_deg[k] = nf / pow((float)k, beta);
     p_deg[0] = 0.;
     discrete_distribution<> power_law(p_deg.begin(), p_deg.end()); // normalization is done by std::discrete_distribution
     // generate degrees :
@@ -691,7 +681,7 @@ SetSystem PowerLaw(int n, int d, float beta, int seed){
     }
     int current = 0;
     vector<int> temp;
-    for (int e=0; e < src.size(); e++) {
+    for (size_t e=0; e < src.size(); e++) {
         if (src[e] != current){
             edges.push_back(temp);
             current = src[e];
@@ -701,7 +691,7 @@ SetSystem PowerLaw(int n, int d, float beta, int seed){
     }
     edges.push_back({});
 
-    for (int e=0; e < dst.size(); e++) {
+    for (size_t e=0; e < dst.size(); e++) {
         edges.at(dst[e]).push_back(src[e]);
     }
 
