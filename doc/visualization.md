@@ -20,9 +20,9 @@ These scripts can be found in the [visualization](./visualization) folder.
 
 ![result image of draw_partition_osm.py](../img/osm.png)
 
-`approx_graphs.py file` draws the graph of error factor from file `file`
+`approx_graphs.py file ("d" | "t") n (d | t) set_system` draws the graph of error factor from file `file` for parameter `"d"` or `"t"` with values n=`n` and the non-selected parameter = `(d | t)`. For instance `approx_graphs.py res.csv d 8192 128 grid` will draw the error factor graph of results on the grid set system in `res.csv` for variable `d` with n=8192 and t=128.
 
-![result image of approx_graphs.py](../img/approx_t.png)
+![result image of approx_graphs.py](../img/approx_t2.png)
 
 `draw_activity.py int n int d int t string filename` draw bar graphs representing the number of violation averaged over the runs with the same parameters `n,d,t` and saves it in `filename`. It gets the data from `potential.csv` and `potential2.csv`.
 
